@@ -83,12 +83,12 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6">
             <div class="flex justify-between items-center h-16 sm:h-20">
                 <div class="flex items-center gap-3">
-    <img src="https://drive.google.com/thumbnail?id=1iySgZkuAn350LJRtEi0G-E9fSbFCX3tT&sz=w200" alt="Logo KPU Soppeng" class="w-10 h-10 object-contain drop-shadow-[0_0_10px_rgba(16,185,129,0.4)]">
-    <div>
-        <div class="text-white font-bold text-sm tracking-wide">KPU Kabupaten Soppeng</div>
-        <div class="text-xs text-emerald-400 font-semibold tracking-wider">PDPB • EXECUTIVE DASHBOARD</div>
-    </div>
-</div>
+                    <img src="https://drive.google.com/thumbnail?id=1iySgZkuAn350LJRtEi0G-E9fSbFCX3tT&sz=w200" alt="Logo KPU Soppeng" class="w-10 h-10 object-contain drop-shadow-[0_0_10px_rgba(16,185,129,0.4)]">
+                    <div>
+                        <div class="text-white font-bold text-sm tracking-wide">KPU Kabupaten Soppeng</div>
+                        <div class="text-xs text-emerald-400 font-semibold tracking-wider">PDPB • EXECUTIVE DASHBOARD</div>
+                    </div>
+                </div>
 
                 <nav class="hidden md:flex items-center gap-2">
                     <button onclick="navigate('dashboard')" id="btnNavDashboard" class="saas-nav-btn active px-4 py-2 rounded-xl text-white text-xs font-bold tracking-wide flex items-center gap-2 transition">
@@ -321,7 +321,7 @@
                         <div>
                             <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">Tahun Anggaran</label>
                             <select id="impTahun" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-3 py-2.5 rounded-xl text-xs font-bold">
-                                <option>2026</option><option>2027</option>
+                                <!-- Otomatis terisi 2018 s.d 2040 via JS -->
                             </select>
                         </div>
                         <div>
@@ -390,6 +390,17 @@
             return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
         }
 
+        function generateYearOptions() {
+            const tahunSelect = document.getElementById('impTahun');
+            if(!tahunSelect) return;
+            tahunSelect.innerHTML = '';
+            const currentYear = new Date().getFullYear();
+            for(let y = 2018; y <= 2040; y++) {
+                let selected = (y === currentYear) ? 'selected' : '';
+                tahunSelect.innerHTML += `<option value="${y}" ${selected}>${y}</option>`;
+            }
+        }
+
         function showModal(title, message, icon = "✨", isConfirm = false, onConfirm = null) {
             const modal = document.getElementById('customModal');
             document.getElementById('modalTitle').innerText = title;
@@ -448,6 +459,7 @@
 
         async function handleAdminClick() {
             navigate('admin');
+            generateYearOptions();
             await checkAuth();
         }
 
@@ -1057,7 +1069,7 @@
 
                         if(!summaryMap[tps]) summaryMap[tps] = { aktifL: 0, aktifP: 0, baru: 0, tms: 0, ubah: 0 };
                         if(r.mutation_type === 'BARU') summaryMap[tps].baru += r.total_count;
-                        if(r.mutation_type === 'TMS') summaryMap[tps].tps += r.total_count;
+                        if(r.mutation_type === 'TMS') summaryMap[tps].tms += r.total_count;
                         if(r.mutation_type === 'UBAH') summaryMap[tps].ubah += r.total_count;
                     }
                 });
