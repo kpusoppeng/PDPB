@@ -192,8 +192,9 @@
                     <button onclick="navigate('pencarian')" id="btnNavPencarian" class="hidden saas-nav-btn px-4 py-2 rounded-xl text-slate-400 hover:text-white text-xs font-semibold tracking-wide flex items-center gap-2 transition">
                         🔍 Cari Pemilih
                     </button>
-                    <button onclick="navigate('admin')" id="navAdmin" class="saas-nav-btn px-4 py-2 rounded-xl text-slate-400 hover:text-white text-xs font-semibold tracking-wide flex items-center gap-2 transition">
-                        🔒 Login
+                    <!-- HANYA OWNER YANG BISA MELIHAT TOMBOL INI -->
+                    <button onclick="navigate('admin')" id="navAdmin" class="hidden saas-nav-btn px-4 py-2 rounded-xl text-slate-400 hover:text-white text-xs font-semibold tracking-wide flex items-center gap-2 transition">
+                        🔒 Admin Panel
                     </button>
                     <button id="btnLogout" onclick="logout()" class="hidden px-4 py-2 rounded-xl text-rose-400 hover:bg-rose-950/40 text-xs font-bold tracking-wide transition">
                         Keluar
@@ -212,7 +213,8 @@
             <button onclick="navigate('pencarian')" id="btnMobPencarian" class="hidden text-slate-400 text-xs font-semibold flex flex-col items-center gap-1">
                 <span>🔍</span> Cari
             </button>
-            <button onclick="navigate('admin')" id="btnMobAdmin" class="text-slate-400 text-xs font-semibold flex flex-col items-center gap-1">
+            <!-- HANYA OWNER YANG BISA MELIHAT TOMBOL INI DI MOBILE -->
+            <button onclick="navigate('admin')" id="btnMobAdmin" class="hidden text-slate-400 text-xs font-semibold flex flex-col items-center gap-1">
                 <span>🔒</span> Admin
             </button>
             <button id="btnMobLogout" onclick="logout()" class="hidden text-rose-400 text-xs font-semibold flex flex-col items-center gap-1">
@@ -451,13 +453,13 @@
             </div>
         </section>
 
-        <!-- ================= ADMIN / IMPORT PAGE ================= -->
+        <!-- ================= ADMIN / IMPORT PAGE (HANYA OWNER) ================= -->
         <section id="page-admin" class="hidden max-w-3xl mx-auto space-y-6">
             <div id="loginArea" class="saas-card p-6 sm:p-8 space-y-6">
                 <div class="text-center space-y-2">
                     <div class="w-12 h-12 bg-emerald-600 text-white rounded-xl flex items-center justify-center font-bold text-lg mx-auto neon-badge">🔐</div>
-                    <h2 class="text-lg font-bold text-white">Portal Administrator & Operator</h2>
-                    <p class="text-xs text-slate-400">Silakan masuk menggunakan akun Google resmi Anda.</p>
+                    <h2 class="text-lg font-bold text-white">Portal Administrator & Owner</h2>
+                    <p class="text-xs text-slate-400">Silakan masuk menggunakan akun Google resmi Owner.</p>
                 </div>
                 <div class="space-y-4 pt-2 max-w-sm mx-auto">
                     <button onclick="handleGoogleLogin()" class="w-full bg-white hover:bg-slate-100 text-slate-900 font-bold py-3 px-4 rounded-xl transition text-xs tracking-wide shadow-lg flex items-center justify-center gap-3">
@@ -513,6 +515,7 @@
                     </div>
                 </div>
 
+                <!-- IMPORT DATA PDPB DENGAN OPSI ARSIP PERIODE LAMA -->
                 <div class="saas-card p-6 sm:p-8 space-y-6">
                     <div>
                         <h2 class="text-lg font-bold text-white">Import Data PDPB</h2>
@@ -531,6 +534,17 @@
                             <select id="impTw" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-3 py-2.5 rounded-xl text-xs font-bold font-sans">
                                 <option>TW1</option><option>TW2</option><option>TW3</option><option>TW4</option>
                             </select>
+                        </div>
+                    </div>
+
+                    <!-- FITUR ARSIP PERIODE LAMA (CHECKBOX SIMPAN DETAIL) -->
+                    <div class="bg-[#090d16] border border-amber-500/40 p-4 rounded-xl flex items-start gap-3">
+                        <input type="checkbox" id="checkSaveDetails" checked class="mt-0.5 w-4 h-4 accent-emerald-500 cursor-pointer">
+                        <div class="space-y-0.5">
+                            <label for="checkSaveDetails" class="text-xs font-bold text-amber-400 cursor-pointer">Simpan Data Rincian Individu (voter_details)</label>
+                            <p class="text-[11px] text-slate-400 leading-relaxed">
+                                Centang opsi ini jika ingin data rincian pemilih (NIK, Nama, Alamat) dapat dicari di tab Cari Pemilih. <b>Hilangkan centang</b> jika mengunggah data arsip lama (misal 2018–2024) untuk menghemat kuota Supabase secara masif (hanya rekapitulasi statistik yang disimpan).
+                            </p>
                         </div>
                     </div>
 
@@ -796,6 +810,14 @@
         }
 
         function navigate(pageId) {
+            // Mencegah operator/user membuka halaman admin
+            if (pageId === 'admin') {
+                const navAdmin = document.getElementById('navAdmin');
+                if (navAdmin && navAdmin.classList.contains('hidden')) {
+                    pageId = 'dashboard';
+                }
+            }
+
             if (pageId === 'pencarian') {
                 const btnNavPencarian = document.getElementById('btnNavPencarian');
                 if (btnNavPencarian && btnNavPencarian.classList.contains('hidden')) {
@@ -813,6 +835,7 @@
             const btnDash = document.getElementById('btnNavDashboard');
             const btnRekap = document.getElementById('btnNavRekap');
             const btnCari = document.getElementById('btnNavPencarian');
+            const btnAdmin = document.getElementById('navAdmin');
             const btnMobDash = document.getElementById('btnMobDashboard');
             const btnMobRekap = document.getElementById('btnMobRekap');
             const btnMobCari = document.getElementById('btnMobPencarian');
@@ -823,13 +846,18 @@
             if (btnCari && !btnCari.classList.contains('hidden')) {
                 btnCari.className = pageId === 'pencarian' ? "saas-nav-btn active px-4 py-2 rounded-xl text-white text-xs font-bold tracking-wide flex items-center gap-2 transition" : "saas-nav-btn px-4 py-2 rounded-xl text-slate-400 hover:text-white text-xs font-semibold tracking-wide flex items-center gap-2 transition";
             }
+            if (btnAdmin && !btnAdmin.classList.contains('hidden')) {
+                btnAdmin.className = pageId === 'admin' ? "saas-nav-btn active px-4 py-2 rounded-xl text-white text-xs font-bold tracking-wide flex items-center gap-2 transition" : "saas-nav-btn px-4 py-2 rounded-xl text-slate-400 hover:text-white text-xs font-semibold tracking-wide flex items-center gap-2 transition";
+            }
             
             if (btnMobDash) btnMobDash.className = pageId === 'dashboard' ? "text-emerald-400 text-xs font-bold flex flex-col items-center gap-1" : "text-slate-400 text-xs font-semibold flex flex-col items-center gap-1";
             if (btnMobRekap) btnMobRekap.className = pageId === 'rekapitulasi' ? "text-emerald-400 text-xs font-bold flex flex-col items-center gap-1" : "text-slate-400 text-xs font-semibold flex flex-col items-center gap-1";
             if (btnMobCari && !btnMobCari.classList.contains('hidden')) {
                 btnMobCari.className = pageId === 'pencarian' ? "text-emerald-400 text-xs font-bold flex flex-col items-center gap-1" : "text-slate-400 text-xs font-semibold flex flex-col items-center gap-1";
             }
-            if (btnMobAdmin) btnMobAdmin.className = pageId === 'admin' ? "text-emerald-400 text-xs font-bold flex flex-col items-center gap-1" : "text-slate-400 text-xs font-semibold flex flex-col items-center gap-1";
+            if (btnMobAdmin && !btnMobAdmin.classList.contains('hidden')) {
+                btnMobAdmin.className = pageId === 'admin' ? "text-emerald-400 text-xs font-bold flex flex-col items-center gap-1" : "text-slate-400 text-xs font-semibold flex flex-col items-center gap-1";
+            }
 
             if(pageId === 'dashboard') loadPeriodsAndDashboard();
             if(pageId === 'rekapitulasi') {
@@ -872,55 +900,47 @@
 
                 if (session) {
                     const userEmail = session.user.email;
+                    // KETAT: HANYA OWNER (rendatinsoppeng@gmail.com) YANG MEMILIKI HAK AKSES ADMIN PANEL
                     const isOwner = (userEmail === 'rendatinsoppeng@gmail.com');
 
                     if (!isOwner) {
+                        // Jika bukan owner, periksa apakah terdaftar sebagai operator biasa (hanya bisa login untuk fungsi tertentu jika ada, namun menu Admin Panel disembunyikan ketat)
                         const { data: opData } = await dbClient.from('operators').select('*').eq('email', userEmail).single();
                         if (!opData) {
                             await dbClient.auth.signOut();
-                            showModal("Akses Ditolak", `Email <b>${userEmail}</b> belum terdaftar sebagai operator. Hubungi Owner.`, "❌");
+                            showModal("Akses Ditolak", `Email <b>${userEmail}</b> belum terdaftar sebagai operator.`, "❌");
                             return;
                         }
                     }
 
-                    if (loginArea) loginArea.classList.add('hidden');
-                    if (uploadArea) uploadArea.classList.remove('hidden');
                     if (btnLogout) btnLogout.classList.remove('hidden');
                     if (btnMobLogout) btnMobLogout.classList.remove('hidden');
-
                     if (btnNavPencarian) btnNavPencarian.classList.remove('hidden');
                     if (btnMobPencarian) btnMobPencarian.classList.remove('hidden');
 
                     if (isOwner) {
-                        if (navAdmin) {
-                            navAdmin.innerText = "Admin Panel";
-                            navAdmin.classList.remove('hidden');
-                            navAdmin.className = "saas-nav-btn active px-4 py-2 rounded-xl text-white text-xs font-bold tracking-wide flex items-center gap-2 transition";
-                        }
-                        if (btnMobAdmin) {
-                            btnMobAdmin.classList.remove('hidden');
-                        }
+                        // SANGAT EKSKLUSIF: HANYA OWNER YANG TOMBOL ADMIN & HALAMAN UPLOADNYA MUNCUL
+                        if (navAdmin) navAdmin.classList.remove('hidden');
+                        if (btnMobAdmin) btnMobAdmin.classList.remove('hidden');
+                        if (loginArea) loginArea.classList.add('hidden');
+                        if (uploadArea) uploadArea.classList.remove('hidden');
                         if (ownerCard) ownerCard.classList.remove('hidden');
                         loadOperatorsList();
                         loadDeletePeriodsDropdown();
                         generateYearOptions();
                     } else {
+                        // Operator biasa tidak boleh melihat atau mengakses admin panel sama sekali
                         if (navAdmin) navAdmin.classList.add('hidden');
                         if (btnMobAdmin) btnMobAdmin.classList.add('hidden');
+                        if (loginArea) loginArea.classList.remove('hidden');
+                        if (uploadArea) uploadArea.classList.add('hidden');
                         if (ownerCard) ownerCard.classList.add('hidden');
                     }
                 } else {
                     if (loginArea) loginArea.classList.remove('hidden');
                     if (uploadArea) uploadArea.classList.add('hidden');
-                    if (navAdmin) {
-                        navAdmin.innerText = "🔒 Login";
-                        navAdmin.classList.remove('hidden');
-                        navAdmin.className = "saas-nav-btn px-4 py-2 rounded-xl text-slate-400 hover:text-white text-xs font-semibold tracking-wide flex items-center gap-2 transition";
-                    }
-                    if (btnMobAdmin) {
-                        btnMobAdmin.classList.remove('hidden');
-                        btnMobAdmin.className = "text-slate-400 text-xs font-semibold flex flex-col items-center gap-1";
-                    }
+                    if (navAdmin) navAdmin.classList.add('hidden');
+                    if (btnMobAdmin) btnMobAdmin.classList.add('hidden');
                     if (btnNavPencarian) btnNavPencarian.classList.add('hidden');
                     if (btnMobPencarian) btnMobPencarian.classList.add('hidden');
                     if (btnLogout) btnLogout.classList.add('hidden');
@@ -1146,11 +1166,13 @@
                         });
 
                         let totalA = processedData.voterSummary.reduce((sum, item) => sum + item.total_count, 0);
+                        const saveDetails = document.getElementById('checkSaveDetails').checked;
 
                         log("✅ Kalkulasi lokal selesai dengan sukses.");
                         document.getElementById('previewList').innerHTML = `
                             <li>• Baris Agregasi Aktif: <b>${formatID(processedData.voterSummary.length)}</b> baris (Akumulasi: <b>${formatID(totalA)}</b> pemilih)</li>
                             <li>• Total Rincian Pemilih (Aktif + TMS): <b>${formatID(processedData.voterDetails.length)}</b> baris</li>
+                            <li>• Status Simpan Rincian Individu: <b class="${saveDetails ? 'text-emerald-400' : 'text-amber-400'}">${saveDetails ? 'AKTIF (Disimpan)' : 'DILEWATI (Mode Arsip Agregat)'}</b></li>
                         `;
                         document.getElementById('previewArea').classList.remove('hidden');
                         hideGlobalLoader();
@@ -1168,6 +1190,7 @@
             const tahun = document.getElementById('impTahun').value;
             const tw = document.getElementById('impTw').value;
             const fileInput = document.getElementById('fileExcel');
+            const saveDetails = document.getElementById('checkSaveDetails').checked;
             if (!fileInput || !fileInput.files[0]) return;
             const fileName = fileInput.files[0].name;
 
@@ -1198,16 +1221,21 @@
                     if(mErr) throw mErr;
                 }
 
-                log("Mengunggah data rincian pemilih (voter_details)...");
-                const batchDetails = processedData.voterDetails.map(d => ({...d, period_id: periodId}));
-                for(let i=0; i<batchDetails.length; i+=500) {
-                    const chunk = batchDetails.slice(i, i+500);
-                    const { error: dErr } = await dbClient.from('voter_details').insert(chunk);
-                    if(dErr) throw dErr;
+                // JIKA OPSI SIMPAN DETAIL DICENTANG, UNGGAH KE VOTER_DETAILS (UNTUK MENGHEMAT KUOTA PADA DATA TAHUN LAMA)
+                if (saveDetails) {
+                    log("Mengunggah data rincian pemilih (voter_details)...");
+                    const batchDetails = processedData.voterDetails.map(d => ({...d, period_id: periodId}));
+                    for(let i=0; i<batchDetails.length; i+=500) {
+                        const chunk = batchDetails.slice(i, i+500);
+                        const { error: dErr } = await dbClient.from('voter_details').insert(chunk);
+                        if(dErr) throw dErr;
+                    }
+                } else {
+                    log("⚠️ Mode Arsip Agregat aktif: Rincian pemilih individu dilewati untuk menghemat penyimpanan server.");
                 }
 
                 hideGlobalLoader();
-                showModal("Sukses", "Publikasi data rekapitulasi & rincian berhasil dilakukan!", "🎉", false, () => {
+                showModal("Sukses", "Publikasi data rekapitulasi berhasil dilakukan!", "🎉", false, () => {
                     window.location.reload();
                 });
             } catch(e) {
@@ -1705,8 +1733,8 @@
 
                     if(!data || data.length === 0) {
                         counterEl.innerText = "0";
-                        if(tbody) tbody.innerHTML = `<tr><td colspan="13" class="p-8 text-center text-slate-500 font-mono">Tidak ditemukan pemilih dengan kata kunci "${query}".</td></tr>`;
-                        if(cardContainer) cardContainer.innerHTML = `<div class="p-6 text-center text-slate-500 font-mono text-xs">Tidak ditemukan pemilih dengan kata kunci "${query}".</div>`;
+                        if(tbody) tbody.innerHTML = `<tr><td colspan="13" class="p-8 text-center text-slate-500 font-mono">Tidak ditemukan pemilih dengan kata kunci "${query}". (Kemungkinan periode ini diunggah dalam Mode Arsip Agregat tanpa rincian individu).</td></tr>`;
+                        if(cardContainer) cardContainer.innerHTML = `<div class="p-6 text-center text-slate-500 font-mono text-xs">Tidak ditemukan pemilih dengan kata kunci "${query}". (Mode Arsip Agregat).</div>`;
                         return;
                     }
 
@@ -1794,6 +1822,11 @@
 
                 if(error) throw error;
 
+                if(!familyMembers || familyMembers.length === 0) {
+                    content.innerHTML = `<div class="p-4 text-amber-400 text-center text-xs">Data detail individu tidak tersedia untuk periode ini (tersimpan dalam mode arsip agregat).</div>`;
+                    return;
+                }
+
                 let famHtml = `
                     <div class="bg-[#090d16] p-3 rounded-xl border border-[#1e294b] text-[11px] space-y-1 mb-4">
                         <div class="text-slate-400"><b>Kecamatan:</b> ${voter.kecamatan || '-'} › Desa ${voter.desa} › TPS ${voter.tps}</div>
@@ -1849,6 +1882,12 @@
                 const { data: { session } } = await dbClient.auth.getSession();
                 if (session) {
                     await checkAuth();
+                } else {
+                    // Pastikan elemen admin tersembunyi total jika belum login
+                    const navAdmin = document.getElementById('navAdmin');
+                    const btnMobAdmin = document.getElementById('btnMobAdmin');
+                    if(navAdmin) navAdmin.classList.add('hidden');
+                    if(btnMobAdmin) btnMobAdmin.classList.add('hidden');
                 }
             }
             await loadPeriodsAndDashboard();
