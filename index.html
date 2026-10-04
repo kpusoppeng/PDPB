@@ -464,7 +464,7 @@
                 <div class="saas-card p-6 sm:p-8 space-y-4 border-emerald-500/30 bg-gradient-to-r from-[#11172a] to-[#0f172a]">
                     <div>
                         <h2 class="text-base font-bold text-emerald-400 flex items-center gap-2"><span>✏</span> Kustomisasi Teks Antarmuka</h2>
-                        <p class="text-xs text-slate-400 mt-0.5">Ubah judul teks utama dashboard sesuai kebutuhan.</p>
+                        <p class="text-xs text-slate-400 mt-0.5">Ubah judul teks utama dashboard sesuai kebutuhan (Tersinkronisasi Global ke Database).</p>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div class="space-y-1">
@@ -485,7 +485,7 @@
                         </div>
                     </div>
                     <div class="pt-2">
-                        <button onclick="saveTextCustomization()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-5 py-2.5 rounded-xl transition text-xs shadow-lg">Simpan Perubahan Teks</button>
+                        <button onclick="saveTextCustomization()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-5 py-2.5 rounded-xl transition text-xs shadow-lg">Simpan & Sinkronkan ke Database</button>
                     </div>
                 </div>
 
@@ -559,7 +559,7 @@
     <!-- ================= JAVASCRIPT ================= -->
     <script>
         const SUPABASE_URL = "https://rhvhyafcbmynidwkpuad.supabase.co"; 
-        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJodmh5YWZjYm15bmlkd2twdWFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEwNDAwMTcsImV4cCI6MjEwNjYxNjAxN30.dWIUg2bDe8W7p99-5g9nsZ-GP3-hjUecKEYgQvovEbY"; 
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJodmh5YWZjYm15bmlkd2twdWFkIiwicm9sZSI6InJvbiIsImlhdCI6MTc5MTA0MDAxNywiZXhwIjoyMTA2NjE2MDE3fQ.dWIUg2bDe8W7p99-5g9nsZ-GP3-hjUecKEYgQvovEbY"; 
         
         let dbClient = null;
         try {
@@ -578,7 +578,7 @@
         let rekapSelectedKec = null;
         let rekapSelectedDesa = null;
 
-        // Fungsi Kustomisasi Teks UI
+        // Default Teks UI
         const defaultTexts = {
             headerTitle: "KPU Kabupaten Soppeng",
             headerSub: "PDPB • EXECUTIVE DASHBOARD",
@@ -586,10 +586,32 @@
             dashSub: "PEMUTAKHIRAN DATA PEMILIH BERKELANJUTAN"
         };
 
-        function loadTextCustomization() {
-            const custom = JSON.parse(localStorage.getItem('pdpb_custom_texts') || JSON.stringify(defaultTexts));
+        // Memuat Teks Kustomisasi dari Supabase (Global)
+        async function loadTextCustomization() {
+            let custom = { ...defaultTexts };
             
-            // Perbarui elemen Header Utama (berlaku universal untuk semua perangkat)
+            if (dbClient) {
+                try {
+                    const { data, error } = await dbClient
+                        .from('app_settings')
+                        .select('*')
+                        .eq('id', 1)
+                        .single();
+                    
+                    if (data && !error) {
+                        custom = {
+                            headerTitle: data.header_title || defaultTexts.headerTitle,
+                            headerSub: data.header_sub || defaultTexts.headerSub,
+                            dashTitle: data.dash_title || defaultTexts.dashTitle,
+                            dashSub: data.dash_sub || defaultTexts.dashSub
+                        };
+                    }
+                } catch (err) {
+                    console.log("Menggunakan teks bawaan (tabel app_settings belum siap):", err);
+                }
+            }
+
+            // Perbarui elemen Header Utama & Dashboard di DOM
             const elHeaderTitle = document.getElementById('customHeaderTitle');
             const elHeaderSub = document.getElementById('customHeaderSub');
             const elDashTitle = document.getElementById('customDashTitle');
@@ -609,16 +631,36 @@
             }
         }
 
-        function saveTextCustomization() {
+        // Menyimpan Kustomisasi Teks langsung ke Supabase (Global)
+        async function saveTextCustomization() {
             const custom = {
-                headerTitle: document.getElementById('cfgHeaderTitle').value.trim() || defaultTexts.headerTitle,
-                headerSub: document.getElementById('cfgHeaderSub').value.trim() || defaultTexts.headerSub,
-                dashTitle: document.getElementById('cfgDashTitle').value.trim() || defaultTexts.dashTitle,
-                dashSub: document.getElementById('cfgDashSub').value.trim() || defaultTexts.dashSub
+                header_title: document.getElementById('cfgHeaderTitle').value.trim() || defaultTexts.headerTitle,
+                header_sub: document.getElementById('cfgHeaderSub').value.trim() || defaultTexts.headerSub,
+                dash_title: document.getElementById('cfgDashTitle').value.trim() || defaultTexts.dashTitle,
+                dash_sub: document.getElementById('cfgDashSub').value.trim() || defaultTexts.dashSub
             };
-            localStorage.setItem('pdpb_custom_texts', JSON.stringify(custom));
-            loadTextCustomization();
-            showModal("Sukses", "Kustomisasi teks berhasil disimpan.", "✨");
+
+            showGlobalLoader("MENYIMPAN KE DATABASE...");
+
+            if (dbClient) {
+                try {
+                    const { error } = await dbClient
+                        .from('app_settings')
+                        .upsert({ id: 1, ...custom });
+                    
+                    if (error) throw error;
+                    
+                    hideGlobalLoader();
+                    await loadTextCustomization();
+                    showModal("Sukses", "Kustomisasi teks berhasil disimpan dan disinkronkan secara global ke database.", "✨");
+                } catch (err) {
+                    hideGlobalLoader();
+                    showModal("Gagal Menyimpan", `Error: ${err.message}<br><br>Pastikan tabel <b>app_settings</b> sudah dibuat di Supabase.`, "❌");
+                }
+            } else {
+                hideGlobalLoader();
+                showModal("Gagal", "Koneksi database tidak tersedia.", "❌");
+            }
         }
 
         // Fungsi Kontrol Loading Spinner
@@ -1755,7 +1797,7 @@
             const tabSearchInput = document.getElementById('tabSearchInput');
             if(tabSearchInput) tabSearchInput.value = '';
 
-            loadTextCustomization();
+            await loadTextCustomization();
 
             if(dbClient) {
                 const { data: { session } } = await dbClient.auth.getSession();
