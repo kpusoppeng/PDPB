@@ -1543,8 +1543,17 @@
 
         window.onload = async () => {
             showGlobalLoader("MEMVERIFIKASI SESI...");
+            
+            // Membersihkan token panjang di URL agar kembali bersih ke base URL
+            if (window.location.hash && window.location.hash.includes('access_token')) {
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+
             if(dbClient) {
-                await checkAuth();
+                const { data: { session } } = await dbClient.auth.getSession();
+                if (session) {
+                    await checkAuth();
+                }
             }
             await loadPeriodsAndDashboard();
             hideGlobalLoader();
