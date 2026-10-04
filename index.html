@@ -412,24 +412,26 @@
                 </div>
             </div>
 
+            <!-- CONTAINER HASIL PENCARIAN (RESPONSIF: TABEL DI DESKTOP, KARTU VERTIKAL DI HP) -->
             <div class="saas-card overflow-hidden">
-                <div class="overflow-x-hidden w-full">
-                    <table class="w-full text-left border-collapse text-[11px] sm:text-xs">
+                <!-- TAMPILAN DESKTOP (Tabel Lebar) -->
+                <div class="hidden md:block overflow-x-auto w-full">
+                    <table class="w-full text-left border-collapse text-xs">
                         <thead>
-                            <tr class="bg-[#090d16] text-slate-400 text-[9px] sm:text-[10px] font-extrabold uppercase tracking-wider border-b border-[#1e294b]">
-                                <th class="p-2 sm:p-3">No</th>
-                                <th class="p-2 sm:p-3">NKK</th>
-                                <th class="p-2 sm:p-3">NIK</th>
-                                <th class="p-2 sm:p-3">Nama</th>
-                                <th class="p-2 sm:p-3">Lahir</th>
-                                <th class="p-2 sm:p-3">Kawin</th>
-                                <th class="p-2 sm:p-3 text-center">JK</th>
-                                <th class="p-2 sm:p-3">Desa</th>
-                                <th class="p-2 sm:p-3">TPS</th>
-                                <th class="p-2 sm:p-3">Alamat</th>
-                                <th class="p-2 sm:p-3 text-center">RT/RW</th>
-                                <th class="p-2 sm:p-3 text-center">Ket</th>
-                                <th class="p-2 sm:p-3">Periode</th>
+                            <tr class="bg-[#090d16] text-slate-400 text-[10px] font-extrabold uppercase tracking-wider border-b border-[#1e294b]">
+                                <th class="p-3">No</th>
+                                <th class="p-3">NKK</th>
+                                <th class="p-3">NIK</th>
+                                <th class="p-3">Nama</th>
+                                <th class="p-3">Lahir</th>
+                                <th class="p-3">Kawin</th>
+                                <th class="p-3 text-center">JK</th>
+                                <th class="p-3">Desa</th>
+                                <th class="p-3">TPS</th>
+                                <th class="p-3">Alamat</th>
+                                <th class="p-3 text-center">RT/RW</th>
+                                <th class="p-3 text-center">Ket</th>
+                                <th class="p-3">Periode</th>
                             </tr>
                         </thead>
                         <tbody id="tabSearchTableBody" class="divide-y divide-[#1e294b]/50">
@@ -438,6 +440,13 @@
                             </tr>
                         </tbody>
                     </table>
+                </div>
+
+                <!-- TAMPILAN MOBILE / HP (Card Layout Bersusun ke Bawah yang Rapi & Estetik) -->
+                <div class="block md:hidden p-3 sm:p-4">
+                    <div id="tabSearchCardContainer" class="space-y-3">
+                        <div class="p-6 text-center text-slate-500 font-mono text-xs">Gunakan kotak pencarian di atas untuk menampilkan data pemilih.</div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -1658,29 +1667,33 @@
             tbody.innerHTML = html;
         }
 
-        // ================= TAB PENCARIAN & TABEL LUAS =================
+        // ================= TAB PENCARIAN & TABEL / CARD LUAS =================
         let searchTimer = null;
         async function handleTabVoterSearch() {
             const query = document.getElementById('tabSearchInput').value.trim();
             const tbody = document.getElementById('tabSearchTableBody');
+            const cardContainer = document.getElementById('tabSearchCardContainer');
             const counterEl = document.getElementById('liveResultCounter');
             const activePeriodId = document.getElementById('filterPeriode').value;
 
             if(!query || query.length < 3) {
                 counterEl.innerText = "0";
-                tbody.innerHTML = `<tr><td colspan="13" class="p-8 text-center text-slate-500 font-mono">Masukkan minimal 3 karakter pada kotak pencarian di atas...</td></tr>`;
+                if(tbody) tbody.innerHTML = `<tr><td colspan="13" class="p-8 text-center text-slate-500 font-mono">Masukkan minimal 3 karakter pada kotak pencarian di atas...</td></tr>`;
+                if(cardContainer) cardContainer.innerHTML = `<div class="p-6 text-center text-slate-500 font-mono text-xs">Masukkan minimal 3 karakter pada kotak pencarian di atas...</div>`;
                 return;
             }
 
             if(!activePeriodId) {
                 counterEl.innerText = "0";
-                tbody.innerHTML = `<tr><td colspan="13" class="p-8 text-center text-amber-400 font-mono">Pilih periode aktif terlebih dahulu di tab Dashboard.</td></tr>`;
+                if(tbody) tbody.innerHTML = `<tr><td colspan="13" class="p-8 text-center text-amber-400 font-mono">Pilih periode aktif terlebih dahulu di tab Dashboard.</td></tr>`;
+                if(cardContainer) cardContainer.innerHTML = `<div class="p-6 text-center text-amber-400 font-mono text-xs">Pilih periode aktif terlebih dahulu di tab Dashboard.</div>`;
                 return;
             }
 
             clearTimeout(searchTimer);
             searchTimer = setTimeout(async () => {
-                tbody.innerHTML = `<tr><td colspan="13" class="p-8 text-center text-emerald-400 font-mono animate-pulse">Memuat data pemilih dari database server...</td></tr>`;
+                if(tbody) tbody.innerHTML = `<tr><td colspan="13" class="p-8 text-center text-emerald-400 font-mono animate-pulse">Memuat data pemilih dari database server...</td></tr>`;
+                if(cardContainer) cardContainer.innerHTML = `<div class="p-6 text-center text-emerald-400 font-mono text-xs animate-pulse">Memuat data pemilih dari database server...</div>`;
 
                 try {
                     const { data, error } = await dbClient.rpc('search_voters_secure', {
@@ -1692,38 +1705,71 @@
 
                     if(!data || data.length === 0) {
                         counterEl.innerText = "0";
-                        tbody.innerHTML = `<tr><td colspan="13" class="p-8 text-center text-slate-500 font-mono">Tidak ditemukan pemilih dengan kata kunci "${query}".</td></tr>`;
+                        if(tbody) tbody.innerHTML = `<tr><td colspan="13" class="p-8 text-center text-slate-500 font-mono">Tidak ditemukan pemilih dengan kata kunci "${query}".</td></tr>`;
+                        if(cardContainer) cardContainer.innerHTML = `<div class="p-6 text-center text-slate-500 font-mono text-xs">Tidak ditemukan pemilih dengan kata kunci "${query}".</div>`;
                         return;
                     }
 
                     counterEl.innerText = formatID(data.length);
 
                     let periodName = periodsMap[activePeriodId] || 'TW? 2026';
-                    let html = '';
+                    let tableHtml = '';
+                    let cardHtml = '';
+
                     data.forEach((v, idx) => {
-                        html += `
+                        // Render untuk Desktop (Tabel)
+                        tableHtml += `
                             <tr class="hover:bg-slate-800/40 transition cursor-pointer" onclick='openVoterModal(${JSON.stringify(v)})'>
-                                <td class="p-2 sm:p-3 text-slate-400 font-mono">${idx + 1}</td>
-                                <td class="p-2 sm:p-3 font-mono text-emerald-400 font-bold">${v.nkk}</td>
-                                <td class="p-2 sm:p-3 font-mono text-slate-300">${v.nik}</td>
-                                <td class="p-2 sm:p-3 font-bold text-white uppercase">${v.nama}</td>
-                                <td class="p-2 sm:p-3 font-mono text-slate-300">${v.tanggal_lahir || '-'}</td>
-                                <td class="p-2 sm:p-3 text-slate-300">${v.status_kawin || '-'}</td>
-                                <td class="p-2 sm:p-3 text-center"><span class="px-1.5 py-0.5 rounded text-[9px] font-bold ${v.jenis_kelamin === 'L' ? 'bg-blue-950 text-blue-400' : 'bg-pink-950 text-pink-400'}">${v.jenis_kelamin}</span></td>
-                                <td class="p-2 sm:p-3 uppercase text-slate-300">${v.desa}</td>
-                                <td class="p-2 sm:p-3 font-mono text-slate-300">TPS ${v.tps}</td>
-                                <td class="p-2 sm:p-3 text-slate-300">${v.alamat || '-'}</td>
-                                <td class="p-2 sm:p-3 font-mono text-center text-slate-300">${v.rt || '-'}/${v.rw || '-'}</td>
-                                <td class="p-2 sm:p-3 text-center font-mono font-bold text-amber-400">${v.keterangan || '0'}</td>
-                                <td class="p-2 sm:p-3 font-mono text-[10px] text-goldAccent font-semibold">${periodName}</td>
+                                <td class="p-3 text-slate-400 font-mono">${idx + 1}</td>
+                                <td class="p-3 font-mono text-emerald-400 font-bold">${v.nkk}</td>
+                                <td class="p-3 font-mono text-slate-300">${v.nik}</td>
+                                <td class="p-3 font-bold text-white uppercase">${v.nama}</td>
+                                <td class="p-3 font-mono text-slate-300">${v.tanggal_lahir || '-'}</td>
+                                <td class="p-3 text-slate-300">${v.status_kawin || '-'}</td>
+                                <td class="p-3 text-center"><span class="px-1.5 py-0.5 rounded text-[9px] font-bold ${v.jenis_kelamin === 'L' ? 'bg-blue-950 text-blue-400' : 'bg-pink-950 text-pink-400'}">${v.jenis_kelamin}</span></td>
+                                <td class="p-3 uppercase text-slate-300">${v.desa}</td>
+                                <td class="p-3 font-mono text-slate-300">TPS ${v.tps}</td>
+                                <td class="p-3 text-slate-300">${v.alamat || '-'}</td>
+                                <td class="p-3 font-mono text-center text-slate-300">${v.rt || '-'}/${v.rw || '-'}</td>
+                                <td class="p-3 text-center font-mono font-bold text-amber-400">${v.keterangan || '0'}</td>
+                                <td class="p-3 font-mono text-[10px] text-goldAccent font-semibold">${periodName}</td>
                             </tr>
                         `;
+
+                        // Render untuk Mobile (Kartu Vertikal Bersusun ke Bawah yang Estetis & Lengkap)
+                        cardHtml += `
+                            <div class="bg-[#090d16] border border-[#1e294b] rounded-2xl p-4 space-y-3 shadow-md hover:border-emerald-500/50 transition cursor-pointer" onclick='openVoterModal(${JSON.stringify(v)})'>
+                                <div class="flex justify-between items-start border-b border-[#1e294b] pb-2.5">
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-6 h-6 rounded-lg bg-emerald-500/20 text-emerald-400 font-bold text-[11px] flex items-center justify-center">${idx + 1}</span>
+                                        <div>
+                                            <div class="text-white font-extrabold text-xs uppercase">${v.nama}</div>
+                                            <div class="text-[10px] text-emerald-400 font-mono font-bold">NKK: ${v.nkk}</div>
+                                        </div>
+                                    </div>
+                                    <span class="px-2 py-0.5 rounded text-[10px] font-bold ${v.jenis_kelamin === 'L' ? 'bg-blue-950 text-blue-400' : 'bg-pink-950 text-pink-400'}">${v.jenis_kelamin === 'L' ? 'LAKI-LAKI' : 'PEREMPUAN'}</span>
+                                </div>
+                                <div class="grid grid-cols-2 gap-2 text-[11px] text-slate-300 font-mono">
+                                    <div><span class="text-slate-500 block text-[9px] uppercase font-sans">NIK</span>${v.nik}</div>
+                                    <div><span class="text-slate-500 block text-[9px] uppercase font-sans">Tgl Lahir</span>${v.tanggal_lahir || '-'}</div>
+                                    <div><span class="text-slate-500 block text-[9px] uppercase font-sans">Desa / TPS</span>${v.desa} • TPS ${v.tps}</div>
+                                    <div><span class="text-slate-500 block text-[9px] uppercase font-sans">Status Kawin</span>${v.status_kawin || '-'}</div>
+                                </div>
+                                <div class="pt-2 border-t border-[#1e294b]/60 flex justify-between items-center text-[11px]">
+                                    <span class="text-slate-400 truncate max-w-[200px]">📍 ${v.alamat || '-'} (RT ${v.rt || '-'}/RW ${v.rw || '-'})</span>
+                                    <span class="text-amber-400 font-bold font-mono">Ket: ${v.keterangan || '0'}</span>
+                                </div>
+                            </div>
+                        `;
                     });
-                    tbody.innerHTML = html;
+
+                    if(tbody) tbody.innerHTML = tableHtml;
+                    if(cardContainer) cardContainer.innerHTML = cardHtml;
 
                 } catch(err) {
                     counterEl.innerText = "0";
-                    tbody.innerHTML = `<tr><td colspan="13" class="p-8 text-center text-rose-400 font-mono">Error: ${err.message}</td></tr>`;
+                    if(tbody) tbody.innerHTML = `<tr><td colspan="13" class="p-8 text-center text-rose-400 font-mono">Error: ${err.message}</td></tr>`;
+                    if(cardContainer) cardContainer.innerHTML = `<div class="p-6 text-center text-rose-400 font-mono text-xs">Error: ${err.message}</div>`;
                 }
             }, 300);
         }
