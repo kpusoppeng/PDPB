@@ -54,9 +54,29 @@
         .neon-badge {
             box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
         }
+        /* Efek Neon Spinner Besar */
+        .neon-spinner {
+            width: 80px;
+            height: 80px;
+            border: 5px solid rgba(16, 185, 129, 0.15);
+            border-top: 5px solid #10b981;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            box-shadow: 0 0 25px rgba(16, 185, 129, 0.6);
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body class="font-sans antialiased min-h-screen flex flex-col selection:bg-emerald-500 selection:text-white">
+
+    <!-- GLOBAL LOADING OVERLAY DENGAN NEON SPINNER -->
+    <div id="globalLoader" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/80 backdrop-blur-md hidden">
+        <div class="neon-spinner mb-4"></div>
+        <div id="globalLoaderText" class="text-emerald-400 font-mono text-xs tracking-widest uppercase font-bold animate-pulse">Memuat Data...</div>
+    </div>
 
     <!-- CUSTOM LUXURY MODAL / NOTIFICATION -->
     <div id="customModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm hidden">
@@ -114,11 +134,12 @@
                     <button onclick="navigate('rekapitulasi')" id="btnNavRekap" class="saas-nav-btn px-4 py-2 rounded-xl text-slate-400 hover:text-white text-xs font-semibold tracking-wide flex items-center gap-2 transition">
                         📑 Rekapitulasi
                     </button>
+                    <!-- Tab Cari Pemilih (Tersembunyi untuk Publik) -->
                     <button onclick="navigate('pencarian')" id="btnNavPencarian" class="hidden saas-nav-btn px-4 py-2 rounded-xl text-slate-400 hover:text-white text-xs font-semibold tracking-wide flex items-center gap-2 transition">
                         🔍 Cari Pemilih
                     </button>
-                    <button onclick="navigate('admin')" id="navAdmin" class="hidden saas-nav-btn px-4 py-2 rounded-xl text-slate-400 hover:text-white text-xs font-semibold tracking-wide flex items-center gap-2 transition">
-                        🔒 Admin Panel
+                    <button onclick="navigate('admin')" id="navAdmin" class="saas-nav-btn px-4 py-2 rounded-xl text-slate-400 hover:text-white text-xs font-semibold tracking-wide flex items-center gap-2 transition">
+                        🔒 Login
                     </button>
                     <button id="btnLogout" onclick="logout()" class="hidden px-4 py-2 rounded-xl text-rose-400 hover:bg-rose-950/40 text-xs font-bold tracking-wide transition">
                         Keluar
@@ -134,10 +155,11 @@
             <button onclick="navigate('rekapitulasi')" id="btnMobRekap" class="text-slate-400 text-xs font-semibold flex flex-col items-center gap-1">
                 <span>📑</span> Rekap
             </button>
+            <!-- Tab Cari Pemilih Mobile (Tersembunyi untuk Publik) -->
             <button onclick="navigate('pencarian')" id="btnMobPencarian" class="hidden text-slate-400 text-xs font-semibold flex flex-col items-center gap-1">
                 <span>🔍</span> Cari
             </button>
-            <button onclick="navigate('admin')" id="btnMobAdmin" class="hidden text-slate-400 text-xs font-semibold flex flex-col items-center gap-1">
+            <button onclick="navigate('admin')" id="btnMobAdmin" class="text-slate-400 text-xs font-semibold flex flex-col items-center gap-1">
                 <span>🔒</span> Admin
             </button>
         </div>
@@ -205,8 +227,6 @@
                     </div>
                 </div>
             </div>
-
-            <div id="dashboardLoader" class="hidden text-center py-16 text-emerald-400 font-mono text-xs tracking-widest animate-pulse">MEMUAT DATA DARI SERVER...</div>
 
             <!-- KARTU STATISTIK PEMILIH AKTIF -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6">
@@ -312,15 +332,16 @@
         </section>
 
         <!-- ================= PENCARIAN PEMILIH PAGE (TAB EKSKLUSIF) ================= -->
-        <section id="page-pencarian" class="hidden space-y-6">
-            <div class="saas-card p-5 sm:p-6 space-y-4 border border-emerald-500/30">
+        <section id="page-pencarian" class="hidden space-y-4">
+            <!-- Kotak Pencarian Disatukan dan Dibuat Sticky Menempel Mepet Navbar -->
+            <div class="sticky top-20 z-30 saas-card p-4 sm:p-5 space-y-3 border border-emerald-500/30 bg-[#11172a]/95 backdrop-blur-md shadow-2xl">
                 <div class="flex flex-col md:flex-row justify-between items-center gap-4">
                     <div class="w-full md:w-auto">
-                        <h2 class="text-lg font-extrabold text-white tracking-tight flex items-center gap-2"><span>🔍</span> Pencarian Data Pemilih & Keluarga</h2>
-                        <p class="text-xs text-slate-400 mt-0.5">Ketik minimal 3 karakter (NKK, NIK, atau Nama).</p>
+                        <h2 class="text-base sm:text-lg font-extrabold text-white tracking-tight flex items-center gap-2"><span>🔍</span> Pencarian Data Pemilih & Keluarga</h2>
+                        <p class="text-[11px] text-slate-400">Ketik minimal 3 karakter (NKK, NIK, atau Nama).</p>
                     </div>
-                    <!-- Badge Counter Khusus Angka (Tanpa Teks, Lebih Besar & Menonjol) -->
-                    <div class="flex items-center justify-center bg-[#090d16] px-6 py-2 rounded-2xl border border-emerald-500/40 shadow-[0_0_15px_rgba(16,185,129,0.15)]">
+                    <!-- Badge Counter Khusus Angka (Tanpa Teks, Besar & Menonjol) -->
+                    <div class="flex items-center justify-center bg-[#090d16] px-5 py-1.5 rounded-2xl border border-emerald-500/40 shadow-[0_0_15px_rgba(16,185,129,0.15)]">
                         <span id="liveResultCounter" class="text-2xl sm:text-3xl font-extrabold text-goldAccent font-mono tracking-wider">0</span>
                     </div>
                     <div class="w-full md:w-80">
@@ -468,6 +489,19 @@
         let rekapSelectedKec = null;
         let rekapSelectedDesa = null;
 
+        // Fungsi Kontrol Loading Spinner
+        function showGlobalLoader(text = "MEMUAT DATA...") {
+            const loader = document.getElementById('globalLoader');
+            const loaderText = document.getElementById('globalLoaderText');
+            if (loaderText) loaderText.innerText = text;
+            if (loader) loader.classList.remove('hidden');
+        }
+
+        function hideGlobalLoader() {
+            const loader = document.getElementById('globalLoader');
+            if (loader) loader.classList.add('hidden');
+        }
+
         function formatID(num) {
             if (num === undefined || num === null || isNaN(num)) return "0";
             return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
@@ -511,6 +545,13 @@
         }
 
         function navigate(pageId) {
+            if (pageId === 'pencarian') {
+                const btnNavPencarian = document.getElementById('btnNavPencarian');
+                if (btnNavPencarian && btnNavPencarian.classList.contains('hidden')) {
+                    pageId = 'dashboard';
+                }
+            }
+
             ['dashboard', 'rekapitulasi', 'pencarian', 'admin'].forEach(p => {
                 const el = document.getElementById('page-' + p);
                 if (el) el.classList.add('hidden');
@@ -528,11 +569,15 @@
             
             if (btnDash) btnDash.className = pageId === 'dashboard' ? "saas-nav-btn active px-4 py-2 rounded-xl text-white text-xs font-bold tracking-wide flex items-center gap-2 transition" : "saas-nav-btn px-4 py-2 rounded-xl text-slate-400 hover:text-white text-xs font-semibold tracking-wide flex items-center gap-2 transition";
             if (btnRekap) btnRekap.className = pageId === 'rekapitulasi' ? "saas-nav-btn active px-4 py-2 rounded-xl text-white text-xs font-bold tracking-wide flex items-center gap-2 transition" : "saas-nav-btn px-4 py-2 rounded-xl text-slate-400 hover:text-white text-xs font-semibold tracking-wide flex items-center gap-2 transition";
-            if (btnCari) btnCari.className = pageId === 'pencarian' ? "saas-nav-btn active px-4 py-2 rounded-xl text-white text-xs font-bold tracking-wide flex items-center gap-2 transition" : "saas-nav-btn px-4 py-2 rounded-xl text-slate-400 hover:text-white text-xs font-semibold tracking-wide flex items-center gap-2 transition";
+            if (btnCari && !btnCari.classList.contains('hidden')) {
+                btnCari.className = pageId === 'pencarian' ? "saas-nav-btn active px-4 py-2 rounded-xl text-white text-xs font-bold tracking-wide flex items-center gap-2 transition" : "saas-nav-btn px-4 py-2 rounded-xl text-slate-400 hover:text-white text-xs font-semibold tracking-wide flex items-center gap-2 transition";
+            }
             
             if (btnMobDash) btnMobDash.className = pageId === 'dashboard' ? "text-emerald-400 text-xs font-bold flex flex-col items-center gap-1" : "text-slate-400 text-xs font-semibold flex flex-col items-center gap-1";
             if (btnMobRekap) btnMobRekap.className = pageId === 'rekapitulasi' ? "text-emerald-400 text-xs font-bold flex flex-col items-center gap-1" : "text-slate-400 text-xs font-semibold flex flex-col items-center gap-1";
-            if (btnMobCari) btnMobCari.className = pageId === 'pencarian' ? "text-emerald-400 text-xs font-bold flex flex-col items-center gap-1" : "text-slate-400 text-xs font-semibold flex flex-col items-center gap-1";
+            if (btnMobCari && !btnMobCari.classList.contains('hidden')) {
+                btnMobCari.className = pageId === 'pencarian' ? "text-emerald-400 text-xs font-bold flex flex-col items-center gap-1" : "text-slate-400 text-xs font-semibold flex flex-col items-center gap-1";
+            }
             if (btnMobAdmin) btnMobAdmin.className = pageId === 'admin' ? "text-emerald-400 text-xs font-bold flex flex-col items-center gap-1" : "text-slate-400 text-xs font-semibold flex flex-col items-center gap-1";
 
             if(pageId === 'dashboard') loadPeriodsAndDashboard();
@@ -545,13 +590,17 @@
         }
 
         async function handleGoogleLogin() {
+            showGlobalLoader("MENENGHUBUNGKAN KE GOOGLE...");
             const msg = document.getElementById('loginMsg');
             msg.innerText = "Menghubungkan ke Google...";
             const { error } = await dbClient.auth.signInWithOAuth({
                 provider: 'google',
                 options: { redirectTo: window.location.href }
             });
-            if(error) msg.innerText = error.message;
+            if(error) {
+                hideGlobalLoader();
+                msg.innerText = error.message;
+            }
         }
 
         async function checkAuth() {
@@ -573,7 +622,6 @@
                     const userEmail = session.user.email;
                     const isOwner = (userEmail === 'rendatinsoppeng@gmail.com');
 
-                    // Validasi izin operator jika bukan owner
                     if (!isOwner) {
                         const { data: opData } = await dbClient.from('operators').select('*').eq('email', userEmail).single();
                         if (!opData) {
@@ -604,7 +652,6 @@
                         loadDeletePeriodsDropdown();
                         generateYearOptions();
                     } else {
-                        // Operator memiliki semua hak akses KECUALI Admin Panel / Import
                         if (navAdmin) navAdmin.classList.add('hidden');
                         if (btnMobAdmin) btnMobAdmin.classList.add('hidden');
                         if (ownerCard) ownerCard.classList.add('hidden');
@@ -615,8 +662,12 @@
                     if (navAdmin) {
                         navAdmin.innerText = "🔒 Login";
                         navAdmin.classList.remove('hidden');
+                        navAdmin.className = "saas-nav-btn px-4 py-2 rounded-xl text-slate-400 hover:text-white text-xs font-semibold tracking-wide flex items-center gap-2 transition";
                     }
-                    if (btnMobAdmin) btnMobAdmin.classList.remove('hidden');
+                    if (btnMobAdmin) {
+                        btnMobAdmin.classList.remove('hidden');
+                        btnMobAdmin.className = "text-slate-400 text-xs font-semibold flex flex-col items-center gap-1";
+                    }
                     if (btnNavPencarian) btnNavPencarian.classList.add('hidden');
                     if (btnMobPencarian) btnMobPencarian.classList.add('hidden');
                     if (btnLogout) btnLogout.classList.add('hidden');
@@ -667,7 +718,12 @@
         }
 
         async function logout() {
-            if (dbClient) await dbClient.auth.signOut();
+            showGlobalLoader("KELUAR DARI SISTEM...");
+            if (dbClient) {
+                await dbClient.auth.signOut();
+            }
+            localStorage.clear();
+            sessionStorage.clear();
             window.location.reload();
         }
 
@@ -715,138 +771,143 @@
                 showModal("Peringatan", "Pilih file Excel terlebih dahulu!", "⚠️");
                 return;
             }
+            showGlobalLoader("MEMVALIDASI & MEMPROSES EXCEL...");
             const file = fileInput.files[0];
 
             document.getElementById('processLogs').innerHTML = '';
             document.getElementById('previewArea').classList.add('hidden');
             log("Membaca struktur workbook Excel...");
 
-            const reader = new FileReader();
-            reader.onload = async (e) => {
-                try {
-                    const data = new Uint8Array(e.target.result);
-                    const workbook = XLSX.read(data, { type: 'array' });
-                    
-                    if(!workbook.SheetNames.includes("Aktif") || !workbook.SheetNames.includes("TMS")) {
-                        throw new Error("Format sheet wajib memiliki sheet 'Aktif' dan 'TMS'");
-                    }
+            setTimeout(() => {
+                const reader = new FileReader();
+                reader.onload = async (e) => {
+                    try {
+                        const data = new Uint8Array(e.target.result);
+                        const workbook = XLSX.read(data, { type: 'array' });
+                        
+                        if(!workbook.SheetNames.includes("Aktif") || !workbook.SheetNames.includes("TMS")) {
+                            throw new Error("Format sheet wajib memiliki sheet 'Aktif' dan 'TMS'");
+                        }
 
-                    const tempAktif = {};
-                    const tempMutasi = {};
-                    processedData.voterDetails = [];
+                        const tempAktif = {};
+                        const tempMutasi = {};
+                        processedData.voterDetails = [];
 
-                    log("Memproses Agregasi & Data Rinci Pemilih Aktif...");
-                    const sheetAktif = XLSX.utils.sheet_to_json(workbook.Sheets["Aktif"], { defval: "" });
-                    sheetAktif.forEach(row => {
-                        const kec = cleanText(row['KECAMATAN']);
-                        const desa = cleanText(row['KEL/DESA']);
-                        const tps = cleanText(row['TPS']);
-                        const jk = cleanText(row['JENIS KELAMIN']) === 'P' ? 'P' : 'L';
-                        const gen = getGeneration(row['TANGGAL LAHIR']);
-                        const dis = mapDisability(row['DISABILITAS']);
-                        const kawin = cleanText(row['STATU KAWIN'] || row['STATUS KAWIN']);
-                        const ketAktif = cleanText(row['KETERANGAN'] || '0');
+                        log("Memproses Agregasi & Data Rinci Pemilih Aktif...");
+                        const sheetAktif = XLSX.utils.sheet_to_json(workbook.Sheets["Aktif"], { defval: "" });
+                        sheetAktif.forEach(row => {
+                            const kec = cleanText(row['KECAMATAN']);
+                            const desa = cleanText(row['KEL/DESA']);
+                            const tps = cleanText(row['TPS']);
+                            const jk = cleanText(row['JENIS KELAMIN']) === 'P' ? 'P' : 'L';
+                            const gen = getGeneration(row['TANGGAL LAHIR']);
+                            const dis = mapDisability(row['DISABILITAS']);
+                            const kawin = cleanText(row['STATU KAWIN'] || row['STATUS KAWIN']);
+                            const ketAktif = cleanText(row['KETERANGAN'] || '0');
 
-                        const keyAktif = `${kec}|${desa}|${tps}|${jk}|${gen}|${dis}|${kawin}`;
-                        tempAktif[keyAktif] = (tempAktif[keyAktif] || 0) + 1;
+                            const keyAktif = `${kec}|${desa}|${tps}|${jk}|${gen}|${dis}|${kawin}`;
+                            tempAktif[keyAktif] = (tempAktif[keyAktif] || 0) + 1;
 
-                        if (ketAktif === 'B' || ketAktif === 'U') {
-                            const mutType = (ketAktif === 'B') ? 'BARU' : 'UBAH';
-                            const keyMut = `${kec}|${desa}|${tps}|${mutType}|${ketAktif}|${jk}`;
+                            if (ketAktif === 'B' || ketAktif === 'U') {
+                                const mutType = (ketAktif === 'B') ? 'BARU' : 'UBAH';
+                                const keyMut = `${kec}|${desa}|${tps}|${mutType}|${ketAktif}|${jk}`;
+                                tempMutasi[keyMut] = (tempMutasi[keyMut] || 0) + 1;
+                            }
+
+                            let rawTgl = row['TANGGAL LAHIR'];
+                            let formattedTgl = null;
+                            if(typeof rawTgl === 'number') {
+                                let dObj = new Date(Math.round((rawTgl - 25569)*86400*1000));
+                                formattedTgl = dObj.toISOString().split('T')[0];
+                            } else if(rawTgl) {
+                                formattedTgl = rawTgl.toString();
+                            }
+
+                            processedData.voterDetails.push({
+                                nkk: cleanText(row['NKK'] || row['NO KK'] || '-'),
+                                nik: cleanText(row['NIK'] || '-'),
+                                nama: cleanText(row['NAMA'] || '-'),
+                                tempat_lahir: cleanText(row['TEMPAT LAHIR'] || '-'),
+                                tanggal_lahir: formattedTgl,
+                                jenis_kelamin: jk,
+                                status_kawin: kawin,
+                                alamat: cleanText(row['ALAMAT'] || '-'),
+                                rt: cleanText(row['RT'] || '-'),
+                                rw: cleanText(row['RW'] || '-'),
+                                keterangan: ketAktif,
+                                kecamatan: kec,
+                                desa: desa,
+                                tps: tps
+                            });
+                        });
+
+                        log("Memproses Agregasi Data Mutasi & TMS...");
+                        const sheetTMS = XLSX.utils.sheet_to_json(workbook.Sheets["TMS"], { defval: "" });
+                        sheetTMS.forEach(row => {
+                            const kec = cleanText(row['KECAMATAN']);
+                            const desa = cleanText(row['KEL/DESA']);
+                            const tps = cleanText(row['TPS']);
+                            const jk = cleanText(row['JENIS KELAMIN']) === 'P' ? 'P' : 'L';
+                            let ket = cleanText(row['KETERANGAN'] || '1');
+                            if(ket === '-' || ket === '') ket = '1'; 
+
+                            const keyMut = `${kec}|${desa}|${tps}|TMS|${ket}|${jk}`;
                             tempMutasi[keyMut] = (tempMutasi[keyMut] || 0) + 1;
-                        }
 
-                        let rawTgl = row['TANGGAL LAHIR'];
-                        let formattedTgl = null;
-                        if(typeof rawTgl === 'number') {
-                            let dObj = new Date(Math.round((rawTgl - 25569)*86400*1000));
-                            formattedTgl = dObj.toISOString().split('T')[0];
-                        } else if(rawTgl) {
-                            formattedTgl = rawTgl.toString();
-                        }
+                            let rawTgl = row['TANGGAL LAHIR'];
+                            let formattedTgl = null;
+                            if(typeof rawTgl === 'number') {
+                                let dObj = new Date(Math.round((rawTgl - 25569)*86400*1000));
+                                formattedTgl = dObj.toISOString().split('T')[0];
+                            } else if(rawTgl) {
+                                formattedTgl = rawTgl.toString();
+                            }
 
-                        processedData.voterDetails.push({
-                            nkk: cleanText(row['NKK'] || row['NO KK'] || '-'),
-                            nik: cleanText(row['NIK'] || '-'),
-                            nama: cleanText(row['NAMA'] || '-'),
-                            tempat_lahir: cleanText(row['TEMPAT LAHIR'] || '-'),
-                            tanggal_lahir: formattedTgl,
-                            jenis_kelamin: jk,
-                            status_kawin: kawin,
-                            alamat: cleanText(row['ALAMAT'] || '-'),
-                            rt: cleanText(row['RT'] || '-'),
-                            rw: cleanText(row['RW'] || '-'),
-                            keterangan: ketAktif,
-                            kecamatan: kec,
-                            desa: desa,
-                            tps: tps
+                            processedData.voterDetails.push({
+                                nkk: cleanText(row['NKK'] || row['NO KK'] || '-'),
+                                nik: cleanText(row['NIK'] || '-'),
+                                nama: cleanText(row['NAMA'] || '-'),
+                                tempat_lahir: cleanText(row['TEMPAT LAHIR'] || '-'),
+                                tanggal_lahir: formattedTgl,
+                                jenis_kelamin: jk,
+                                status_kawin: cleanText(row['STATU KAWIN'] || row['STATUS KAWIN']),
+                                alamat: cleanText(row['ALAMAT'] || '-'),
+                                rt: cleanText(row['RT'] || '-'),
+                                rw: cleanText(row['RW'] || '-'),
+                                keterangan: ket,
+                                kecamatan: kec,
+                                desa: desa,
+                                tps: tps
+                            });
                         });
-                    });
-
-                    log("Memproses Agregasi Data Mutasi & TMS...");
-                    const sheetTMS = XLSX.utils.sheet_to_json(workbook.Sheets["TMS"], { defval: "" });
-                    sheetTMS.forEach(row => {
-                        const kec = cleanText(row['KECAMATAN']);
-                        const desa = cleanText(row['KEL/DESA']);
-                        const tps = cleanText(row['TPS']);
-                        const jk = cleanText(row['JENIS KELAMIN']) === 'P' ? 'P' : 'L';
-                        let ket = cleanText(row['KETERANGAN'] || '1');
-                        if(ket === '-' || ket === '') ket = '1'; 
-
-                        const keyMut = `${kec}|${desa}|${tps}|TMS|${ket}|${jk}`;
-                        tempMutasi[keyMut] = (tempMutasi[keyMut] || 0) + 1;
-
-                        let rawTgl = row['TANGGAL LAHIR'];
-                        let formattedTgl = null;
-                        if(typeof rawTgl === 'number') {
-                            let dObj = new Date(Math.round((rawTgl - 25569)*86400*1000));
-                            formattedTgl = dObj.toISOString().split('T')[0];
-                        } else if(rawTgl) {
-                            formattedTgl = rawTgl.toString();
-                        }
-
-                        processedData.voterDetails.push({
-                            nkk: cleanText(row['NKK'] || row['NO KK'] || '-'),
-                            nik: cleanText(row['NIK'] || '-'),
-                            nama: cleanText(row['NAMA'] || '-'),
-                            tempat_lahir: cleanText(row['TEMPAT LAHIR'] || '-'),
-                            tanggal_lahir: formattedTgl,
-                            jenis_kelamin: jk,
-                            status_kawin: cleanText(row['STATU KAWIN'] || row['STATUS KAWIN']),
-                            alamat: cleanText(row['ALAMAT'] || '-'),
-                            rt: cleanText(row['RT'] || '-'),
-                            rw: cleanText(row['RW'] || '-'),
-                            keterangan: ket,
-                            kecamatan: kec,
-                            desa: desa,
-                            tps: tps
+                        
+                        processedData.voterSummary = Object.keys(tempAktif).map(k => {
+                            const p = k.split('|');
+                            return { kecamatan: p[0], desa: p[1], tps: p[2], gender: p[3], generation: p[4], disability: p[5], marital_status: p[6], total_count: tempAktif[k] };
                         });
-                    });
-                    
-                    processedData.voterSummary = Object.keys(tempAktif).map(k => {
+
+                        processedData.mutationSummary = Object.keys(tempMutasi).map(k => {
                         const p = k.split('|');
-                        return { kecamatan: p[0], desa: p[1], tps: p[2], gender: p[3], generation: p[4], disability: p[5], marital_status: p[6], total_count: tempAktif[k] };
-                    });
+                            return { kecamatan: p[0], desa: p[1], tps: p[2], mutation_type: p[3], mutation_code: p[4], gender: p[5], total_count: tempMutasi[k] };
+                        });
 
-                    processedData.mutationSummary = Object.keys(tempMutasi).map(k => {
-                        const p = k.split('|');
-                        return { kecamatan: p[0], desa: p[1], tps: p[2], mutation_type: p[3], mutation_code: p[4], gender: p[5], total_count: tempMutasi[k] };
-                    });
+                        let totalA = processedData.voterSummary.reduce((sum, item) => sum + item.total_count, 0);
 
-                    let totalA = processedData.voterSummary.reduce((sum, item) => sum + item.total_count, 0);
+                        log("✅ Kalkulasi lokal selesai dengan sukses.");
+                        document.getElementById('previewList').innerHTML = `
+                            <li>• Baris Agregasi Aktif: <b>${formatID(processedData.voterSummary.length)}</b> baris (Akumulasi: <b>${formatID(totalA)}</b> pemilih)</li>
+                            <li>• Total Rincian Pemilih (Aktif + TMS): <b>${formatID(processedData.voterDetails.length)}</b> baris</li>
+                        `;
+                        document.getElementById('previewArea').classList.remove('hidden');
+                        hideGlobalLoader();
 
-                    log("✅ Kalkulasi lokal selesai dengan sukses.");
-                    document.getElementById('previewList').innerHTML = `
-                        <li>• Baris Agregasi Aktif: <b>${formatID(processedData.voterSummary.length)}</b> baris (Akumulasi: <b>${formatID(totalA)}</b> pemilih)</li>
-                        <li>• Total Rincian Pemilih (Aktif + TMS): <b>${formatID(processedData.voterDetails.length)}</b> baris</li>
-                    `;
-                    document.getElementById('previewArea').classList.remove('hidden');
-
-                } catch (error) {
-                    log(`❌ ERROR: ${error.message}`);
-                }
-            };
-            reader.readAsArrayBuffer(file);
+                    } catch (error) {
+                        hideGlobalLoader();
+                        log(`❌ ERROR: ${error.message}`);
+                    }
+                };
+                reader.readAsArrayBuffer(file);
+            }, 100);
         }
 
         async function publishData() {
@@ -855,6 +916,8 @@
             const fileInput = document.getElementById('fileExcel');
             if (!fileInput || !fileInput.files[0]) return;
             const fileName = fileInput.files[0].name;
+
+            showGlobalLoader("MENGIKAT & MENGUNGGAH KE DATABASE...");
 
             try {
                 log("Mendaftarkan periode ke database...");
@@ -889,10 +952,12 @@
                     if(dErr) throw dErr;
                 }
 
+                hideGlobalLoader();
                 showModal("Sukses", "Publikasi data rekapitulasi & rincian berhasil dilakukan!", "🎉", false, () => {
                     window.location.reload();
                 });
             } catch(e) {
+                hideGlobalLoader();
                 log(`❌ GAGAL PUBLISH: ${e.message}`);
                 showModal("Gagal Publish", e.message, "❌");
             }
@@ -926,6 +991,7 @@
         }
 
         async function executeDeletePeriod(periodId) {
+            showGlobalLoader("MENGHAPUS PERIODE DARI DATABASE...");
             try {
                 await dbClient.from('voter_summary').delete().eq('period_id', periodId);
                 await dbClient.from('mutation_summary').delete().eq('period_id', periodId);
@@ -933,10 +999,12 @@
                 const { error } = await dbClient.from('periods').delete().eq('id', periodId);
                 
                 if(error) throw error;
+                hideGlobalLoader();
                 showModal("Berhasil", "Data periode berhasil dihapus dari database.", "✨", false, () => {
                     window.location.reload();
                 });
             } catch(e) {
+                hideGlobalLoader();
                 showModal("Gagal Menghapus", e.message, "❌");
             }
         }
@@ -946,6 +1014,8 @@
             if(!dbClient) return;
             const selectEl = document.getElementById('filterPeriode');
             if(!selectEl) return;
+            
+            showGlobalLoader("MENYIAPKAN DASHBOAD...");
             const { data } = await dbClient.from('periods').select('*').order('tahun', {ascending: false}).order('triwulan', {ascending: false});
             if(data && data.length > 0) {
                 selectEl.innerHTML = '';
@@ -954,9 +1024,10 @@
                     periodsMap[p.id] = `${p.triwulan} ${p.tahun}`;
                     selectEl.innerHTML += `<option value="${p.id}" class="bg-[#11172a] text-white">${p.nama_periode}</option>`;
                 });
-                onPeriodChange();
+                await onPeriodChange();
             } else {
                 selectEl.innerHTML = '<option class="bg-[#11172a] text-white">Belum ada data tersedia</option>';
+                hideGlobalLoader();
             }
         }
 
@@ -965,8 +1036,7 @@
             if(!periodEl || !periodEl.value || !dbClient) return;
             const periodId = periodEl.value;
 
-            const loader = document.getElementById('dashboardLoader');
-            if(loader) loader.classList.remove('hidden');
+            showGlobalLoader("MEMUAT CACHE WILAYAH & PEMILIH...");
 
             try {
                 rawVoterCache = [];
@@ -1017,7 +1087,7 @@
                 console.error("Gagal memuat cache periode", e);
             }
 
-            if(loader) loader.classList.add('hidden');
+            hideGlobalLoader();
         }
 
         function populateFilterOptions() {
@@ -1380,7 +1450,6 @@
                         return;
                     }
 
-                    // Tampilkan angka counter live
                     counterEl.innerText = formatID(data.length);
 
                     let periodName = periodsMap[activePeriodId] || 'TW? 2026';
@@ -1473,10 +1542,12 @@
         }
 
         window.onload = async () => {
+            showGlobalLoader("MEMVERIFIKASI SESI...");
             if(dbClient) {
                 await checkAuth();
             }
-            loadPeriodsAndDashboard();
+            await loadPeriodsAndDashboard();
+            hideGlobalLoader();
         };
     </script>
 </body>
