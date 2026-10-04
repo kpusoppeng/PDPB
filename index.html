@@ -34,6 +34,10 @@
         body {
             background-color: #090d16;
             color: #e2e8f0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        select {
+            font-family: 'Plus Jakarta Sans', sans-serif !important;
         }
         .saas-card {
             background-color: #11172a;
@@ -98,9 +102,9 @@
         </div>
     </div>
 
-    <!-- MODAL FILTER KHUSUS HP (MOBILE) -->
+    <!-- MODAL FILTER KHUSUS HP (MOBILE) DENGAN STYLING FONT KUSTOM -->
     <div id="mobileFilterModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm hidden p-4">
-        <div class="saas-card max-w-md w-full p-6 space-y-4 border border-emerald-500/40 shadow-2xl max-h-[90vh] overflow-y-auto">
+        <div class="saas-card max-w-md w-full p-6 space-y-4 border border-emerald-500/40 shadow-2xl max-h-[90vh] overflow-y-auto font-sans">
             <div class="flex justify-between items-center border-b border-[#1e294b] pb-3">
                 <div class="flex items-center gap-2">
                     <span class="text-emerald-400 font-bold">🔍</span>
@@ -112,31 +116,31 @@
             <div class="space-y-3">
                 <div class="space-y-1">
                     <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Kecamatan</label>
-                    <select id="modalFilterKecamatan" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-3 py-2.5 rounded-xl text-xs font-bold focus:outline-none focus:border-emerald-500" onchange="onModalKecamatanChange()">
+                    <select id="modalFilterKecamatan" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-3 py-2.5 rounded-xl text-xs font-bold focus:outline-none focus:border-emerald-500 font-sans" onchange="onModalKecamatanChange()">
                         <option value="ALL">SEMUA KECAMATAN</option>
                     </select>
                 </div>
                 <div class="space-y-1">
                     <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Desa/Kelurahan</label>
-                    <select id="modalFilterDesa" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-3 py-2.5 rounded-xl text-xs font-bold focus:outline-none focus:border-emerald-500">
+                    <select id="modalFilterDesa" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-3 py-2.5 rounded-xl text-xs font-bold focus:outline-none focus:border-emerald-500 font-sans">
                         <option value="ALL">SEMUA DESA</option>
                     </select>
                 </div>
                 <div class="space-y-1">
                     <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Generasi</label>
-                    <select id="modalFilterGenerasi" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-3 py-2.5 rounded-xl text-xs font-bold focus:outline-none focus:border-emerald-500">
+                    <select id="modalFilterGenerasi" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-3 py-2.5 rounded-xl text-xs font-bold focus:outline-none focus:border-emerald-500 font-sans">
                         <option value="ALL">SEMUA GENERASI</option>
                     </select>
                 </div>
                 <div class="space-y-1">
                     <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Disabilitas</label>
-                    <select id="modalFilterDisabilitas" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-3 py-2.5 rounded-xl text-xs font-bold focus:outline-none focus:border-emerald-500">
+                    <select id="modalFilterDisabilitas" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-3 py-2.5 rounded-xl text-xs font-bold focus:outline-none focus:border-emerald-500 font-sans">
                         <option value="ALL">SEMUA DISABILITAS</option>
                     </select>
                 </div>
                 <div class="space-y-1">
                     <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Status Perkawinan</label>
-                    <select id="modalFilterPerkawinan" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-3 py-2.5 rounded-xl text-xs font-bold focus:outline-none focus:border-emerald-500">
+                    <select id="modalFilterPerkawinan" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-3 py-2.5 rounded-xl text-xs font-bold focus:outline-none focus:border-emerald-500 font-sans">
                         <option value="ALL">SEMUA STATUS</option>
                     </select>
                 </div>
@@ -229,7 +233,7 @@
                 </div>
                 <div class="flex items-center gap-3 bg-[#11172a] border border-[#1e294b] px-3 py-2 rounded-xl shadow-inner w-full sm:w-auto justify-between sm:justify-start">
                     <span class="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-widest">PERIODE:</span>
-                    <select id="filterPeriode" class="bg-transparent text-xs font-bold text-white focus:outline-none cursor-pointer" onchange="onPeriodChange()">
+                    <select id="filterPeriode" class="bg-transparent text-xs font-bold text-white focus:outline-none cursor-pointer font-sans" onchange="onPeriodChange()">
                         <option value="" class="bg-[#11172a]">Memuat periode...</option>
                     </select>
                 </div>
@@ -257,31 +261,31 @@
                 <div class="grid grid-cols-2 md:grid-cols-5 gap-2.5 sm:gap-3">
                     <div class="space-y-1">
                         <label class="block text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-slate-400">Kecamatan</label>
-                        <select id="filterKecamatan" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-2.5 py-2 rounded-xl text-xs font-bold focus:outline-none focus:border-emerald-500" onchange="onKecamatanChange()">
+                        <select id="filterKecamatan" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-2.5 py-2 rounded-xl text-xs font-bold focus:outline-none focus:border-emerald-500 font-sans" onchange="onKecamatanChange()">
                             <option value="ALL">SEMUA KECAMATAN</option>
                         </select>
                     </div>
                     <div class="space-y-1">
                         <label class="block text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-slate-400">Desa/Kelurahan</label>
-                        <select id="filterDesa" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-2.5 py-2 rounded-xl text-xs font-bold focus:outline-none focus:border-emerald-500" onchange="applyFilters()">
+                        <select id="filterDesa" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-2.5 py-2 rounded-xl text-xs font-bold focus:outline-none focus:border-emerald-500 font-sans" onchange="applyFilters()">
                             <option value="ALL">SEMUA DESA</option>
                         </select>
                     </div>
                     <div class="space-y-1">
                         <label class="block text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-slate-400">Generasi</label>
-                        <select id="filterGenerasi" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-2.5 py-2 rounded-xl text-xs font-bold focus:outline-none focus:border-emerald-500" onchange="applyFilters()">
+                        <select id="filterGenerasi" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-2.5 py-2 rounded-xl text-xs font-bold focus:outline-none focus:border-emerald-500 font-sans" onchange="applyFilters()">
                             <option value="ALL">SEMUA GENERASI</option>
                         </select>
                     </div>
                     <div class="space-y-1">
                         <label class="block text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-slate-400">Disabilitas</label>
-                        <select id="filterDisabilitas" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-2.5 py-2 rounded-xl text-xs font-bold focus:outline-none focus:border-emerald-500" onchange="applyFilters()">
+                        <select id="filterDisabilitas" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-2.5 py-2 rounded-xl text-xs font-bold focus:outline-none focus:border-emerald-500 font-sans" onchange="applyFilters()">
                             <option value="ALL">SEMUA DISABILITAS</option>
                         </select>
                     </div>
                     <div class="space-y-1 col-span-2 md:col-span-1">
                         <label class="block text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-slate-400">Status Perkawinan</label>
-                        <select id="filterPerkawinan" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-2.5 py-2 rounded-xl text-xs font-bold focus:outline-none focus:border-emerald-500" onchange="applyFilters()">
+                        <select id="filterPerkawinan" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-2.5 py-2 rounded-xl text-xs font-bold focus:outline-none focus:border-emerald-500 font-sans" onchange="applyFilters()">
                             <option value="ALL">SEMUA STATUS</option>
                         </select>
                     </div>
@@ -459,7 +463,7 @@
                 <!-- PANEL KUSTOMISASI TEKS HEADER & DASHBOARD -->
                 <div class="saas-card p-6 sm:p-8 space-y-4 border-emerald-500/30 bg-gradient-to-r from-[#11172a] to-[#0f172a]">
                     <div>
-                        <h2 class="text-base font-bold text-emerald-400 flex items-center gap-2"><span>✏️</span> Kustomisasi Teks Antarmuka</h2>
+                        <h2 class="text-base font-bold text-emerald-400 flex items-center gap-2"><span>✏️️</span> Kustomisasi Teks Antarmuka</h2>
                         <p class="text-xs text-slate-400 mt-0.5">Ubah judul teks utama dashboard sesuai kebutuhan.</p>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -509,13 +513,13 @@
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">Tahun Anggaran</label>
-                            <select id="impTahun" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-3 py-2.5 rounded-xl text-xs font-bold">
+                            <select id="impTahun" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-3 py-2.5 rounded-xl text-xs font-bold font-sans">
                                 <!-- Otomatis terisi -->
                             </select>
                         </div>
                         <div>
                             <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">Periode Triwulan</label>
-                            <select id="impTw" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-3 py-2.5 rounded-xl text-xs font-bold">
+                            <select id="impTw" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-3 py-2.5 rounded-xl text-xs font-bold font-sans">
                                 <option>TW1</option><option>TW2</option><option>TW3</option><option>TW4</option>
                             </select>
                         </div>
@@ -542,7 +546,7 @@
                         <p class="text-xs text-slate-400 mt-0.5">Pilih periode yang ingin dihapus permanen dari database server.</p>
                     </div>
                     <div class="flex gap-3">
-                        <select id="delPeriodSelect" class="flex-1 bg-[#090d16] border border-[#1e294b] text-white px-3 py-2.5 rounded-xl text-xs font-bold">
+                        <select id="delPeriodSelect" class="flex-1 bg-[#090d16] border border-[#1e294b] text-white px-3 py-2.5 rounded-xl text-xs font-bold font-sans">
                             <option value="">Memuat daftar periode...</option>
                         </select>
                         <button onclick="confirmDeletePeriod()" class="bg-rose-600 hover:bg-rose-500 text-white font-bold px-5 py-2.5 rounded-xl transition text-xs tracking-wider shadow-lg shadow-rose-600/30">HAPUS PERIODE</button>
@@ -667,7 +671,13 @@
 
         // Fungsi Kontrol Modal Filter Mobile
         function openMobileFilterModal() {
-            // Salin nilai filter desktop/saat ini ke modal mobile
+            // Sinkronkan seluruh elemen HTML options dari filter utama desktop ke modal HP agar lengkap & tidak terpotong
+            document.getElementById('modalFilterKecamatan').innerHTML = document.getElementById('filterKecamatan').innerHTML;
+            document.getElementById('modalFilterGenerasi').innerHTML = document.getElementById('filterGenerasi').innerHTML;
+            document.getElementById('modalFilterDisabilitas').innerHTML = document.getElementById('filterDisabilitas').innerHTML;
+            document.getElementById('modalFilterPerkawinan').innerHTML = document.getElementById('filterPerkawinan').innerHTML;
+
+            // Salin nilai filter saat ini ke modal mobile
             document.getElementById('modalFilterKecamatan').value = document.getElementById('filterKecamatan').value;
             syncModalDesaOptions();
             document.getElementById('modalFilterDesa').value = document.getElementById('filterDesa').value;
