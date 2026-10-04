@@ -463,7 +463,7 @@
                 <!-- PANEL KUSTOMISASI TEKS HEADER & DASHBOARD -->
                 <div class="saas-card p-6 sm:p-8 space-y-4 border-emerald-500/30 bg-gradient-to-r from-[#11172a] to-[#0f172a]">
                     <div>
-                        <h2 class="text-base font-bold text-emerald-400 flex items-center gap-2"><span>✏️️</span> Kustomisasi Teks Antarmuka</h2>
+                        <h2 class="text-base font-bold text-emerald-400 flex items-center gap-2"><span>✏</span> Kustomisasi Teks Antarmuka</h2>
                         <p class="text-xs text-slate-400 mt-0.5">Ubah judul teks utama dashboard sesuai kebutuhan.</p>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -587,24 +587,27 @@
         };
 
         function loadTextCustomization() {
-    const custom = JSON.parse(localStorage.getItem('pdpb_custom_texts') || JSON.stringify(defaultTexts));
-    
-    // Header Utama Desktop & Mobile
-    document.getElementById('customHeaderTitle').innerText = custom.headerTitle;
-    document.getElementById('customHeaderSub').innerText = custom.headerSub;
-    
-    // Judul & Subjudul Dashboard (SS1)
-    document.getElementById('customDashTitle').innerText = custom.dashTitle;
-    document.getElementById('customDashSub').innerText = custom.dashSub;
+            const custom = JSON.parse(localStorage.getItem('pdpb_custom_texts') || JSON.stringify(defaultTexts));
+            
+            // Perbarui elemen Header Utama (berlaku universal untuk semua perangkat)
+            const elHeaderTitle = document.getElementById('customHeaderTitle');
+            const elHeaderSub = document.getElementById('customHeaderSub');
+            const elDashTitle = document.getElementById('customDashTitle');
+            const elDashSub = document.getElementById('customDashSub');
 
-    // Sinkronisasi dengan Input Admin Panel
-    if(document.getElementById('cfgHeaderTitle')) {
-        document.getElementById('cfgHeaderTitle').value = custom.headerTitle;
-        document.getElementById('cfgHeaderSub').value = custom.headerSub;
-        document.getElementById('cfgDashTitle').value = custom.dashTitle;
-        document.getElementById('cfgDashSub').value = custom.dashSub;
-    }
-}
+            if (elHeaderTitle) elHeaderTitle.innerText = custom.headerTitle;
+            if (elHeaderSub) elHeaderSub.innerText = custom.headerSub;
+            if (elDashTitle) elDashTitle.innerText = custom.dashTitle;
+            if (elDashSub) elDashSub.innerText = custom.dashSub;
+
+            // Sinkronisasi dengan Input Admin Panel
+            if(document.getElementById('cfgHeaderTitle')) {
+                document.getElementById('cfgHeaderTitle').value = custom.headerTitle;
+                document.getElementById('cfgHeaderSub').value = custom.headerSub;
+                document.getElementById('cfgDashTitle').value = custom.dashTitle;
+                document.getElementById('cfgDashSub').value = custom.dashSub;
+            }
+        }
 
         function saveTextCustomization() {
             const custom = {
@@ -675,13 +678,11 @@
 
         // Fungsi Kontrol Modal Filter Mobile
         function openMobileFilterModal() {
-            // Sinkronkan seluruh elemen HTML options dari filter utama desktop ke modal HP agar lengkap & tidak terpotong
             document.getElementById('modalFilterKecamatan').innerHTML = document.getElementById('filterKecamatan').innerHTML;
             document.getElementById('modalFilterGenerasi').innerHTML = document.getElementById('filterGenerasi').innerHTML;
             document.getElementById('modalFilterDisabilitas').innerHTML = document.getElementById('filterDisabilitas').innerHTML;
             document.getElementById('modalFilterPerkawinan').innerHTML = document.getElementById('filterPerkawinan').innerHTML;
 
-            // Salin nilai filter saat ini ke modal mobile
             document.getElementById('modalFilterKecamatan').value = document.getElementById('filterKecamatan').value;
             syncModalDesaOptions();
             document.getElementById('modalFilterDesa').value = document.getElementById('filterDesa').value;
@@ -1747,12 +1748,10 @@
         window.onload = async () => {
             showGlobalLoader("MEMVERIFIKASI SESI...");
             
-            // Membersihkan token panjang di URL agar kembali bersih ke base URL
             if (window.location.hash && window.location.hash.includes('access_token')) {
                 window.history.replaceState({}, document.title, window.location.pathname);
             }
 
-            // Reset input search live pemilih saat browser direfresh
             const tabSearchInput = document.getElementById('tabSearchInput');
             if(tabSearchInput) tabSearchInput.value = '';
 
