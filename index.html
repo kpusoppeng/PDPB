@@ -98,6 +98,57 @@
         </div>
     </div>
 
+    <!-- MODAL FILTER KHUSUS HP (MOBILE) -->
+    <div id="mobileFilterModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm hidden p-4">
+        <div class="saas-card max-w-md w-full p-6 space-y-4 border border-emerald-500/40 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b border-[#1e294b] pb-3">
+                <div class="flex items-center gap-2">
+                    <span class="text-emerald-400 font-bold">🔍</span>
+                    <h3 class="text-white font-bold text-sm tracking-wide">Panel Filter Data</h3>
+                </div>
+                <button onclick="closeMobileFilterModal(false)" class="text-slate-400 hover:text-white bg-[#090d16] px-3 py-1.5 rounded-xl border border-[#1e294b] text-xs font-bold">Tutup ✕</button>
+            </div>
+            
+            <div class="space-y-3">
+                <div class="space-y-1">
+                    <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Kecamatan</label>
+                    <select id="modalFilterKecamatan" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-3 py-2.5 rounded-xl text-xs font-bold focus:outline-none focus:border-emerald-500" onchange="onModalKecamatanChange()">
+                        <option value="ALL">SEMUA KECAMATAN</option>
+                    </select>
+                </div>
+                <div class="space-y-1">
+                    <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Desa/Kelurahan</label>
+                    <select id="modalFilterDesa" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-3 py-2.5 rounded-xl text-xs font-bold focus:outline-none focus:border-emerald-500">
+                        <option value="ALL">SEMUA DESA</option>
+                    </select>
+                </div>
+                <div class="space-y-1">
+                    <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Generasi</label>
+                    <select id="modalFilterGenerasi" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-3 py-2.5 rounded-xl text-xs font-bold focus:outline-none focus:border-emerald-500">
+                        <option value="ALL">SEMUA GENERASI</option>
+                    </select>
+                </div>
+                <div class="space-y-1">
+                    <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Disabilitas</label>
+                    <select id="modalFilterDisabilitas" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-3 py-2.5 rounded-xl text-xs font-bold focus:outline-none focus:border-emerald-500">
+                        <option value="ALL">SEMUA DISABILITAS</option>
+                    </select>
+                </div>
+                <div class="space-y-1">
+                    <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Status Perkawinan</label>
+                    <select id="modalFilterPerkawinan" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-3 py-2.5 rounded-xl text-xs font-bold focus:outline-none focus:border-emerald-500">
+                        <option value="ALL">SEMUA STATUS</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="flex gap-3 pt-3 border-t border-[#1e294b]">
+                <button onclick="closeMobileFilterModal(true)" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-xl transition text-xs tracking-wider shadow-lg shadow-emerald-600/30">OK</button>
+                <button onclick="closeMobileFilterModal(false)" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-2.5 rounded-xl transition text-xs tracking-wider border border-slate-700">Batal</button>
+            </div>
+        </div>
+    </div>
+
     <!-- MODAL POPUP RINCIAN KELUARGA / PEMILIH -->
     <div id="voterDetailModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm hidden p-4">
         <div class="saas-card max-w-3xl w-full p-6 space-y-5 border border-emerald-500/40 shadow-2xl max-h-[90vh] overflow-y-auto">
@@ -122,8 +173,8 @@
                 <div class="flex items-center gap-3">
                     <img src="https://drive.google.com/thumbnail?id=1iySgZkuAn350LJRtEi0G-E9fSbFCX3tT&sz=w200" alt="Logo KPU Soppeng" class="w-10 h-10 object-contain drop-shadow-[0_0_10px_rgba(16,185,129,0.4)]">
                     <div>
-                        <div class="text-white font-bold text-sm tracking-wide">KPU Kabupaten Soppeng</div>
-                        <div class="text-xs text-emerald-400 font-semibold tracking-wider">PDPB • EXECUTIVE DASHBOARD</div>
+                        <div id="customHeaderTitle" class="text-white font-bold text-sm tracking-wide">KPU Kabupaten Soppeng</div>
+                        <div id="customHeaderSub" class="text-xs text-emerald-400 font-semibold tracking-wider">PDPB • EXECUTIVE DASHBOARD</div>
                     </div>
                 </div>
 
@@ -134,7 +185,6 @@
                     <button onclick="navigate('rekapitulasi')" id="btnNavRekap" class="saas-nav-btn px-4 py-2 rounded-xl text-slate-400 hover:text-white text-xs font-semibold tracking-wide flex items-center gap-2 transition">
                         📑 Rekapitulasi
                     </button>
-                    <!-- Tab Cari Pemilih (Tersembunyi untuk Publik) -->
                     <button onclick="navigate('pencarian')" id="btnNavPencarian" class="hidden saas-nav-btn px-4 py-2 rounded-xl text-slate-400 hover:text-white text-xs font-semibold tracking-wide flex items-center gap-2 transition">
                         🔍 Cari Pemilih
                     </button>
@@ -148,19 +198,21 @@
             </div>
         </div>
         <!-- Mobile Bottom Nav Bar -->
-        <div class="flex md:hidden bg-[#11172a] border-t border-[#1e294b] px-4 py-2.5 justify-around items-center">
+        <div class="flex md:hidden bg-[#11172a] border-t border-[#1e294b] px-2 py-2.5 justify-around items-center">
             <button onclick="navigate('dashboard')" id="btnMobDashboard" class="text-emerald-400 text-xs font-bold flex flex-col items-center gap-1">
                 <span>📊</span> Dashboard
             </button>
             <button onclick="navigate('rekapitulasi')" id="btnMobRekap" class="text-slate-400 text-xs font-semibold flex flex-col items-center gap-1">
                 <span>📑</span> Rekap
             </button>
-            <!-- Tab Cari Pemilih Mobile (Tersembunyi untuk Publik) -->
             <button onclick="navigate('pencarian')" id="btnMobPencarian" class="hidden text-slate-400 text-xs font-semibold flex flex-col items-center gap-1">
                 <span>🔍</span> Cari
             </button>
             <button onclick="navigate('admin')" id="btnMobAdmin" class="text-slate-400 text-xs font-semibold flex flex-col items-center gap-1">
                 <span>🔒</span> Admin
+            </button>
+            <button id="btnMobLogout" onclick="logout()" class="hidden text-rose-400 text-xs font-semibold flex flex-col items-center gap-1">
+                <span>🚪</span> Keluar
             </button>
         </div>
     </header>
@@ -172,8 +224,8 @@
         <section id="page-dashboard" class="space-y-6 block">
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                    <h2 class="text-lg sm:text-xl font-extrabold text-white tracking-tight">Ringkasan Eksekutif</h2>
-                    <p class="text-[11px] sm:text-xs text-slate-400 mt-0.5 tracking-wide">PEMUTAKHIRAN DATA PEMILIH BERKELANJUTAN</p>
+                    <h2 id="customDashTitle" class="text-lg sm:text-xl font-extrabold text-white tracking-tight">Ringkasan Eksekutif</h2>
+                    <p id="customDashSub" class="text-[11px] sm:text-xs text-slate-400 mt-0.5 tracking-wide">PEMUTAKHIRAN DATA PEMILIH BERKELANJUTAN</p>
                 </div>
                 <div class="flex items-center gap-3 bg-[#11172a] border border-[#1e294b] px-3 py-2 rounded-xl shadow-inner w-full sm:w-auto justify-between sm:justify-start">
                     <span class="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-widest">PERIODE:</span>
@@ -183,8 +235,16 @@
                 </div>
             </div>
 
-            <!-- PANEL FILTER KUSTOMISASI DATA -->
-            <div class="saas-card p-4 sm:p-5 space-y-3 border border-emerald-500/20 bg-gradient-to-r from-[#11172a] to-[#0f172a]">
+            <!-- TOMBOL BADGE FILTER KHUSUS HP (Tampil di HP, Tersembunyi di Desktop) -->
+            <div class="block md:hidden">
+                <button onclick="openMobileFilterModal()" class="w-full bg-emerald-600/20 border border-emerald-500/40 text-emerald-400 hover:bg-emerald-600/30 px-4 py-3 rounded-xl text-xs font-bold flex items-center justify-between transition shadow-lg">
+                    <span class="flex items-center gap-2"><span>🔍</span> Buka Panel Filter Data</span>
+                    <span class="bg-emerald-500 text-black px-2 py-0.5 rounded-full text-[10px] font-extrabold" id="filterActiveBadge">Filter Aktif</span>
+                </button>
+            </div>
+
+            <!-- PANEL FILTER KUSTOMISASI DATA (Tampil di Desktop, Tersembunyi di HP karena dipindah ke Modal) -->
+            <div class="hidden md:block saas-card p-4 sm:p-5 space-y-3 border border-emerald-500/20 bg-gradient-to-r from-[#11172a] to-[#0f172a]">
                 <div class="flex justify-between items-center border-b border-[#1e294b] pb-2 sm:pb-3">
                     <div class="text-[11px] sm:text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-2">
                         <span>🔍</span> PANEL FILTER DATA
@@ -333,14 +393,12 @@
 
         <!-- ================= PENCARIAN PEMILIH PAGE (TAB EKSKLUSIF) ================= -->
         <section id="page-pencarian" class="hidden space-y-4">
-            <!-- Kotak Pencarian Disatukan dan Dibuat Sticky Menempel Mepet Navbar -->
             <div class="sticky top-20 z-30 saas-card p-4 sm:p-5 space-y-3 border border-emerald-500/30 bg-[#11172a]/95 backdrop-blur-md shadow-2xl">
                 <div class="flex flex-col md:flex-row justify-between items-center gap-4">
                     <div class="w-full md:w-auto">
                         <h2 class="text-base sm:text-lg font-extrabold text-white tracking-tight flex items-center gap-2"><span>🔍</span> Pencarian Data Pemilih & Keluarga</h2>
                         <p class="text-[11px] text-slate-400">Ketik minimal 3 karakter (NKK, NIK, atau Nama).</p>
                     </div>
-                    <!-- Badge Counter Khusus Angka (Tanpa Teks, Besar & Menonjol) -->
                     <div class="flex items-center justify-center bg-[#090d16] px-5 py-1.5 rounded-2xl border border-emerald-500/40 shadow-[0_0_15px_rgba(16,185,129,0.15)]">
                         <span id="liveResultCounter" class="text-2xl sm:text-3xl font-extrabold text-goldAccent font-mono tracking-wider">0</span>
                     </div>
@@ -351,7 +409,6 @@
             </div>
 
             <div class="saas-card overflow-hidden">
-                <!-- Tabel responsif tanpa scroll bar horizontal (kolom kecamatan dihapus & ukuran teks disesuaikan) -->
                 <div class="overflow-x-hidden w-full">
                     <table class="w-full text-left border-collapse text-[11px] sm:text-xs">
                         <thead>
@@ -390,7 +447,6 @@
                     <p class="text-xs text-slate-400">Silakan masuk menggunakan akun Google resmi Anda.</p>
                 </div>
                 <div class="space-y-4 pt-2 max-w-sm mx-auto">
-                    <!-- Tombol Login Google -->
                     <button onclick="handleGoogleLogin()" class="w-full bg-white hover:bg-slate-100 text-slate-900 font-bold py-3 px-4 rounded-xl transition text-xs tracking-wide shadow-lg flex items-center justify-center gap-3">
                         <svg class="w-4 h-4" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.13 0-5.78-2.11-6.73-4.96H1.18v3.15C3.15 21.32 7.24 24 12 24z"/><path fill="#FBBC05" d="M5.27 14.24c-.25-.72-.38-1.49-.38-2.24s.13-1.52.38-2.24V6.6H1.18C.43 8.12 0 9.85 0 12s.43 3.88 1.18 5.4l4.09-3.16z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.24 0 3.15 2.68 1.18 6.6l4.09 3.15c.95-2.85 3.6-4.96 6.73-4.96z"/></svg>
                         Masuk dengan Google
@@ -400,7 +456,36 @@
             </div>
 
             <div id="uploadArea" class="hidden space-y-6">
-                <!-- MANAJEMEN OPERATOR KHUSUS OWNER (rendatinsoppeng@gmail.com) -->
+                <!-- PANEL KUSTOMISASI TEKS HEADER & DASHBOARD -->
+                <div class="saas-card p-6 sm:p-8 space-y-4 border-emerald-500/30 bg-gradient-to-r from-[#11172a] to-[#0f172a]">
+                    <div>
+                        <h2 class="text-base font-bold text-emerald-400 flex items-center gap-2"><span>✏️</span> Kustomisasi Teks Antarmuka</h2>
+                        <p class="text-xs text-slate-400 mt-0.5">Ubah judul teks utama dashboard sesuai kebutuhan.</p>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="space-y-1">
+                            <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Judul Header Utama</label>
+                            <input type="text" id="cfgHeaderTitle" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-3 py-2.5 rounded-xl text-xs font-bold focus:outline-none focus:border-emerald-500">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Subjudul Header Utama</label>
+                            <input type="text" id="cfgHeaderSub" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-3 py-2.5 rounded-xl text-xs font-bold focus:outline-none focus:border-emerald-500">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Judul Halaman Dashboard (SS1)</label>
+                            <input type="text" id="cfgDashTitle" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-3 py-2.5 rounded-xl text-xs font-bold focus:outline-none focus:border-emerald-500">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Subjudul Ringkasan Eksekutif (SS1)</label>
+                            <input type="text" id="cfgDashSub" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-3 py-2.5 rounded-xl text-xs font-bold focus:outline-none focus:border-emerald-500">
+                        </div>
+                    </div>
+                    <div class="pt-2">
+                        <button onclick="saveTextCustomization()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-5 py-2.5 rounded-xl transition text-xs shadow-lg">Simpan Perubahan Teks</button>
+                    </div>
+                </div>
+
+                <!-- MANAJEMEN OPERATOR KHUSUS OWNER -->
                 <div id="ownerOperatorCard" class="hidden saas-card p-6 sm:p-8 space-y-4 border-amber-500/30 bg-gradient-to-r from-[#11172a] to-[#161d2f]">
                     <div>
                         <h2 class="text-base font-bold text-amber-400 flex items-center gap-2"><span>👥</span> Manajemen Akun Operator</h2>
@@ -489,6 +574,42 @@
         let rekapSelectedKec = null;
         let rekapSelectedDesa = null;
 
+        // Fungsi Kustomisasi Teks UI
+        const defaultTexts = {
+            headerTitle: "KPU Kabupaten Soppeng",
+            headerSub: "PDPB • EXECUTIVE DASHBOARD",
+            dashTitle: "Ringkasan Eksekutif",
+            dashSub: "PEMUTAKHIRAN DATA PEMILIH BERKELANJUTAN"
+        };
+
+        function loadTextCustomization() {
+            const custom = JSON.parse(localStorage.getItem('pdpb_custom_texts') || JSON.stringify(defaultTexts));
+            
+            document.getElementById('customHeaderTitle').innerText = custom.headerTitle;
+            document.getElementById('customHeaderSub').innerText = custom.headerSub;
+            document.getElementById('customDashTitle').innerText = custom.dashTitle;
+            document.getElementById('customDashSub').innerText = custom.dashSub;
+
+            if(document.getElementById('cfgHeaderTitle')) {
+                document.getElementById('cfgHeaderTitle').value = custom.headerTitle;
+                document.getElementById('cfgHeaderSub').value = custom.headerSub;
+                document.getElementById('cfgDashTitle').value = custom.dashTitle;
+                document.getElementById('cfgDashSub').value = custom.dashSub;
+            }
+        }
+
+        function saveTextCustomization() {
+            const custom = {
+                headerTitle: document.getElementById('cfgHeaderTitle').value.trim() || defaultTexts.headerTitle,
+                headerSub: document.getElementById('cfgHeaderSub').value.trim() || defaultTexts.headerSub,
+                dashTitle: document.getElementById('cfgDashTitle').value.trim() || defaultTexts.dashTitle,
+                dashSub: document.getElementById('cfgDashSub').value.trim() || defaultTexts.dashSub
+            };
+            localStorage.setItem('pdpb_custom_texts', JSON.stringify(custom));
+            loadTextCustomization();
+            showModal("Sukses", "Kustomisasi teks berhasil disimpan.", "✨");
+        }
+
         // Fungsi Kontrol Loading Spinner
         function showGlobalLoader(text = "MEMUAT DATA...") {
             const loader = document.getElementById('globalLoader');
@@ -542,6 +663,70 @@
 
         function closeModal() {
             document.getElementById('customModal').classList.add('hidden');
+        }
+
+        // Fungsi Kontrol Modal Filter Mobile
+        function openMobileFilterModal() {
+            // Salin nilai filter desktop/saat ini ke modal mobile
+            document.getElementById('modalFilterKecamatan').value = document.getElementById('filterKecamatan').value;
+            syncModalDesaOptions();
+            document.getElementById('modalFilterDesa').value = document.getElementById('filterDesa').value;
+            document.getElementById('modalFilterGenerasi').value = document.getElementById('filterGenerasi').value;
+            document.getElementById('modalFilterDisabilitas').value = document.getElementById('filterDisabilitas').value;
+            document.getElementById('modalFilterPerkawinan').value = document.getElementById('filterPerkawinan').value;
+
+            document.getElementById('mobileFilterModal').classList.remove('hidden');
+        }
+
+        function closeMobileFilterModal(apply = false) {
+            if (apply) {
+                document.getElementById('filterKecamatan').value = document.getElementById('modalFilterKecamatan').value;
+                updateDesaOptions();
+                document.getElementById('filterDesa').value = document.getElementById('modalFilterDesa').value;
+                document.getElementById('filterGenerasi').value = document.getElementById('modalFilterGenerasi').value;
+                document.getElementById('filterDisabilitas').value = document.getElementById('modalFilterDisabilitas').value;
+                document.getElementById('filterPerkawinan').value = document.getElementById('modalFilterPerkawinan').value;
+                applyFilters();
+                updateFilterBadgeStatus();
+            }
+            document.getElementById('mobileFilterModal').classList.add('hidden');
+        }
+
+        function onModalKecamatanChange() {
+            syncModalDesaOptions();
+        }
+
+        function syncModalDesaOptions() {
+            const selectedKec = document.getElementById('modalFilterKecamatan').value;
+            const desaSet = new Set();
+            rawVoterCache.forEach(r => {
+                if(selectedKec === 'ALL' || r.kecamatan === selectedKec) {
+                    if(r.desa) desaSet.add(r.desa);
+                }
+            });
+            const desaEl = document.getElementById('modalFilterDesa');
+            desaEl.innerHTML = '<option value="ALL">SEMUA DESA</option>';
+            Array.from(desaSet).sort().forEach(ds => {
+                desaEl.innerHTML += `<option value="${ds}">${ds}</option>`;
+            });
+        }
+
+        function updateFilterBadgeStatus() {
+            const badge = document.getElementById('filterActiveBadge');
+            if(!badge) return;
+            const fKec = document.getElementById('filterKecamatan').value;
+            const fDesa = document.getElementById('filterDesa').value;
+            const fGen = document.getElementById('filterGenerasi').value;
+            const fDis = document.getElementById('filterDisabilitas').value;
+            const fKawin = document.getElementById('filterPerkawinan').value;
+
+            if (fKec !== 'ALL' || fDesa !== 'ALL' || fGen !== 'ALL' || fDis !== 'ALL' || fKawin !== 'ALL') {
+                badge.innerText = "Aktif (Difilter)";
+                badge.className = "bg-amber-400 text-black px-2 py-0.5 rounded-full text-[10px] font-extrabold";
+            } else {
+                badge.innerText = "Semua Data";
+                badge.className = "bg-emerald-500 text-black px-2 py-0.5 rounded-full text-[10px] font-extrabold";
+            }
         }
 
         function navigate(pageId) {
@@ -616,6 +801,7 @@
                 const btnNavPencarian = document.getElementById('btnNavPencarian');
                 const btnMobPencarian = document.getElementById('btnMobPencarian');
                 const btnLogout = document.getElementById('btnLogout');
+                const btnMobLogout = document.getElementById('btnMobLogout');
                 const ownerCard = document.getElementById('ownerOperatorCard');
 
                 if (session) {
@@ -634,6 +820,7 @@
                     if (loginArea) loginArea.classList.add('hidden');
                     if (uploadArea) uploadArea.classList.remove('hidden');
                     if (btnLogout) btnLogout.classList.remove('hidden');
+                    if (btnMobLogout) btnMobLogout.classList.remove('hidden');
 
                     if (btnNavPencarian) btnNavPencarian.classList.remove('hidden');
                     if (btnMobPencarian) btnMobPencarian.classList.remove('hidden');
@@ -671,6 +858,7 @@
                     if (btnNavPencarian) btnNavPencarian.classList.add('hidden');
                     if (btnMobPencarian) btnMobPencarian.classList.add('hidden');
                     if (btnLogout) btnLogout.classList.add('hidden');
+                    if (btnMobLogout) btnMobLogout.classList.add('hidden');
                 }
             } catch (err) {
                 console.error("Gagal memeriksa sesi auth:", err);
@@ -1081,7 +1269,7 @@
                 }
 
                 populateFilterOptions();
-                applyFilters();
+                resetFilters(); // Reset filter otomatis saat muat / refresh
 
             } catch(e) {
                 console.error("Gagal memuat cache periode", e);
@@ -1159,6 +1347,7 @@
             document.getElementById('filterDisabilitas').value = 'ALL';
             document.getElementById('filterPerkawinan').value = 'ALL';
             applyFilters();
+            updateFilterBadgeStatus();
         }
 
         function applyFilters() {
@@ -1412,7 +1601,7 @@
             tbody.innerHTML = html;
         }
 
-        // ================= TAB PENCARIAN & TABEL LUAS (MIN 3 KARAKTER) =================
+        // ================= TAB PENCARIAN & TABEL LUAS =================
         let searchTimer = null;
         async function handleTabVoterSearch() {
             const query = document.getElementById('tabSearchInput').value.trim();
@@ -1548,6 +1737,12 @@
             if (window.location.hash && window.location.hash.includes('access_token')) {
                 window.history.replaceState({}, document.title, window.location.pathname);
             }
+
+            // Reset input search live pemilih saat browser direfresh
+            const tabSearchInput = document.getElementById('tabSearchInput');
+            if(tabSearchInput) tabSearchInput.value = '';
+
+            loadTextCustomization();
 
             if(dbClient) {
                 const { data: { session } } = await dbClient.auth.getSession();
