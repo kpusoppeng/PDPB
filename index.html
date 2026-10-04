@@ -3,208 +3,469 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard PDPB - KPU Kab. Soppeng</title>
-    <!-- Tailwind CSS (Styling) -->
+    <title>Executive Dashboard PDPB — KPU Kabupaten Soppeng</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- SheetJS (Excel Processor) -->
+    <!-- SheetJS -->
     <script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js"></script>
-    <!-- Supabase JS -->
+    <!-- Supabase JS v2 -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <!-- Chart.js (Visualisasi) -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <script>
-        // Konfigurasi Warna KPU
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: { kpu: '#8B0000', kpuhightlight: '#A52A2A', dark: '#1F2937', soft: '#F3F4F6' }
+                    fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
+                    colors: { 
+                        appDark: '#090d16',
+                        appCard: '#11172a',
+                        appBorder: '#1e294b',
+                        goldAccent: '#fbbf24',
+                        neonGreen: '#10b981',
+                        neonGlow: '#34d399'
+                    }
                 }
             }
         }
     </script>
+    <style>
+        body {
+            background-color: #090d16;
+            color: #e2e8f0;
+        }
+        .saas-card {
+            background-color: #11172a;
+            border: 1px solid #1e294b;
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+        }
+        .saas-nav-btn {
+            background-color: #151d36;
+            border: 1px solid #233157;
+        }
+        .saas-nav-btn.active {
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+            border-color: #34d399;
+            color: #ffffff;
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.5), 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+        .neon-badge {
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+        }
+    </style>
 </head>
-<body class="bg-soft text-gray-800 font-sans antialiased">
+<body class="font-sans antialiased min-h-screen flex flex-col selection:bg-emerald-500 selection:text-white">
 
-    <!-- HEADER -->
-    <header class="bg-white shadow-md sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
+    <!-- CUSTOM LUXURY MODAL / NOTIFICATION -->
+    <div id="customModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm hidden">
+        <div class="saas-card max-w-md w-full p-6 space-y-5 border border-emerald-500/30 shadow-2xl">
+            <div class="flex items-center gap-3">
+                <div id="modalIcon" class="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 font-bold text-lg">✨</div>
+                <div>
+                    <h3 id="modalTitle" class="text-white font-bold text-sm tracking-wide">Notifikasi Sistem</h3>
+                    <p class="text-[11px] text-slate-400">KPU Kabupaten Soppeng</p>
+                </div>
+            </div>
+            <div id="modalMessage" class="text-xs text-slate-300 leading-relaxed font-medium bg-[#090d16] p-4 rounded-xl border border-[#1e294b]">
+                Pesan isi modal...
+            </div>
+            <div id="modalActionContainer" class="flex gap-3 pt-2">
+                <button id="modalBtnPrimary" onclick="closeModal()" class="flex-1 bg-gradient-to-r from-emerald-600 to-teal-600 hover:opacity-90 text-white font-bold py-2.5 rounded-xl transition text-xs tracking-wider shadow-lg shadow-emerald-600/30">MENGERTI</button>
+                <button id="modalBtnSecondary" onclick="closeModal()" class="hidden flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-2.5 rounded-xl transition text-xs tracking-wider border border-slate-700">BATAL</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOP HEADER / NAVBAR -->
+    <header class="bg-[#090d16] border-b border-[#1e294b] sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex justify-between items-center h-20">
                 <div class="flex items-center gap-3">
-                    <!-- Placeholder Logo KPU -->
-                    <div class="w-10 h-10 bg-kpu text-white rounded-full flex items-center justify-center font-bold">KPU</div>
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-teal-700 flex items-center justify-center font-bold text-white text-sm neon-badge">
+                        KPU
+                    </div>
                     <div>
-                        <h1 class="text-xl font-bold text-kpu">PDPB KABUPATEN SOPPENG</h1>
-                        <p class="text-xs text-gray-500">Pemutakhiran Data Pemilih Berkelanjutan</p>
+                        <div class="text-white font-bold text-sm tracking-wide">KPU Kabupaten Soppeng</div>
+                        <div class="text-xs text-emerald-400 font-semibold tracking-wider">PDPB • EXECUTIVE DASHBOARD</div>
                     </div>
                 </div>
-                <nav class="hidden md:flex gap-6 font-medium text-sm">
-                    <button onclick="navigate('dashboard')" class="hover:text-kpu transition">Dashboard</button>
-                    <button onclick="navigate('rekapitulasi')" class="hover:text-kpu transition">Rekapitulasi</button>
-                    <button id="navAdmin" onclick="navigate('admin')" class="hover:text-kpu transition text-gray-500">🔒 Admin Import</button>
-                    <button id="btnLogout" onclick="logout()" class="hidden text-red-600 hover:text-red-800">Logout</button>
+
+                <nav class="hidden md:flex items-center gap-2">
+                    <button onclick="navigate('dashboard')" id="btnNavDashboard" class="saas-nav-btn active px-4 py-2 rounded-xl text-white text-xs font-bold tracking-wide flex items-center gap-2 transition">
+                        📊 Dashboard
+                    </button>
+                    <button onclick="navigate('rekapitulasi')" id="btnNavRekap" class="saas-nav-btn px-4 py-2 rounded-xl text-slate-400 hover:text-white text-xs font-semibold tracking-wide flex items-center gap-2 transition">
+                        📑 Rekapitulasi
+                    </button>
+                    <button onclick="handleAdminClick()" id="navAdmin" class="saas-nav-btn px-4 py-2 rounded-xl text-slate-400 hover:text-white text-xs font-semibold tracking-wide flex items-center gap-2 transition">
+                        🔒 Admin Import
+                    </button>
+                    <button id="btnLogout" onclick="logout()" class="hidden px-4 py-2 rounded-xl text-rose-400 hover:bg-rose-950/40 text-xs font-bold tracking-wide transition">
+                        Keluar
+                    </button>
                 </nav>
             </div>
         </div>
     </header>
 
     <!-- MAIN CONTENT AREA -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <main class="max-w-7xl mx-auto px-6 py-8 flex-grow w-full space-y-6">
         
         <!-- ================= DASHBOARD PAGE ================= -->
         <section id="page-dashboard" class="space-y-6 block">
-            <div class="flex justify-between items-end">
-                <h2 class="text-2xl font-bold border-l-4 border-kpu pl-3">Ringkasan Eksekutif</h2>
-                <!-- Filter Periode -->
-                <select id="filterPeriode" class="border p-2 rounded shadow-sm bg-white" onchange="loadDashboardData()">
-                    <option value="">Memuat periode...</option>
-                </select>
-            </div>
-
-            <div id="dashboardLoader" class="hidden text-center py-10 text-gray-500">Memuat data dari server...</div>
-
-            <!-- Kartu Pemilih Aktif -->
-            <h3 class="text-lg font-bold mt-8">Pemilih Aktif</h3>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="bg-white p-6 rounded-lg shadow border-t-4 border-blue-500">
-                    <p class="text-gray-500 font-semibold text-sm">LAKI-LAKI</p>
-                    <h3 id="dashAktifL" class="text-3xl font-bold">0</h3>
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <h2 class="text-xl font-extrabold text-white tracking-tight">Ringkasan Eksekutif</h2>
+                    <p class="text-xs text-slate-400 mt-0.5 tracking-wide">ANALISIS DATA PEMILIH BERKELANJUTAN</p>
                 </div>
-                <div class="bg-white p-6 rounded-lg shadow border-t-4 border-pink-500">
-                    <p class="text-gray-500 font-semibold text-sm">PEREMPUAN</p>
-                    <h3 id="dashAktifP" class="text-3xl font-bold">0</h3>
-                </div>
-                <div class="bg-white p-6 rounded-lg shadow border-t-4 border-kpu bg-gradient-to-br from-white to-gray-50">
-                    <p class="text-gray-500 font-semibold text-sm">TOTAL AKTIF</p>
-                    <h3 id="dashAktifTotal" class="text-4xl font-bold text-kpu">0</h3>
+                <div class="flex items-center gap-3 bg-[#11172a] border border-[#1e294b] px-3 py-2 rounded-xl shadow-inner">
+                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">PERIODE:</span>
+                    <select id="filterPeriode" class="bg-transparent text-xs font-bold text-white focus:outline-none cursor-pointer" onchange="onPeriodChange()">
+                        <option value="" class="bg-[#11172a]">Memuat periode...</option>
+                    </select>
                 </div>
             </div>
 
-            <!-- Kartu Mutasi -->
-            <h3 class="text-lg font-bold mt-8">Pergerakan Data (Mutasi)</h3>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="bg-white p-6 rounded-lg shadow border-l-4 border-green-500">
-                    <p class="text-gray-500 font-semibold text-sm">BARU (B)</p>
-                    <h3 id="dashMutasiB" class="text-2xl font-bold">0</h3>
+            <!-- PANEL FILTER KUSTOMISASI DATA -->
+            <div class="saas-card p-5 space-y-4 border border-emerald-500/20 bg-gradient-to-r from-[#11172a] to-[#0f172a]">
+                <div class="flex justify-between items-center border-b border-[#1e294b] pb-3">
+                    <div class="text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-2">
+                        <span>🔍</span> PANEL FILTER KUSTOMISASI DATA
+                    </div>
+                    <button onclick="resetFilters()" class="text-[11px] text-slate-400 hover:text-white bg-[#090d16] px-3 py-1.5 rounded-lg border border-[#1e294b] transition flex items-center gap-1.5">
+                        <span>🔄</span> Reset Filter
+                    </button>
                 </div>
-                <div class="bg-white p-6 rounded-lg shadow border-l-4 border-red-500">
-                    <p class="text-gray-500 font-semibold text-sm">TIDAK MEMENUHI SYARAT (TMS)</p>
-                    <h3 id="dashMutasiTMS" class="text-2xl font-bold">0</h3>
-                    <p id="dashTMSDetail" class="text-xs text-gray-500 mt-2">Detail: -</p>
+
+                <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-5 gap-3">
+                    <div class="space-y-1">
+                        <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Kecamatan</label>
+                        <select id="filterKecamatan" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-3 py-2 rounded-xl text-xs font-bold focus:outline-none focus:border-emerald-500" onchange="onKecamatanChange()">
+                            <option value="ALL">SEMUA KECAMATAN</option>
+                        </select>
+                    </div>
+                    <div class="space-y-1">
+                        <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Desa/Kelurahan</label>
+                        <select id="filterDesa" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-3 py-2 rounded-xl text-xs font-bold focus:outline-none focus:border-emerald-500" onchange="applyFilters()">
+                            <option value="ALL">SEMUA DESA</option>
+                        </select>
+                    </div>
+                    <div class="space-y-1">
+                        <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Generasi</label>
+                        <select id="filterGenerasi" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-3 py-2 rounded-xl text-xs font-bold focus:outline-none focus:border-emerald-500" onchange="applyFilters()">
+                            <option value="ALL">SEMUA GENERASI</option>
+                        </select>
+                    </div>
+                    <div class="space-y-1">
+                        <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Disabilitas</label>
+                        <select id="filterDisabilitas" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-3 py-2 rounded-xl text-xs font-bold focus:outline-none focus:border-emerald-500" onchange="applyFilters()">
+                            <option value="ALL">SEMUA DISABILITAS</option>
+                        </select>
+                    </div>
+                    <div class="space-y-1">
+                        <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Status Perkawinan</label>
+                        <select id="filterPerkawinan" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-3 py-2 rounded-xl text-xs font-bold focus:outline-none focus:border-emerald-500" onchange="applyFilters()">
+                            <option value="ALL">SEMUA STATUS</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="bg-white p-6 rounded-lg shadow border-l-4 border-yellow-500">
-                    <p class="text-gray-500 font-semibold text-sm">UBAH DATA (U)</p>
-                    <h3 id="dashMutasiU" class="text-2xl font-bold">0</h3>
+            </div>
+
+            <div id="dashboardLoader" class="hidden text-center py-16 text-emerald-400 font-mono text-xs tracking-widest animate-pulse">MEMUAT DATA DARI SERVER...</div>
+
+            <!-- KARTU STATISTIK PEMILIH AKTIF -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="saas-card p-7 flex flex-col justify-between">
+                    <div class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">LAKI-LAKI</div>
+                    <div id="dashAktifL" class="text-4xl sm:text-5xl font-extrabold text-white mt-4 tracking-tight">0</div>
+                    <div class="mt-6 pt-4 border-t border-[#1e294b] flex items-center">
+                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+                    </div>
+                </div>
+                <div class="saas-card p-7 flex flex-col justify-between">
+                    <div class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">PEREMPUAN</div>
+                    <div id="dashAktifP" class="text-4xl sm:text-5xl font-extrabold text-pink-400 mt-4 tracking-tight">0</div>
+                    <div class="mt-6 pt-4 border-t border-[#1e294b] flex items-center">
+                        <span class="w-2.5 h-2.5 rounded-full bg-pink-400 animate-ping"></span>
+                    </div>
+                </div>
+                <div class="saas-card p-7 flex flex-col justify-between relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-28 h-28 bg-emerald-500/5 rounded-full blur-xl"></div>
+                    <div class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">TOTAL AKTIF</div>
+                    <div id="dashAktifTotal" class="text-4xl sm:text-5xl font-extrabold text-goldAccent mt-4 tracking-tight">0</div>
+                    <div class="mt-6 pt-4 border-t border-[#1e294b] flex items-center">
+                        <span class="w-2.5 h-2.5 rounded-full bg-goldAccent animate-ping"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- KARTU PERGERAKAN DATA (MUTASI & TMS) -->
+            <div class="saas-card p-6 space-y-4">
+                <div class="text-xs font-bold text-emerald-400 uppercase tracking-widest flex items-center gap-2">
+                    <span>⚡</span> PERGERAKAN DATA (MUTASI & TMS)
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
+                    <div class="bg-[#090d16] border border-[#1e294b] p-5 rounded-xl flex flex-col justify-between">
+                        <div>
+                            <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">PEMILIH BARU (B)</div>
+                            <div id="dashMutasiB" class="text-2xl font-extrabold text-emerald-400 mt-2">0</div>
+                        </div>
+                        <div id="dashMutasiBDetail" class="text-[11px] text-slate-400 mt-3 pt-2 border-t border-slate-800">L: 0 • P: 0</div>
+                    </div>
+                    <div class="bg-[#090d16] border border-[#1e294b] p-5 rounded-xl flex flex-col justify-between">
+                        <div>
+                            <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">TIDAK MEMENUHI SYARAT (TMS)</div>
+                            <div id="dashMutasiTMS" class="text-2xl font-extrabold text-rose-400 mt-2">0</div>
+                        </div>
+                        <div class="space-y-1.5 mt-3 pt-2 border-t border-slate-800">
+                            <div id="dashMutasiTMSDetailLP" class="text-[11px] text-slate-300 font-semibold">L: 0 • P: 0</div>
+                            <div id="dashTMSDetail" class="text-[11px] text-slate-400 truncate">Detail: -</div>
+                        </div>
+                    </div>
+                    <div class="bg-[#090d16] border border-[#1e294b] p-5 rounded-xl flex flex-col justify-between">
+                        <div>
+                            <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">UBAH DATA (U)</div>
+                            <div id="dashMutasiU" class="text-2xl font-extrabold text-amber-400 mt-2">0</div>
+                        </div>
+                        <div id="dashMutasiUDetail" class="text-[11px] text-slate-400 mt-3 pt-2 border-t border-slate-800">L: 0 • P: 0</div>
+                    </div>
                 </div>
             </div>
         </section>
 
         <!-- ================= REKAPITULASI PAGE ================= -->
         <section id="page-rekapitulasi" class="hidden space-y-6">
-            <h2 class="text-2xl font-bold border-l-4 border-kpu pl-3">Rekapitulasi per Wilayah</h2>
-            <p class="text-sm text-gray-600">Klik nama kecamatan untuk melihat detail tingkat Desa/Kelurahan hingga TPS.</p>
-            <div id="rekapContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
-                <!-- Diisi via JS -->
+            <div class="saas-card p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <div class="flex items-center gap-2 mb-1">
+                        <button id="rekapBackBtn" onclick="rekapGoBack()" class="hidden bg-emerald-600/20 hover:bg-emerald-600/40 text-emerald-400 px-2.5 py-1 rounded-lg text-[11px] font-bold border border-emerald-500/30 transition flex items-center gap-1">
+                            <span>⬅️</span> <span id="rekapBackText">Kembali</span>
+                        </button>
+                        <h2 id="rekapTitle" class="text-xl font-extrabold text-white tracking-tight">Rekapitulasi per Kecamatan</h2>
+                    </div>
+                    <p id="rekapSubTitle" class="text-xs text-slate-400">Klik pada nama wilayah untuk menelusuri rincian data (Drill-down).</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <input type="text" id="rekapSearch" placeholder="Cari kecamatan / desa..." class="bg-[#090d16] border border-[#1e294b] text-white px-3 py-2 rounded-xl text-xs focus:outline-none focus:border-emerald-500 w-64" oninput="renderRekapitulasiTable()">
+                </div>
+            </div>
+
+            <div class="saas-card overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-[#090d16] text-slate-400 text-[10px] font-extrabold uppercase tracking-wider border-b border-[#1e294b]">
+                                <th class="p-4">No</th>
+                                <th class="p-4" id="rekapColHeader">Kecamatan</th>
+                                <th class="p-4 text-right">Aktif (L)</th>
+                                <th class="p-4 text-right">Aktif (P)</th>
+                                <th class="p-4 text-right">Total Aktif</th>
+                                <th class="p-4 text-right">Baru (B)</th>
+                                <th class="p-4 text-right">TMS</th>
+                                <th class="p-4 text-right">Ubah (U)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rekapTableBody" class="text-xs divide-y divide-[#1e294b]/50">
+                            <tr>
+                                <td colspan="8" class="p-6 text-center text-slate-500 font-mono">Memuat rekapitulasi wilayah...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </section>
 
         <!-- ================= ADMIN / IMPORT PAGE ================= -->
-        <section id="page-admin" class="hidden max-w-3xl mx-auto bg-white p-8 rounded-lg shadow">
-            
-            <!-- Area Login Admin -->
-            <div id="loginArea">
-                <h2 class="text-2xl font-bold mb-4 text-center">Login Administrator</h2>
-                <div class="space-y-4">
-                    <input type="email" id="loginEmail" placeholder="Email Admin" class="w-full border p-2 rounded">
-                    <input type="password" id="loginPass" placeholder="Password" class="w-full border p-2 rounded">
-                    <button onclick="handleLogin()" class="w-full bg-kpu text-white p-2 rounded font-bold hover:bg-kpuhightlight">LOGIN</button>
-                    <p id="loginMsg" class="text-red-500 text-sm text-center"></p>
+        <section id="page-admin" class="hidden max-w-2xl mx-auto space-y-6">
+            <div id="loginArea" class="saas-card p-8 space-y-6">
+                <div class="text-center space-y-2">
+                    <div class="w-12 h-12 bg-emerald-600 text-white rounded-xl flex items-center justify-center font-bold text-lg mx-auto neon-badge">🔐</div>
+                    <h2 class="text-lg font-bold text-white">Portal Administrator</h2>
+                    <p class="text-xs text-slate-400">Autentikasi khusus pengelola data KPU Soppeng.</p>
+                </div>
+                <div class="space-y-4 pt-2">
+                    <div>
+                        <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">Email Admin</label>
+                        <input type="email" id="loginEmail" placeholder="admin@kpusoppeng.go.id" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-4 py-3 rounded-xl text-xs focus:outline-none focus:border-emerald-500 transition">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">Password</label>
+                        <input type="password" id="loginPass" placeholder="••••••••" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-4 py-3 rounded-xl text-xs focus:outline-none focus:border-emerald-500 transition">
+                    </div>
+                    <button onclick="handleLogin()" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:opacity-90 text-white font-bold py-3 rounded-xl transition text-xs tracking-wider shadow-lg shadow-emerald-600/35">MASUK KE DASHBOARD</button>
+                    <p id="loginMsg" class="text-rose-400 text-xs text-center font-medium"></p>
                 </div>
             </div>
 
-            <!-- Area Upload Panel -->
             <div id="uploadArea" class="hidden space-y-6">
-                <h2 class="text-2xl font-bold border-l-4 border-kpu pl-3">Import Data PDPB</h2>
-                
-                <div class="grid grid-cols-2 gap-4">
+                <div class="saas-card p-8 space-y-6">
                     <div>
-                        <label class="block text-sm font-bold mb-1">Tahun</label>
-                        <select id="impTahun" class="w-full border p-2 rounded">
-                            <option>2026</option><option>2027</option>
-                        </select>
+                        <h2 class="text-lg font-bold text-white">Import Data PDPB</h2>
+                        <p class="text-xs text-slate-400 mt-0.5">Unggah file Excel resmi berisikan Sheet Aktif dan TMS.</p>
                     </div>
-                    <div>
-                        <label class="block text-sm font-bold mb-1">Triwulan</label>
-                        <select id="impTw" class="w-full border p-2 rounded">
-                            <option>TW1</option><option>TW2</option><option>TW3</option><option>TW4</option>
-                        </select>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">Tahun Anggaran</label>
+                            <select id="impTahun" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-3 py-2.5 rounded-xl text-xs font-bold">
+                                <option>2026</option><option>2027</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">Periode Triwulan</label>
+                            <select id="impTw" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-3 py-2.5 rounded-xl text-xs font-bold">
+                                <option>TW1</option><option>TW2</option><option>TW3</option><option>TW4</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="border-2 border-dashed border-[#1e294b] p-6 text-center rounded-2xl bg-[#090d16]/50 hover:bg-[#090d16] transition">
+                        <input type="file" id="fileExcel" accept=".xlsx, .xls" class="text-xs text-slate-400 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-[11px] file:font-bold file:bg-emerald-600 file:text-white hover:file:bg-emerald-500 cursor-pointer">
+                        <p class="text-[11px] text-slate-500 mt-3">Format standar .xlsx atau .xls (Sheet: Aktif & TMS)</p>
+                        <button onclick="processExcel()" class="mt-4 bg-[#1e294b] hover:bg-[#283863] text-white px-6 py-2.5 rounded-xl font-bold text-xs transition border border-slate-700">Mulai Validasi & Agregasi</button>
+                    </div>
+
+                    <div id="processLogs" class="bg-black/50 text-slate-300 p-4 rounded-xl text-xs font-mono h-36 overflow-y-auto hidden border border-[#1e294b]"></div>
+
+                    <div id="previewArea" class="hidden bg-emerald-950/30 border border-emerald-800/50 p-5 rounded-2xl space-y-3">
+                        <h3 class="font-bold text-emerald-400 text-xs">✨ Validasi Berhasil. Ringkasan Agregasi:</h3>
+                        <ul class="text-[11px] space-y-1.5 text-emerald-300/90" id="previewList"></ul>
+                        <button onclick="publishData()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl transition text-xs shadow-lg shadow-emerald-600/30">KONFIRMASI & PUBLISH KE DATABASE</button>
                     </div>
                 </div>
 
-                <div class="border-2 border-dashed border-gray-300 p-8 text-center rounded bg-gray-50">
-                    <input type="file" id="fileExcel" accept=".xlsx, .xls" class="mb-4">
-                    <p class="text-sm text-gray-500">Pilih file Excel mentah yang berisi Sheet "Aktif" dan "TMS".</p>
-                    <button onclick="processExcel()" class="mt-4 bg-gray-800 text-white px-6 py-2 rounded font-bold hover:bg-gray-700">Mulai Proses Validasi & Agregasi</button>
-                </div>
-
-                <!-- Progress & Logs -->
-                <div id="processLogs" class="bg-gray-100 p-4 rounded text-sm font-mono h-40 overflow-y-auto hidden"></div>
-
-                <!-- Preview Area -->
-                <div id="previewArea" class="hidden bg-blue-50 border border-blue-200 p-4 rounded">
-                    <h3 class="font-bold text-blue-800 mb-2">✅ Validasi Selesai. Hasil Agregasi:</h3>
-                    <ul class="text-sm space-y-1 mb-4" id="previewList"></ul>
-                    <button onclick="publishData()" class="w-full bg-green-600 text-white font-bold p-3 rounded hover:bg-green-700">KONFIRMASI & PUBLISH KE DATABASE</button>
+                <div class="saas-card p-8 space-y-4 border-rose-950/50">
+                    <div>
+                        <h2 class="text-base font-bold text-rose-400 flex items-center gap-2"><span>🗑️</span> Manajemen Hapus Data Periode</h2>
+                        <p class="text-xs text-slate-400 mt-0.5">Pilih periode yang ingin dihapus permanen dari database server.</p>
+                    </div>
+                    <div class="flex gap-3">
+                        <select id="delPeriodSelect" class="flex-1 bg-[#090d16] border border-[#1e294b] text-white px-3 py-2.5 rounded-xl text-xs font-bold">
+                            <option value="">Memuat daftar periode...</option>
+                        </select>
+                        <button onclick="confirmDeletePeriod()" class="bg-rose-600 hover:bg-rose-500 text-white font-bold px-5 py-2.5 rounded-xl transition text-xs tracking-wider shadow-lg shadow-rose-600/30">HAPUS PERIODE</button>
+                    </div>
                 </div>
             </div>
-
         </section>
-
     </main>
 
     <!-- ================= JAVASCRIPT ================= -->
     <script>
-        /* ---------------------------------------------------------
-           1. KONFIGURASI SUPABASE
-           GANTI NILAI INI DENGAN URL DAN KEY SUPABASE BAPAK
-        --------------------------------------------------------- */
         const SUPABASE_URL = "https://rhvhyafcbmynidwkpuad.supabase.co"; 
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJodmh5YWZjYm15bmlkd2twdWFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEwNDAwMTcsImV4cCI6MjEwNjYxNjAxN30.dWIUg2bDe8W7p99-5g9nsZ-GP3-hjUecKEYgQvovEbY"; 
         
-        let supabase;
+        let dbClient = null;
         try {
-            supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            if (window.supabase && typeof window.supabase.createClient === 'function') {
+                dbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            }
         } catch (e) {
-            console.error("Gagal inisialisasi Supabase. Periksa URL dan Key.");
+            console.error("Gagal inisialisasi Supabase:", e);
         }
 
-        /* ---------------------------------------------------------
-           2. STATE MANAJEMEN
-        --------------------------------------------------------- */
+        let rawVoterCache = [];
+        let rawMutationCache = [];
         let processedData = { voterSummary: [], mutationSummary: [] };
-        let activePeriod = null;
 
-        // Routing SPA Sederhana
+        // State untuk Rekapitulasi Drill-down
+        let rekapLevel = 'KECAMATAN'; // 'KECAMATAN', 'DESA', 'TPS'
+        let rekapSelectedKec = null;
+        let rekapSelectedDesa = null;
+
+        function formatID(num) {
+            if (num === undefined || num === null || isNaN(num)) return "0";
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
+
+        function showModal(title, message, icon = "✨", isConfirm = false, onConfirm = null) {
+            const modal = document.getElementById('customModal');
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalMessage').innerHTML = message;
+            document.getElementById('modalIcon').innerText = icon;
+            
+            const btnPrimary = document.getElementById('modalBtnPrimary');
+            const btnSecondary = document.getElementById('modalBtnSecondary');
+
+            if (isConfirm) {
+                btnSecondary.classList.remove('hidden');
+                btnPrimary.innerText = "YA, LANJUTKAN";
+                btnPrimary.onclick = () => { closeModal(); if(onConfirm) onConfirm(); };
+                btnSecondary.onclick = () => closeModal();
+            } else {
+                btnSecondary.classList.add('hidden');
+                btnPrimary.innerText = "MENGERTI";
+                btnPrimary.onclick = () => closeModal();
+            }
+            modal.classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('customModal').classList.add('hidden');
+        }
+
         function navigate(pageId) {
             ['dashboard', 'rekapitulasi', 'admin'].forEach(p => {
-                document.getElementById('page-' + p).classList.add('hidden');
+                const el = document.getElementById('page-' + p);
+                if (el) el.classList.add('hidden');
             });
-            document.getElementById('page-' + pageId).classList.remove('hidden');
+            const target = document.getElementById('page-' + pageId);
+            if (target) target.classList.remove('hidden');
+            
+            const btnDash = document.getElementById('btnNavDashboard');
+            const btnRekap = document.getElementById('btnNavRekap');
+            
+            if (btnDash) btnDash.className = pageId === 'dashboard' ? "saas-nav-btn active px-4 py-2 rounded-xl text-white text-xs font-bold tracking-wide flex items-center gap-2 transition" : "saas-nav-btn px-4 py-2 rounded-xl text-slate-400 hover:text-white text-xs font-semibold tracking-wide flex items-center gap-2 transition";
+            if (btnRekap) btnRekap.className = pageId === 'rekapitulasi' ? "saas-nav-btn active px-4 py-2 rounded-xl text-white text-xs font-bold tracking-wide flex items-center gap-2 transition" : "saas-nav-btn px-4 py-2 rounded-xl text-slate-400 hover:text-white text-xs font-semibold tracking-wide flex items-center gap-2 transition";
+            
             if(pageId === 'dashboard') loadPeriodsAndDashboard();
+            if(pageId === 'rekapitulasi') {
+                rekapLevel = 'KECAMATAN';
+                rekapSelectedKec = null;
+                rekapSelectedDesa = null;
+                renderRekapitulasiTable();
+            }
         }
 
-        /* ---------------------------------------------------------
-           3. AUTHENTICATION ADMIN
-        --------------------------------------------------------- */
+        async function handleAdminClick() {
+            navigate('admin');
+            await checkAuth();
+        }
+
         async function checkAuth() {
-            if(!supabase) return;
-            const { data: { session } } = await supabase.auth.getSession();
-            if (session) {
-                document.getElementById('loginArea').classList.add('hidden');
-                document.getElementById('uploadArea').classList.remove('hidden');
-                document.getElementById('navAdmin').innerText = "Admin Panel";
-                document.getElementById('navAdmin').classList.add("text-kpu", "font-bold");
-                document.getElementById('btnLogout').classList.remove('hidden');
+            if (!dbClient) return;
+            try {
+                const { data: { session }, error } = await dbClient.auth.getSession();
+                if (error) throw error;
+
+                const loginArea = document.getElementById('loginArea');
+                const uploadArea = document.getElementById('uploadArea');
+                const navAdmin = document.getElementById('navAdmin');
+                const btnLogout = document.getElementById('btnLogout');
+
+                if (session) {
+                    if (loginArea) loginArea.classList.add('hidden');
+                    if (uploadArea) uploadArea.classList.remove('hidden');
+                    if (navAdmin) {
+                        navAdmin.innerText = "Admin Panel";
+                        navAdmin.className = "saas-nav-btn active px-4 py-2 rounded-xl text-white text-xs font-bold tracking-wide flex items-center gap-2 transition";
+                    }
+                    if (btnLogout) btnLogout.classList.remove('hidden');
+                    loadDeletePeriodsDropdown();
+                } else {
+                    if (loginArea) loginArea.classList.remove('hidden');
+                    if (uploadArea) uploadArea.classList.add('hidden');
+                    if (navAdmin) {
+                        navAdmin.innerText = "🔒 Admin Import";
+                        navAdmin.className = "saas-nav-btn active px-4 py-2 rounded-xl text-white text-xs font-bold tracking-wide flex items-center gap-2 transition";
+                    }
+                    if (btnLogout) btnLogout.classList.add('hidden');
+                }
+            } catch (err) {
+                console.error("Gagal memeriksa sesi auth:", err);
             }
         }
 
@@ -212,27 +473,29 @@
             const em = document.getElementById('loginEmail').value;
             const pw = document.getElementById('loginPass').value;
             const msg = document.getElementById('loginMsg');
-            msg.innerText = "Proses login...";
+            if (!em || !pw) {
+                msg.innerText = "Email dan password wajib diisi!";
+                return;
+            }
+            msg.innerText = "Autentikasi...";
             
-            const { data, error } = await supabase.auth.signInWithPassword({ email: em, password: pw });
+            const { error } = await dbClient.auth.signInWithPassword({ email: em, password: pw });
             if (error) {
                 msg.innerText = error.message;
             } else {
                 msg.innerText = "";
-                checkAuth();
+                await checkAuth();
             }
         }
 
         async function logout() {
-            await supabase.auth.signOut();
+            if (dbClient) await dbClient.auth.signOut();
             window.location.reload();
         }
 
-        /* ---------------------------------------------------------
-           4. FUNGSI UTILITAS & NORMALISASI
-        --------------------------------------------------------- */
         function log(msg) {
             const el = document.getElementById('processLogs');
+            if (!el) return;
             el.classList.remove('hidden');
             el.innerHTML += `> ${msg}<br>`;
             el.scrollTop = el.scrollHeight;
@@ -245,20 +508,16 @@
 
         function getGeneration(birthDateString) {
             if(!birthDateString) return "TIDAK DIKETAHUI";
-            // Asumsi SheetJS parsing (bisa string atau format date excel)
             let year = 0;
             if(typeof birthDateString === 'number') { 
-                // Excel date serial number
                 const date = new Date(Math.round((birthDateString - 25569)*86400*1000));
                 year = date.getFullYear();
             } else {
-                // Parsing dari string manual "dd/mm/yyyy" atau "yyyy-mm-dd"
                 const str = birthDateString.toString();
                 const match = str.match(/\d{4}/);
                 if(match) year = parseInt(match[0]);
             }
             if(year === 0) return "TIDAK DIKETAHUI";
-            
             if (year < 1945) return "PRE-BOOMER";
             if (year <= 1964) return "BABY BOOMER";
             if (year <= 1980) return "GEN X";
@@ -272,16 +531,17 @@
             return map[String(code)] || 'TIDAK DIKETAHUI';
         }
 
-        /* ---------------------------------------------------------
-           5. PROCESSOR EXCEL CLIENT-SIDE (PROSES UTAMA)
-        --------------------------------------------------------- */
         async function processExcel() {
-            const file = document.getElementById('fileExcel').files[0];
-            if (!file) return alert("Pilih file Excel terlebih dahulu!");
+            const fileInput = document.getElementById('fileExcel');
+            if (!fileInput || !fileInput.files[0]) {
+                showModal("Peringatan", "Pilih file Excel terlebih dahulu!", "⚠️");
+                return;
+            }
+            const file = fileInput.files[0];
 
             document.getElementById('processLogs').innerHTML = '';
             document.getElementById('previewArea').classList.add('hidden');
-            log("Membaca file Excel... Ini mungkin memakan waktu beberapa detik.");
+            log("Membaca struktur workbook Excel...");
 
             const reader = new FileReader();
             reader.onload = async (e) => {
@@ -289,59 +549,48 @@
                     const data = new Uint8Array(e.target.result);
                     const workbook = XLSX.read(data, { type: 'array' });
                     
-                    log(`Sheet ditemukan: ${workbook.SheetNames.join(', ')}`);
                     if(!workbook.SheetNames.includes("Aktif") || !workbook.SheetNames.includes("TMS")) {
-                        throw new Error("File harus memiliki sheet bernama 'Aktif' dan 'TMS'");
+                        throw new Error("Format sheet wajib memiliki sheet 'Aktif' dan 'TMS'");
                     }
 
-                    // Mapping Agregasi Client-Side (Agar ringan di database)
                     const tempAktif = {};
                     const tempMutasi = {};
 
-                    // BACA SHEET AKTIF
-                    log("Memproses Sheet 'Aktif' (Membangun Agregasi)...");
+                    log("Memproses Agregasi Data Pemilih Aktif...");
                     const sheetAktif = XLSX.utils.sheet_to_json(workbook.Sheets["Aktif"], { defval: "" });
-                    
                     sheetAktif.forEach(row => {
                         const kec = cleanText(row['KECAMATAN']);
                         const desa = cleanText(row['KEL/DESA']);
                         const tps = cleanText(row['TPS']);
-                        const jk = cleanText(row['JENIS KELAMIN']) === 'P' ? 'P' : 'L'; // Normalisasi L/P
+                        const jk = cleanText(row['JENIS KELAMIN']) === 'P' ? 'P' : 'L';
                         const gen = getGeneration(row['TANGGAL LAHIR']);
                         const dis = mapDisability(row['DISABILITAS']);
-                        const kawin = cleanText(row['STATUS KAWIN']);
-                        const ket = cleanText(row['KETERANGAN']); // 0, B, U
+                        const kawin = cleanText(row['STATU KAWIN'] || row['STATUS KAWIN']);
+                        const ket = cleanText(row['KETERANGAN']);
 
-                        // Semua data di Sheet Aktif dihitung ke Voter Summary
                         const keyAktif = `${kec}|${desa}|${tps}|${jk}|${gen}|${dis}|${kawin}`;
                         tempAktif[keyAktif] = (tempAktif[keyAktif] || 0) + 1;
 
-                        // Jika dia B atau U, masukkan juga ke Mutation Summary
                         if (ket === 'B' || ket === 'U') {
-                            const mutType = ket === 'B' ? 'BARU' : 'UBAH';
+                            const mutType = (ket === 'B') ? 'BARU' : 'UBAH';
                             const keyMut = `${kec}|${desa}|${tps}|${mutType}|${ket}|${jk}`;
                             tempMutasi[keyMut] = (tempMutasi[keyMut] || 0) + 1;
                         }
                     });
 
-                    // BACA SHEET TMS
-                    log("Memproses Sheet 'TMS'...");
+                    log("Memproses Agregasi Data Mutasi & TMS...");
                     const sheetTMS = XLSX.utils.sheet_to_json(workbook.Sheets["TMS"], { defval: "" });
                     sheetTMS.forEach(row => {
                         const kec = cleanText(row['KECAMATAN']);
                         const desa = cleanText(row['KEL/DESA']);
                         const tps = cleanText(row['TPS']);
                         const jk = cleanText(row['JENIS KELAMIN']) === 'P' ? 'P' : 'L';
-                        let ket = cleanText(row['KETERANGAN']); // 1-8
-
-                        // Normalisasi jika kosong dianggap 1 (meninggal) atau tangani khusus
+                        let ket = cleanText(row['KETERANGAN']);
                         if(ket === '-' || ket === '') ket = '1'; 
 
                         const keyMut = `${kec}|${desa}|${tps}|TMS|${ket}|${jk}`;
                         tempMutasi[keyMut] = (tempMutasi[keyMut] || 0) + 1;
                     });
-
-                    log("Mengubah format agregasi untuk database...");
                     
                     processedData.voterSummary = Object.keys(tempAktif).map(k => {
                         const p = k.split('|');
@@ -353,16 +602,13 @@
                         return { kecamatan: p[0], desa: p[1], tps: p[2], mutation_type: p[3], mutation_code: p[4], gender: p[5], total_count: tempMutasi[k] };
                     });
 
-                    // Tampilkan Preview
                     let totalA = processedData.voterSummary.reduce((sum, item) => sum + item.total_count, 0);
                     let totalM = processedData.mutationSummary.reduce((sum, item) => sum + item.total_count, 0);
 
-                    log("✅ Pemrosesan lokal selesai.");
-                    
+                    log("✅ Kalkulasi lokal selesai dengan sukses.");
                     document.getElementById('previewList').innerHTML = `
-                        <li>Baris Agregasi Aktif dibuat: <b>${processedData.voterSummary.length.toLocaleString()} baris</b> (Total: ${totalA.toLocaleString()} Pemilih)</li>
-                        <li>Baris Agregasi Mutasi dibuat: <b>${processedData.mutationSummary.length.toLocaleString()} baris</b> (Total Data: ${totalM.toLocaleString()})</li>
-                        <li class="text-xs text-red-600 mt-2">Data individu (NIK/Nama) <b>TIDAK DIKIRIM</b> ke server. Hanya hasil agregat (statistik) yang diamankan.</li>
+                        <li>• Baris Agregasi Aktif: <b>${formatID(processedData.voterSummary.length)}</b> baris (Akumulasi: <b>${formatID(totalA)}</b> pemilih)</li>
+                        <li>• Baris Agregasi Mutasi: <b>${formatID(processedData.mutationSummary.length)}</b> baris (Akumulasi: <b>${formatID(totalM)}</b> data)</li>
                     `;
                     document.getElementById('previewArea').classList.remove('hidden');
 
@@ -373,134 +619,498 @@
             reader.readAsArrayBuffer(file);
         }
 
-        /* ---------------------------------------------------------
-           6. PUBLISH KE SUPABASE
-        --------------------------------------------------------- */
         async function publishData() {
             const tahun = document.getElementById('impTahun').value;
             const tw = document.getElementById('impTw').value;
-            const fileName = document.getElementById('fileExcel').files[0].name;
+            const fileInput = document.getElementById('fileExcel');
+            if (!fileInput || !fileInput.files[0]) return;
+            const fileName = fileInput.files[0].name;
 
             try {
-                log("1. Membuat record Periode...");
-                // Insert ke periods
-                const { data: periodData, error: pErr } = await supabase.from('periods').insert([
+                log("Mendaftarkan periode ke database...");
+                const { data: periodData, error: pErr } = await dbClient.from('periods').insert([
                     { tahun: tahun, triwulan: tw, file_name: fileName }
                 ]).select().single();
 
                 if(pErr) throw pErr;
                 const periodId = periodData.id;
 
-                log("2. Menyimpan Agregasi Pemilih Aktif (Batch Insert)...");
+                log("Mengunggah ringkasan pemilih aktif...");
                 const batchVoter = processedData.voterSummary.map(d => ({...d, period_id: periodId}));
-                // Chunk array to avoid Supabase request limits (1000 per insert)
-                for(let i=0; i<batchVoter.length; i+=1000) {
-                    const chunk = batchVoter.slice(i, i+1000);
-                    const { error: vErr } = await supabase.from('voter_summary').insert(chunk);
+                for(let i=0; i<batchVoter.length; i+=500) {
+                    const chunk = batchVoter.slice(i, i+500);
+                    const { error: vErr } = await dbClient.from('voter_summary').insert(chunk);
                     if(vErr) throw vErr;
                 }
 
-                log("3. Menyimpan Agregasi Mutasi...");
+                log("Mengunggah ringkasan mutasi...");
                 const batchMut = processedData.mutationSummary.map(d => ({...d, period_id: periodId}));
-                for(let i=0; i<batchMut.length; i+=1000) {
-                    const chunk = batchMut.slice(i, i+1000);
-                    const { error: mErr } = await supabase.from('mutation_summary').insert(chunk);
+                for(let i=0; i<batchMut.length; i+=500) {
+                    const chunk = batchMut.slice(i, i+500);
+                    const { error: mErr } = await dbClient.from('mutation_summary').insert(chunk);
                     if(mErr) throw mErr;
                 }
 
-                log("✅ PUBLISH BERHASIL. Data langsung aktif di Dashboard.");
-                alert("Data berhasil dipublish!");
-                
-                // Reset form
-                document.getElementById('fileExcel').value = '';
-                document.getElementById('previewArea').classList.add('hidden');
-                
-                loadPeriodsAndDashboard(); // Refresh UI
+                showModal("Sukses", "Publikasi data berhasil dilakukan dan tersimpan di database server!", "🎉", false, () => {
+                    window.location.reload();
+                });
             } catch(e) {
                 log(`❌ GAGAL PUBLISH: ${e.message}`);
+                showModal("Gagal Publish", e.message, "❌");
             }
         }
 
-        /* ---------------------------------------------------------
-           7. DASHBOARD DATA FETCHING
-        --------------------------------------------------------- */
-        async function loadPeriodsAndDashboard() {
-            if(!supabase) return;
-            const selectEl = document.getElementById('filterPeriode');
-            
-            // Ambil data periode
-            const { data, error } = await supabase.from('periods').select('*').order('tahun', {ascending: false}).order('triwulan', {ascending: false});
+        async function loadDeletePeriodsDropdown() {
+            if(!dbClient) return;
+            const selectEl = document.getElementById('delPeriodSelect');
+            if(!selectEl) return;
+            const { data } = await dbClient.from('periods').select('*').order('tahun', {ascending: false}).order('triwulan', {ascending: false});
             if(data && data.length > 0) {
                 selectEl.innerHTML = '';
                 data.forEach(p => {
-                    selectEl.innerHTML += `<option value="${p.id}">${p.nama_periode}</option>`;
+                    selectEl.innerHTML += `<option value="${p.id}" class="bg-[#11172a] text-white">${p.nama_periode} (${p.file_name})</option>`;
                 });
-                loadDashboardData();
             } else {
-                selectEl.innerHTML = '<option>Belum ada data</option>';
+                selectEl.innerHTML = '<option value="">Tidak ada data periode tersedia</option>';
             }
         }
 
-        async function loadDashboardData() {
-            const periodId = document.getElementById('filterPeriode').value;
-            if(!periodId || !supabase) return;
+        function confirmDeletePeriod() {
+            const selectEl = document.getElementById('delPeriodSelect');
+            if(!selectEl || !selectEl.value) {
+                showModal("Peringatan", "Pilih periode yang ingin dihapus terlebih dahulu!", "⚠️");
+                return;
+            }
+            const selectedText = selectEl.options[selectEl.selectedIndex].text;
+            showModal("Konfirmasi Hapus", `Apakah Anda yakin ingin menghapus seluruh data untuk periode <b>${selectedText}</b>? Tindakan ini permanen.`, "🗑️", true, async () => {
+                await executeDeletePeriod(selectEl.value);
+            });
+        }
 
-            document.getElementById('dashboardLoader').classList.remove('hidden');
+        async function executeDeletePeriod(periodId) {
+            try {
+                await dbClient.from('voter_summary').delete().eq('period_id', periodId);
+                await dbClient.from('mutation_summary').delete().eq('period_id', periodId);
+                const { error } = await dbClient.from('periods').delete().eq('id', periodId);
+                
+                if(error) throw error;
+                showModal("Berhasil", "Data periode berhasil dihapus dari database.", "✨", false, () => {
+                    window.location.reload();
+                });
+            } catch(e) {
+                showModal("Gagal Menghapus", e.message, "❌");
+            }
+        }
+
+        async function loadPeriodsAndDashboard() {
+            if(!dbClient) return;
+            const selectEl = document.getElementById('filterPeriode');
+            if(!selectEl) return;
+            const { data } = await dbClient.from('periods').select('*').order('tahun', {ascending: false}).order('triwulan', {ascending: false});
+            if(data && data.length > 0) {
+                selectEl.innerHTML = '';
+                data.forEach(p => {
+                    selectEl.innerHTML += `<option value="${p.id}" class="bg-[#11172a] text-white">${p.nama_periode}</option>`;
+                });
+                onPeriodChange();
+            } else {
+                selectEl.innerHTML = '<option class="bg-[#11172a] text-white">Belum ada data tersedia</option>';
+            }
+        }
+
+        async function onPeriodChange() {
+            const periodEl = document.getElementById('filterPeriode');
+            if(!periodEl || !periodEl.value || !dbClient) return;
+            const periodId = periodEl.value;
+
+            const loader = document.getElementById('dashboardLoader');
+            if(loader) loader.classList.remove('hidden');
 
             try {
-                // 1. Fetch Voter Summary
-                const { data: voterData } = await supabase.from('voter_summary').select('gender, total_count').eq('period_id', periodId);
-                let aktifL = 0, aktifP = 0;
-                voterData.forEach(r => {
-                    if(r.gender === 'L') aktifL += r.total_count;
-                    if(r.gender === 'P') aktifP += r.total_count;
-                });
+                rawVoterCache = [];
+                let step = 1000;
+                let from = 0;
+                let fetchMore = true;
 
-                document.getElementById('dashAktifL').innerText = aktifL.toLocaleString();
-                document.getElementById('dashAktifP').innerText = aktifP.toLocaleString();
-                document.getElementById('dashAktifTotal').innerText = (aktifL + aktifP).toLocaleString();
-
-                // 2. Fetch Mutation Summary
-                const { data: mutData } = await supabase.from('mutation_summary').select('mutation_type, mutation_code, total_count').eq('period_id', periodId);
-                let mutB = 0, mutU = 0, mutTMS = 0;
-                let tmsDetail = {};
-
-                mutData.forEach(r => {
-                    if(r.mutation_type === 'BARU') mutB += r.total_count;
-                    else if(r.mutation_type === 'UBAH') mutU += r.total_count;
-                    else if(r.mutation_type === 'TMS') {
-                        mutTMS += r.total_count;
-                        tmsDetail[r.mutation_code] = (tmsDetail[r.mutation_code] || 0) + r.total_count;
+                while (fetchMore) {
+                    const { data, error } = await dbClient
+                        .from('voter_summary')
+                        .select('*')
+                        .eq('period_id', periodId)
+                        .range(from, from + step - 1);
+                    if (error) throw error;
+                    if (data && data.length > 0) {
+                        rawVoterCache = rawVoterCache.concat(data);
+                        from += step;
+                        if (data.length < step) fetchMore = false;
+                    } else {
+                        fetchMore = false;
                     }
-                });
+                }
 
-                document.getElementById('dashMutasiB').innerText = mutB.toLocaleString();
-                document.getElementById('dashMutasiU').innerText = mutU.toLocaleString();
-                document.getElementById('dashMutasiTMS').innerText = mutTMS.toLocaleString();
-                
-                // Fetch Master Kode Mutasi untuk Label TMS
-                const { data: mc } = await supabase.from('mutation_codes').select('code, label').eq('type', 'TMS');
+                rawMutationCache = [];
+                from = 0;
+                fetchMore = true;
+
+                while (fetchMore) {
+                    const { data, error } = await dbClient
+                        .from('mutation_summary')
+                        .select('*')
+                        .eq('period_id', periodId)
+                        .range(from, from + step - 1);
+                    if (error) throw error;
+                    if (data && data.length > 0) {
+                        rawMutationCache = rawMutationCache.concat(data);
+                        from += step;
+                        if (data.length < step) fetchMore = false;
+                    } else {
+                        fetchMore = false;
+                    }
+                }
+
+                populateFilterOptions();
+                applyFilters();
+
+            } catch(e) {
+                console.error("Gagal memuat cache periode", e);
+            }
+
+            if(loader) loader.classList.add('hidden');
+        }
+
+        function populateFilterOptions() {
+            const kecSet = new Set();
+            const genSet = new Set();
+            const disSet = new Set();
+            const kawinSet = new Set();
+
+            rawVoterCache.forEach(r => {
+                if(r.kecamatan) kecSet.add(r.kecamatan);
+                if(r.generation) genSet.add(r.generation);
+                if(r.disability) disSet.add(r.disability);
+                if(r.marital_status) kawinSet.add(r.marital_status);
+            });
+
+            const kecEl = document.getElementById('filterKecamatan');
+            kecEl.innerHTML = '<option value="ALL">SEMUA KECAMATAN</option>';
+            Array.from(kecSet).sort().forEach(k => {
+                kecEl.innerHTML += `<option value="${k}">${k}</option>`;
+            });
+
+            updateDesaOptions();
+
+            const genEl = document.getElementById('filterGenerasi');
+            genEl.innerHTML = '<option value="ALL">SEMUA GENERASI</option>';
+            Array.from(genSet).sort().forEach(g => {
+                genEl.innerHTML += `<option value="${g}">${g}</option>`;
+            });
+
+            const disEl = document.getElementById('filterDisabilitas');
+            disEl.innerHTML = '<option value="ALL">SEMUA DISABILITAS</option>';
+            Array.from(disSet).sort().forEach(d => {
+                disEl.innerHTML += `<option value="${d}">${d}</option>`;
+            });
+
+            const kawinEl = document.getElementById('filterPerkawinan');
+            kawinEl.innerHTML = '<option value="ALL">SEMUA STATUS</option>';
+            Array.from(kawinSet).sort().forEach(kw => {
+                kawinEl.innerHTML += `<option value="${kw}">${kw}</option>`;
+            });
+        }
+
+        function onKecamatanChange() {
+            updateDesaOptions();
+            applyFilters();
+        }
+
+        function updateDesaOptions() {
+            const selectedKec = document.getElementById('filterKecamatan').value;
+            const desaSet = new Set();
+
+            rawVoterCache.forEach(r => {
+                if(selectedKec === 'ALL' || r.kecamatan === selectedKec) {
+                    if(r.desa) desaSet.add(r.desa);
+                }
+            });
+
+            const desaEl = document.getElementById('filterDesa');
+            desaEl.innerHTML = '<option value="ALL">SEMUA DESA</option>';
+            Array.from(desaSet).sort().forEach(ds => {
+                desaEl.innerHTML += `<option value="${ds}">${ds}</option>`;
+            });
+        }
+
+        function resetFilters() {
+            document.getElementById('filterKecamatan').value = 'ALL';
+            updateDesaOptions();
+            document.getElementById('filterGenerasi').value = 'ALL';
+            document.getElementById('filterDisabilitas').value = 'ALL';
+            document.getElementById('filterPerkawinan').value = 'ALL';
+            applyFilters();
+        }
+
+        function applyFilters() {
+            const fKec = document.getElementById('filterKecamatan').value;
+            const fDesa = document.getElementById('filterDesa').value;
+            const fGen = document.getElementById('filterGenerasi').value;
+            const fDis = document.getElementById('filterDisabilitas').value;
+            const fKawin = document.getElementById('filterPerkawinan').value;
+
+            let aktifL = 0, aktifP = 0;
+            rawVoterCache.forEach(r => {
+                if(fKec !== 'ALL' && r.kecamatan !== fKec) return;
+                if(fDesa !== 'ALL' && r.desa !== fDesa) return;
+                if(fGen !== 'ALL' && r.generation !== fGen) return;
+                if(fDis !== 'ALL' && r.disability !== fDis) return;
+                if(fKawin !== 'ALL' && r.marital_status !== fKawin) return;
+
+                if(r.gender === 'L') aktifL += r.total_count;
+                if(r.gender === 'P') aktifP += r.total_count;
+            });
+
+            document.getElementById('dashAktifL').innerText = formatID(aktifL);
+            document.getElementById('dashAktifP').innerText = formatID(aktifP);
+            document.getElementById('dashAktifTotal').innerText = formatID(aktifL + aktifP);
+
+            let mutB_L = 0, mutB_P = 0;
+            let mutU_L = 0, mutU_P = 0;
+            let mutTMS_L = 0, mutTMS_P = 0;
+            let tmsDetail = {};
+
+            rawMutationCache.forEach(r => {
+                if(fKec !== 'ALL' && r.kecamatan !== fKec) return;
+                if(fDesa !== 'ALL' && r.desa !== fDesa) return;
+
+                if(r.mutation_type === 'BARU') {
+                    if(r.gender === 'L') mutB_L += r.total_count;
+                    if(r.gender === 'P') mutB_P += r.total_count;
+                } else if(r.mutation_type === 'UBAH') {
+                    if(r.gender === 'L') mutU_L += r.total_count;
+                    if(r.gender === 'P') mutU_P += r.total_count;
+                } else if(r.mutation_type === 'TMS') {
+                    if(r.gender === 'L') mutTMS_L += r.total_count;
+                    if(r.gender === 'P') mutTMS_P += r.total_count;
+                    tmsDetail[r.mutation_code] = (tmsDetail[r.mutation_code] || 0) + r.total_count;
+                }
+            });
+
+            document.getElementById('dashMutasiB').innerText = formatID(mutB_L + mutB_P);
+            document.getElementById('dashMutasiBDetail').innerText = `L: ${formatID(mutB_L)} • P: ${formatID(mutB_P)}`;
+
+            document.getElementById('dashMutasiU').innerText = formatID(mutU_L + mutU_P);
+            document.getElementById('dashMutasiUDetail').innerText = `L: ${formatID(mutU_L)} • P: ${formatID(mutU_P)}`;
+
+            document.getElementById('dashMutasiTMS').innerText = formatID(mutTMS_L + mutTMS_P);
+            document.getElementById('dashMutasiTMSDetailLP').innerText = `L: ${formatID(mutTMS_L)} • P: ${formatID(mutTMS_P)}`;
+
+            dbClient.from('mutation_codes').select('code, label').eq('type', 'TMS').then(({ data: mc }) => {
                 let mcMap = {};
                 if(mc) mc.forEach(m => mcMap[m.code] = m.label);
 
-                // Buat String Detail TMS
                 let tmsStr = [];
                 for(let code in tmsDetail) {
                     let label = mcMap[code] || `Kode ${code}`;
-                    tmsStr.push(`${label}: ${tmsDetail[code].toLocaleString()}`);
+                    tmsStr.push(`${label}: ${formatID(tmsDetail[code])}`);
                 }
-                document.getElementById('dashTMSDetail').innerText = tmsStr.length > 0 ? tmsStr.join(' | ') : "Detail: -";
-
-            } catch(e) {
-                console.error("Gagal load dashboard", e);
-            }
-
-            document.getElementById('dashboardLoader').classList.add('hidden');
+                document.getElementById('dashTMSDetail').innerText = tmsStr.length > 0 ? tmsStr.join(' • ') : "Detail: Nihil";
+            });
         }
 
-        // INIT SAAT HALAMAN DIMUAT
+        // ================= REKAPITULASI DRILL-DOWN & SEARCH LOGIC =================
+        function rekapGoBack() {
+            if(rekapLevel === 'TPS') {
+                rekapLevel = 'DESA';
+                rekapSelectedDesa = null;
+            } else if(rekapLevel === 'DESA') {
+                rekapLevel = 'KECAMATAN';
+                rekapSelectedKec = null;
+            }
+            // Clear search when going back up hierarchy for better user experience
+            document.getElementById('rekapSearch').value = '';
+            renderRekapitulasiTable();
+        }
+
+        function handleRekapClick(name) {
+            if(rekapLevel === 'KECAMATAN') {
+                rekapSelectedKec = name;
+                rekapLevel = 'DESA';
+            } else if(rekapLevel === 'DESA') {
+                rekapSelectedDesa = name;
+                rekapLevel = 'TPS';
+            }
+            document.getElementById('rekapSearch').value = '';
+            renderRekapitulasiTable();
+        }
+
+        function renderRekapitulasiTable() {
+            const tbody = document.getElementById('rekapTableBody');
+            const titleEl = document.getElementById('rekapTitle');
+            const subTitleEl = document.getElementById('rekapSubTitle');
+            const colHeaderEl = document.getElementById('rekapColHeader');
+            const backBtn = document.getElementById('rekapBackBtn');
+            const backText = document.getElementById('rekapBackText');
+
+            if(!tbody) return;
+
+            if(!rawVoterCache || rawVoterCache.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="p-6 text-center text-slate-500 font-mono">Belum ada data cache periode aktif. Pilih periode di dashboard terlebih dahulu.</td></tr>`;
+                return;
+            }
+
+            const searchKey = document.getElementById('rekapSearch') ? document.getElementById('rekapSearch').value.trim().toUpperCase() : '';
+            let summaryMap = {};
+
+            if(rekapLevel === 'KECAMATAN') {
+                titleEl.innerText = "Rekapitulasi per Kecamatan";
+                subTitleEl.innerText = "Klik pada nama kecamatan untuk melihat rincian Desa/Kelurahan.";
+                colHeaderEl.innerText = "Kecamatan";
+                backBtn.classList.add('hidden');
+
+                // If user types a search query while on KECAMATAN level, we can also check if it matches any desa across counties, or filter kecamatan directly.
+                // To allow indexing both kecamatan and desa names even from the main view:
+                rawVoterCache.forEach(r => {
+                    let kec = r.kecamatan || 'LAINNYA';
+                    let desa = r.desa || '';
+                    
+                    // If searchKey is active, check if either kecamatan or desa matches
+                    if(searchKey && !kec.includes(searchKey) && !desa.includes(searchKey)) {
+                        return;
+                    }
+
+                    if(!summaryMap[kec]) summaryMap[kec] = { aktifL: 0, aktifP: 0, baru: 0, tms: 0, ubah: 0 };
+                    if(r.gender === 'L') summaryMap[kec].aktifL += r.total_count;
+                    if(r.gender === 'P') summaryMap[kec].aktifP += r.total_count;
+                });
+
+                rawMutationCache.forEach(r => {
+                    let kec = r.kecamatan || 'LAINNYA';
+                    let desa = r.desa || '';
+                    if(searchKey && !kec.includes(searchKey) && !desa.includes(searchKey)) {
+                        return;
+                    }
+
+                    if(!summaryMap[kec]) summaryMap[kec] = { aktifL: 0, aktifP: 0, baru: 0, tms: 0, ubah: 0 };
+                    if(r.mutation_type === 'BARU') summaryMap[kec].baru += r.total_count;
+                    if(r.mutation_type === 'TMS') summaryMap[kec].tms += r.total_count;
+                    if(r.mutation_type === 'UBAH') summaryMap[kec].ubah += r.total_count;
+                });
+
+            } else if(rekapLevel === 'DESA') {
+                titleEl.innerText = `Kecamatan: ${rekapSelectedKec}`;
+                subTitleEl.innerText = "Klik pada nama desa/kelurahan untuk melihat rincian TPS.";
+                colHeaderEl.innerText = "Desa / Kelurahan";
+                backBtn.classList.remove('hidden');
+                backText.innerText = "Kembali ke Kecamatan";
+
+                rawVoterCache.forEach(r => {
+                    if(r.kecamatan === rekapSelectedKec) {
+                        let ds = r.desa || 'LAINNYA';
+                        if(searchKey && !ds.includes(searchKey)) return;
+
+                        if(!summaryMap[ds]) summaryMap[ds] = { aktifL: 0, aktifP: 0, baru: 0, tms: 0, ubah: 0 };
+                        if(r.gender === 'L') summaryMap[ds].aktifL += r.total_count;
+                        if(r.gender === 'P') summaryMap[ds].aktifP += r.total_count;
+                    }
+                });
+
+                rawMutationCache.forEach(r => {
+                    if(r.kecamatan === rekapSelectedKec) {
+                        let ds = r.desa || 'LAINNYA';
+                        if(searchKey && !ds.includes(searchKey)) return;
+
+                        if(!summaryMap[ds]) summaryMap[ds] = { aktifL: 0, aktifP: 0, baru: 0, tms: 0, ubah: 0 };
+                        if(r.mutation_type === 'BARU') summaryMap[ds].baru += r.total_count;
+                        if(r.mutation_type === 'TMS') summaryMap[ds].tms += r.total_count;
+                        if(r.mutation_type === 'UBAH') summaryMap[ds].ubah += r.total_count;
+                    }
+                });
+
+            } else if(rekapLevel === 'TPS') {
+                titleEl.innerText = `${rekapSelectedKec} > Desa ${rekapSelectedDesa}`;
+                subTitleEl.innerText = "Rincian data pemilih berdasarkan TPS.";
+                colHeaderEl.innerText = "Nomor TPS";
+                backBtn.classList.remove('hidden');
+                backText.innerText = "Kembali ke Desa";
+
+                rawVoterCache.forEach(r => {
+                    if(r.kecamatan === rekapSelectedKec && r.desa === rekapSelectedDesa) {
+                        let tps = `TPS ${r.tps || '001'}`;
+                        if(searchKey && !tps.includes(searchKey)) return;
+
+                        if(!summaryMap[tps]) summaryMap[tps] = { aktifL: 0, aktifP: 0, baru: 0, tms: 0, ubah: 0 };
+                        if(r.gender === 'L') summaryMap[tps].aktifL += r.total_count;
+                        if(r.gender === 'P') summaryMap[tps].aktifP += r.total_count;
+                    }
+                });
+
+                rawMutationCache.forEach(r => {
+                    if(r.kecamatan === rekapSelectedKec && r.desa === rekapSelectedDesa) {
+                        let tps = `TPS ${r.tps || '001'}`;
+                        if(searchKey && !tps.includes(searchKey)) return;
+
+                        if(!summaryMap[tps]) summaryMap[tps] = { aktifL: 0, aktifP: 0, baru: 0, tms: 0, ubah: 0 };
+                        if(r.mutation_type === 'BARU') summaryMap[tps].baru += r.total_count;
+                        if(r.mutation_type === 'TMS') summaryMap[tps].tms += r.total_count;
+                        if(r.mutation_type === 'UBAH') summaryMap[tps].ubah += r.total_count;
+                    }
+                });
+            }
+
+            let sortedKeys = Object.keys(summaryMap).sort();
+
+            if(sortedKeys.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="p-6 text-center text-slate-500 font-mono">Tidak ditemukan wilayah atau desa yang cocok dengan kata kunci "${searchKey}".</td></tr>`;
+                return;
+            }
+
+            let html = '';
+            let totalAktifL = 0, totalAktifP = 0, totalBaru = 0, totalTms = 0, totalUbah = 0;
+
+            sortedKeys.forEach((keyName, idx) => {
+                let d = summaryMap[keyName];
+                let totAktif = d.aktifL + d.aktifP;
+                totalAktifL += d.aktifL;
+                totalAktifP += d.aktifP;
+                totalBaru += d.baru;
+                totalTms += d.tms;
+                totalUbah += d.ubah;
+
+                let isClickable = rekapLevel !== 'TPS';
+                let nameCellHtml = isClickable 
+                    ? `<button onclick="handleRekapClick('${keyName}')" class="font-bold text-emerald-400 hover:text-emerald-300 hover:underline text-left uppercase flex items-center gap-1.5 transition"><span>📍</span> ${keyName} <span class="text-[10px] text-slate-500">▶</span></button>`
+                    : `<span class="font-bold text-white uppercase">${keyName}</span>`;
+
+                html += `
+                    <tr class="hover:bg-slate-800/40 transition">
+                        <td class="p-4 text-slate-400 font-mono">${idx + 1}</td>
+                        <td class="p-4">${nameCellHtml}</td>
+                        <td class="p-4 text-right font-mono text-slate-300">${formatID(d.aktifL)}</td>
+                        <td class="p-4 text-right font-mono text-pink-400">${formatID(d.aktifP)}</td>
+                        <td class="p-4 text-right font-mono font-bold text-goldAccent">${formatID(totAktif)}</td>
+                        <td class="p-4 text-right font-mono text-emerald-400">${formatID(d.baru)}</td>
+                        <td class="p-4 text-right font-mono text-rose-400">${formatID(d.tms)}</td>
+                        <td class="p-4 text-right font-mono text-amber-400">${formatID(d.ubah)}</td>
+                    </tr>
+                `;
+            });
+
+            // Baris Total Keseluruhan
+            html += `
+                <tr class="bg-[#151d36]/80 font-bold border-t-2 border-[#1e294b]">
+                    <td colspan="2" class="p-4 text-white uppercase tracking-wider">TOTAL KESELURUHAN</td>
+                    <td class="p-4 text-right font-mono text-white">${formatID(totalAktifL)}</td>
+                    <td class="p-4 text-right font-mono text-pink-400">${formatID(totalAktifP)}</td>
+                    <td class="p-4 text-right font-mono text-goldAccent text-sm">${formatID(totalAktifL + totalAktifP)}</td>
+                    <td class="p-4 text-right font-mono text-emerald-400">${formatID(totalBaru)}</td>
+                    <td class="p-4 text-right font-mono text-rose-400">${formatID(totalTms)}</td>
+                    <td class="p-4 text-right font-mono text-amber-400">${formatID(totalUbah)}</td>
+                </tr>
+            `;
+
+            tbody.innerHTML = html;
+        }
+
         window.onload = () => {
-            checkAuth();
             loadPeriodsAndDashboard();
         };
     </script>
