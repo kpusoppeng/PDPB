@@ -587,20 +587,24 @@
         };
 
         function loadTextCustomization() {
-            const custom = JSON.parse(localStorage.getItem('pdpb_custom_texts') || JSON.stringify(defaultTexts));
-            
-            document.getElementById('customHeaderTitle').innerText = custom.headerTitle;
-            document.getElementById('customHeaderSub').innerText = custom.headerSub;
-            document.getElementById('customDashTitle').innerText = custom.dashTitle;
-            document.getElementById('customDashSub').innerText = custom.dashSub;
+    const custom = JSON.parse(localStorage.getItem('pdpb_custom_texts') || JSON.stringify(defaultTexts));
+    
+    // Header Utama Desktop & Mobile
+    document.getElementById('customHeaderTitle').innerText = custom.headerTitle;
+    document.getElementById('customHeaderSub').innerText = custom.headerSub;
+    
+    // Judul & Subjudul Dashboard (SS1)
+    document.getElementById('customDashTitle').innerText = custom.dashTitle;
+    document.getElementById('customDashSub').innerText = custom.dashSub;
 
-            if(document.getElementById('cfgHeaderTitle')) {
-                document.getElementById('cfgHeaderTitle').value = custom.headerTitle;
-                document.getElementById('cfgHeaderSub').value = custom.headerSub;
-                document.getElementById('cfgDashTitle').value = custom.dashTitle;
-                document.getElementById('cfgDashSub').value = custom.dashSub;
-            }
-        }
+    // Sinkronisasi dengan Input Admin Panel
+    if(document.getElementById('cfgHeaderTitle')) {
+        document.getElementById('cfgHeaderTitle').value = custom.headerTitle;
+        document.getElementById('cfgHeaderSub').value = custom.headerSub;
+        document.getElementById('cfgDashTitle').value = custom.dashTitle;
+        document.getElementById('cfgDashSub').value = custom.dashSub;
+    }
+}
 
         function saveTextCustomization() {
             const custom = {
