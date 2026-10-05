@@ -58,7 +58,6 @@
         .neon-badge {
             box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
         }
-        /* Efek Neon Spinner Besar */
         .neon-spinner {
             width: 80px;
             height: 80px;
@@ -76,7 +75,7 @@
 </head>
 <body class="font-sans antialiased min-h-screen flex flex-col selection:bg-emerald-500 selection:text-white">
 
-    <!-- GLOBAL LOADING OVERLAY DENGAN NEON SPINNER -->
+    <!-- GLOBAL LOADING OVERLAY -->
     <div id="globalLoader" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/80 backdrop-blur-md hidden">
         <div class="neon-spinner mb-4"></div>
         <div id="globalLoaderText" class="text-emerald-400 font-mono text-xs tracking-widest uppercase font-bold animate-pulse">Memuat Data...</div>
@@ -102,7 +101,7 @@
         </div>
     </div>
 
-    <!-- MODAL FILTER KHUSUS HP (MOBILE) DENGAN STYLING FONT KUSTOM -->
+    <!-- MODAL FILTER KHUSUS HP -->
     <div id="mobileFilterModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm hidden p-4">
         <div class="saas-card max-w-md w-full p-6 space-y-4 border border-emerald-500/40 shadow-2xl max-h-[90vh] overflow-y-auto font-sans">
             <div class="flex justify-between items-center border-b border-[#1e294b] pb-3">
@@ -170,7 +169,7 @@
         </div>
     </div>
 
-    <!-- TOP HEADER / NAVBAR -->
+    <!-- TOP HEADER / NAVBAR (SEMUA MENU UTAMA TAMPIL TRANSPARAN TANPA HIDDEN) -->
     <header class="bg-[#090d16] border-b border-[#1e294b] sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-4 sm:px-6">
             <div class="flex justify-between items-center h-16 sm:h-20">
@@ -182,43 +181,42 @@
                     </div>
                 </div>
 
+                <!-- DESKTOP NAVBAR: 5 Menu Komplet Terlihat Publik -->
                 <nav class="hidden md:flex items-center gap-2">
-                    <button onclick="navigate('dashboard')" id="btnNavDashboard" class="saas-nav-btn active px-4 py-2 rounded-xl text-white text-xs font-bold tracking-wide flex items-center gap-2 transition">
+                    <button onclick="navigate('dashboard')" id="btnNavDashboard" class="saas-nav-btn active px-3.5 py-2 rounded-xl text-white text-xs font-bold tracking-wide flex items-center gap-1.5 transition">
                         📊 Dashboard
                     </button>
-                    <button onclick="navigate('rekapitulasi')" id="btnNavRekap" class="saas-nav-btn px-4 py-2 rounded-xl text-slate-400 hover:text-white text-xs font-semibold tracking-wide flex items-center gap-2 transition">
+                    <button onclick="navigate('rekapitulasi')" id="btnNavRekap" class="saas-nav-btn px-3.5 py-2 rounded-xl text-slate-400 hover:text-white text-xs font-semibold tracking-wide flex items-center gap-1.5 transition">
                         📑 Rekapitulasi
                     </button>
-                    <button onclick="navigate('pencarian')" id="btnNavPencarian" class="hidden saas-nav-btn px-4 py-2 rounded-xl text-slate-400 hover:text-white text-xs font-semibold tracking-wide flex items-center gap-2 transition">
-                        🔍 Cari Pemilih
+                    <button onclick="navigate('pencarian')" id="btnNavPencarian" class="saas-nav-btn px-3.5 py-2 rounded-xl text-slate-400 hover:text-white text-xs font-semibold tracking-wide flex items-center gap-1.5 transition">
+                        🔍 Data Pemilih
                     </button>
-                    <!-- HANYA OWNER YANG BISA MELIHAT TOMBOL INI -->
-                    <button onclick="navigate('admin')" id="navAdmin" class="hidden saas-nav-btn px-4 py-2 rounded-xl text-slate-400 hover:text-white text-xs font-semibold tracking-wide flex items-center gap-2 transition">
-                        🔒 Admin Panel
+                    <button onclick="navigate('admin')" id="btnNavAdmin" class="saas-nav-btn px-3.5 py-2 rounded-xl text-slate-400 hover:text-white text-xs font-semibold tracking-wide flex items-center gap-1.5 transition">
+                        🔒 Panel Admin
                     </button>
-                    <button id="btnLogout" onclick="logout()" class="hidden px-4 py-2 rounded-xl text-rose-400 hover:bg-rose-950/40 text-xs font-bold tracking-wide transition">
-                        Keluar
+                    <button onclick="navigate('login')" id="btnNavLogin" class="saas-nav-btn px-3.5 py-2 rounded-xl text-emerald-400 hover:text-white text-xs font-bold tracking-wide flex items-center gap-1.5 transition border-emerald-500/40">
+                        👤 <span id="navLoginText">Login</span>
                     </button>
                 </nav>
             </div>
         </div>
-        <!-- Mobile Bottom Nav Bar -->
-        <div class="flex md:hidden bg-[#11172a] border-t border-[#1e294b] px-2 py-2.5 justify-around items-center">
-            <button onclick="navigate('dashboard')" id="btnMobDashboard" class="text-emerald-400 text-xs font-bold flex flex-col items-center gap-1">
+        <!-- MOBILE BOTTOM NAVBAR (5 Menu Komplet Terlihat Publik) -->
+        <div class="flex md:hidden bg-[#11172a] border-t border-[#1e294b] px-1 py-2.5 justify-around items-center">
+            <button onclick="navigate('dashboard')" id="btnMobDashboard" class="text-emerald-400 text-[11px] font-bold flex flex-col items-center gap-1">
                 <span>📊</span> Dashboard
             </button>
-            <button onclick="navigate('rekapitulasi')" id="btnMobRekap" class="text-slate-400 text-xs font-semibold flex flex-col items-center gap-1">
+            <button onclick="navigate('rekapitulasi')" id="btnMobRekap" class="text-slate-400 text-[11px] font-semibold flex flex-col items-center gap-1">
                 <span>📑</span> Rekap
             </button>
-            <button onclick="navigate('pencarian')" id="btnMobPencarian" class="hidden text-slate-400 text-xs font-semibold flex flex-col items-center gap-1">
-                <span>🔍</span> Cari
+            <button onclick="navigate('pencarian')" id="btnMobPencarian" class="text-slate-400 text-[11px] font-semibold flex flex-col items-center gap-1">
+                <span>🔍</span> Data Pemilih
             </button>
-            <!-- HANYA OWNER YANG BISA MELIHAT TOMBOL INI DI MOBILE -->
-            <button onclick="navigate('admin')" id="btnMobAdmin" class="hidden text-slate-400 text-xs font-semibold flex flex-col items-center gap-1">
+            <button onclick="navigate('admin')" id="btnMobAdmin" class="text-slate-400 text-[11px] font-semibold flex flex-col items-center gap-1">
                 <span>🔒</span> Admin
             </button>
-            <button id="btnMobLogout" onclick="logout()" class="hidden text-rose-400 text-xs font-semibold flex flex-col items-center gap-1">
-                <span>🚪</span> Keluar
+            <button onclick="navigate('login')" id="btnMobLogin" class="text-emerald-400 text-[11px] font-semibold flex flex-col items-center gap-1">
+                <span>👤</span> <span id="mobLoginText">Login</span>
             </button>
         </div>
     </header>
@@ -241,7 +239,7 @@
                 </div>
             </div>
 
-            <!-- TOMBOL BADGE FILTER KHUSUS HP (Tampil di HP, Tersembunyi di Desktop) -->
+            <!-- TOMBOL BADGE FILTER KHUSUS HP -->
             <div class="block md:hidden">
                 <button onclick="openMobileFilterModal()" class="w-full bg-emerald-600/20 border border-emerald-500/40 text-emerald-400 hover:bg-emerald-600/30 px-4 py-3 rounded-xl text-xs font-bold flex items-center justify-between transition shadow-lg">
                     <span class="flex items-center gap-2"><span>🔍</span> Buka Panel Filter Data</span>
@@ -249,7 +247,7 @@
                 </button>
             </div>
 
-            <!-- PANEL FILTER KUSTOMISASI DATA (Tampil di Desktop, Tersembunyi di HP karena dipindah ke Modal) -->
+            <!-- PANEL FILTER KUSTOMISASI DATA (DESKTOP) -->
             <div class="hidden md:block saas-card p-4 sm:p-5 space-y-3 border border-emerald-500/20 bg-gradient-to-r from-[#11172a] to-[#0f172a]">
                 <div class="flex justify-between items-center border-b border-[#1e294b] pb-2 sm:pb-3">
                     <div class="text-[11px] sm:text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-2">
@@ -397,7 +395,7 @@
             </div>
         </section>
 
-        <!-- ================= PENCARIAN PEMILIH PAGE (TAB EKSKLUSIF) ================= -->
+        <!-- ================= PENCARIAN PEMILIH PAGE (TERPROTEKSI: OWNER & OPERATOR) ================= -->
         <section id="page-pencarian" class="hidden space-y-4">
             <div class="sticky top-20 z-30 saas-card p-4 sm:p-5 space-y-3 border border-emerald-500/30 bg-[#11172a]/95 backdrop-blur-md shadow-2xl">
                 <div class="flex flex-col md:flex-row justify-between items-center gap-4">
@@ -414,9 +412,7 @@
                 </div>
             </div>
 
-            <!-- CONTAINER HASIL PENCARIAN (RESPONSIF: TABEL DI DESKTOP, KARTU VERTIKAL DI HP) -->
             <div class="saas-card overflow-hidden">
-                <!-- TAMPILAN DESKTOP (Tabel Lebar) -->
                 <div class="hidden md:block overflow-x-auto w-full">
                     <table class="w-full text-left border-collapse text-xs">
                         <thead>
@@ -444,7 +440,6 @@
                     </table>
                 </div>
 
-                <!-- TAMPILAN MOBILE / HP (Card Layout Bersusun ke Bawah yang Rapi & Estetik) -->
                 <div class="block md:hidden p-3 sm:p-4">
                     <div id="tabSearchCardContainer" class="space-y-3">
                         <div class="p-6 text-center text-slate-500 font-mono text-xs">Gunakan kotak pencarian di atas untuk menampilkan data pemilih.</div>
@@ -453,24 +448,16 @@
             </div>
         </section>
 
-        <!-- ================= ADMIN / IMPORT PAGE (HANYA OWNER) ================= -->
+        <!-- ================= PANEL ADMIN PAGE (TERPROTEKSI EKSLUSIF: OWNER ONLY) ================= -->
         <section id="page-admin" class="hidden max-w-3xl mx-auto space-y-6">
-            <div id="loginArea" class="saas-card p-6 sm:p-8 space-y-6">
-                <div class="text-center space-y-2">
-                    <div class="w-12 h-12 bg-emerald-600 text-white rounded-xl flex items-center justify-center font-bold text-lg mx-auto neon-badge">🔐</div>
-                    <h2 class="text-lg font-bold text-white">Portal Administrator & Owner</h2>
-                    <p class="text-xs text-slate-400">Silakan masuk menggunakan akun Google resmi Owner.</p>
-                </div>
-                <div class="space-y-4 pt-2 max-w-sm mx-auto">
-                    <button onclick="handleGoogleLogin()" class="w-full bg-white hover:bg-slate-100 text-slate-900 font-bold py-3 px-4 rounded-xl transition text-xs tracking-wide shadow-lg flex items-center justify-center gap-3">
-                        <svg class="w-4 h-4" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.13 0-5.78-2.11-6.73-4.96H1.18v3.15C3.15 21.32 7.24 24 12 24z"/><path fill="#FBBC05" d="M5.27 14.24c-.25-.72-.38-1.49-.38-2.24s.13-1.52.38-2.24V6.6H1.18C.43 8.12 0 9.85 0 12s.43 3.88 1.18 5.4l4.09-3.16z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.24 0 3.15 2.68 1.18 6.6l4.09 3.15c.95-2.85 3.6-4.96 6.73-4.96z"/></svg>
-                        Masuk dengan Google
-                    </button>
-                    <p id="loginMsg" class="text-rose-400 text-xs text-center font-medium"></p>
-                </div>
+            <div id="adminRestrictedNotice" class="hidden saas-card p-6 sm:p-8 text-center space-y-4 border-rose-950/50">
+                <div class="w-12 h-12 bg-rose-600/20 text-rose-400 border border-rose-500/40 rounded-xl flex items-center justify-center font-bold text-lg mx-auto">🔒</div>
+                <h2 class="text-lg font-bold text-white">Akses Terbatas (Owner Only)</h2>
+                <p class="text-xs text-slate-400 max-w-md mx-auto">Halaman Panel Admin hanya untuk developer. Silakan akses menu lain.</p>
+                <button onclick="navigate('login')" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-6 py-2.5 rounded-xl transition text-xs shadow-lg">Menuju Halaman Login</button>
             </div>
 
-            <div id="uploadArea" class="hidden space-y-6">
+            <div id="adminContentArea" class="hidden space-y-6">
                 <!-- PANEL KUSTOMISASI TEKS HEADER & DASHBOARD -->
                 <div class="saas-card p-6 sm:p-8 space-y-4 border-emerald-500/30 bg-gradient-to-r from-[#11172a] to-[#0f172a]">
                     <div>
@@ -501,7 +488,7 @@
                 </div>
 
                 <!-- MANAJEMEN OPERATOR KHUSUS OWNER -->
-                <div id="ownerOperatorCard" class="hidden saas-card p-6 sm:p-8 space-y-4 border-amber-500/30 bg-gradient-to-r from-[#11172a] to-[#161d2f]">
+                <div class="saas-card p-6 sm:p-8 space-y-4 border-amber-500/30 bg-gradient-to-r from-[#11172a] to-[#161d2f]">
                     <div>
                         <h2 class="text-base font-bold text-amber-400 flex items-center gap-2"><span>👥</span> Manajemen Akun Operator</h2>
                         <p class="text-xs text-slate-400 mt-0.5">Daftarkan email Google operator agar dapat mengakses sistem.</p>
@@ -510,12 +497,10 @@
                         <input type="email" id="newOperatorEmail" placeholder="email.operator@gmail.com" class="flex-1 bg-[#090d16] border border-[#1e294b] text-white px-3 py-2.5 rounded-xl text-xs focus:outline-none focus:border-amber-500">
                         <button onclick="addOperator()" class="bg-amber-600 hover:bg-amber-500 text-white font-bold px-4 py-2.5 rounded-xl transition text-xs shadow-lg">Tambah Operator</button>
                     </div>
-                    <div id="operatorListContainer" class="text-xs space-y-1 pt-2 max-h-36 overflow-y-auto">
-                        <!-- Daftar operator termuat otomatis -->
-                    </div>
+                    <div id="operatorListContainer" class="text-xs space-y-1 pt-2 max-h-36 overflow-y-auto"></div>
                 </div>
 
-                <!-- IMPORT DATA PDPB DENGAN OPSI ARSIP PERIODE LAMA -->
+                <!-- IMPORT DATA PDPB -->
                 <div class="saas-card p-6 sm:p-8 space-y-6">
                     <div>
                         <h2 class="text-lg font-bold text-white">Import Data PDPB</h2>
@@ -525,9 +510,7 @@
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">Tahun Anggaran</label>
-                            <select id="impTahun" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-3 py-2.5 rounded-xl text-xs font-bold font-sans">
-                                <!-- Otomatis terisi -->
-                            </select>
+                            <select id="impTahun" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-3 py-2.5 rounded-xl text-xs font-bold font-sans"></select>
                         </div>
                         <div>
                             <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">Periode Triwulan</label>
@@ -537,13 +520,12 @@
                         </div>
                     </div>
 
-                    <!-- FITUR ARSIP PERIODE LAMA (CHECKBOX SIMPAN DETAIL) -->
                     <div class="bg-[#090d16] border border-amber-500/40 p-4 rounded-xl flex items-start gap-3">
                         <input type="checkbox" id="checkSaveDetails" checked class="mt-0.5 w-4 h-4 accent-emerald-500 cursor-pointer">
                         <div class="space-y-0.5">
                             <label for="checkSaveDetails" class="text-xs font-bold text-amber-400 cursor-pointer">Simpan Data Rincian Individu (voter_details)</label>
                             <p class="text-[11px] text-slate-400 leading-relaxed">
-                                Centang opsi ini jika ingin data rincian pemilih (NIK, Nama, Alamat) dapat dicari di tab Cari Pemilih. <b>Hilangkan centang</b> jika mengunggah data arsip lama (misal 2018–2024) untuk menghemat kuota Supabase secara masif (hanya rekapitulasi statistik yang disimpan).
+                                Centang opsi ini jika ingin data rincian pemilih dapat dicari di tab Data Pemilih. <b>Hilangkan centang</b> jika mengunggah data arsip lama untuk menghemat kuota Supabase.
                             </p>
                         </div>
                     </div>
@@ -577,6 +559,35 @@
                 </div>
             </div>
         </section>
+
+        <!-- ================= LOGIN / LOGOUT PAGE ================= -->
+        <section id="page-login" class="hidden max-w-md mx-auto space-y-6 py-10">
+            <div id="loginFormCard" class="saas-card p-8 space-y-6">
+                <div class="text-center space-y-2">
+                    <div class="w-12 h-12 bg-emerald-600 text-white rounded-xl flex items-center justify-center font-bold text-lg mx-auto neon-badge">🔐</div>
+                    <h2 class="text-lg font-bold text-white">Autentikasi Pengguna</h2>
+                    <p class="text-xs text-slate-400">Masuk menggunakan akun Google resmi yang terotorisasi.</p>
+                </div>
+                <div class="space-y-4 pt-2">
+                    <button onclick="handleGoogleLogin()" class="w-full bg-white hover:bg-slate-100 text-slate-900 font-bold py-3.5 px-4 rounded-xl transition text-xs tracking-wide shadow-lg flex items-center justify-center gap-3">
+                        <svg class="w-4 h-4" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.13 0-5.78-2.11-6.73-4.96H1.18v3.15C3.15 21.32 7.24 24 12 24z"/><path fill="#FBBC05" d="M5.27 14.24c-.25-.72-.38-1.49-.38-2.24s.13-1.52.38-2.24V6.6H1.18C.43 8.12 0 9.85 0 12s.43 3.88 1.18 5.4l4.09-3.16z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.24 0 3.15 2.68 1.18 6.6l4.09 3.15c.95-2.85 3.6-4.96 6.73-4.96z"/></svg>
+                        Masuk dengan Google
+                    </button>
+                    <p id="loginMsg" class="text-rose-400 text-xs text-center font-medium"></p>
+                </div>
+            </div>
+
+            <div id="logoutCard" class="hidden saas-card p-8 space-y-6 text-center">
+                <div class="w-12 h-12 bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 rounded-xl flex items-center justify-center font-bold text-lg mx-auto">👤</div>
+                <div class="space-y-1">
+                    <h2 class="text-lg font-bold text-white">Anda Sudah Masuk</h2>
+                    <p id="loggedInUserEmail" class="text-xs text-emerald-400 font-mono font-semibold">-</p>
+                </div>
+                <button onclick="logout()" class="w-full bg-rose-600 hover:bg-rose-500 text-white font-bold py-3 rounded-xl transition text-xs tracking-wider shadow-lg shadow-rose-600/30">
+                    KELUAR DARI SISTEM (LOGOUT)
+                </button>
+            </div>
+        </section>
     </main>
 
     <!-- ================= JAVASCRIPT ================= -->
@@ -601,7 +612,6 @@
         let rekapSelectedKec = null;
         let rekapSelectedDesa = null;
 
-        // Default Teks UI
         const defaultTexts = {
             headerTitle: "KPU Kabupaten Soppeng",
             headerSub: "PDPB • EXECUTIVE DASHBOARD",
@@ -609,18 +619,11 @@
             dashSub: "PEMUTAKHIRAN DATA PEMILIH BERKELANJUTAN"
         };
 
-        // Memuat Teks Kustomisasi dari Supabase (Global)
         async function loadTextCustomization() {
             let custom = { ...defaultTexts };
-            
             if (dbClient) {
                 try {
-                    const { data, error } = await dbClient
-                        .from('app_settings')
-                        .select('*')
-                        .eq('id', 1)
-                        .single();
-                    
+                    const { data, error } = await dbClient.from('app_settings').select('*').eq('id', 1).single();
                     if (data && !error) {
                         custom = {
                             headerTitle: data.header_title || defaultTexts.headerTitle,
@@ -630,22 +633,15 @@
                         };
                     }
                 } catch (err) {
-                    console.log("Menggunakan teks bawaan (tabel app_settings belum siap):", err);
+                    console.log("Menggunakan teks bawaan:", err);
                 }
             }
 
-            // Perbarui elemen Header Utama & Dashboard di DOM
-            const elHeaderTitle = document.getElementById('customHeaderTitle');
-            const elHeaderSub = document.getElementById('customHeaderSub');
-            const elDashTitle = document.getElementById('customDashTitle');
-            const elDashSub = document.getElementById('customDashSub');
+            document.getElementById('customHeaderTitle').innerText = custom.headerTitle;
+            document.getElementById('customHeaderSub').innerText = custom.headerSub;
+            document.getElementById('customDashTitle').innerText = custom.dashTitle;
+            document.getElementById('customDashSub').innerText = custom.dashSub;
 
-            if (elHeaderTitle) elHeaderTitle.innerText = custom.headerTitle;
-            if (elHeaderSub) elHeaderSub.innerText = custom.headerSub;
-            if (elDashTitle) elDashTitle.innerText = custom.dashTitle;
-            if (elDashSub) elDashSub.innerText = custom.dashSub;
-
-            // Sinkronisasi dengan Input Admin Panel
             if(document.getElementById('cfgHeaderTitle')) {
                 document.getElementById('cfgHeaderTitle').value = custom.headerTitle;
                 document.getElementById('cfgHeaderSub').value = custom.headerSub;
@@ -654,7 +650,6 @@
             }
         }
 
-        // Menyimpan Kustomisasi Teks langsung ke Supabase (Global)
         async function saveTextCustomization() {
             const custom = {
                 header_title: document.getElementById('cfgHeaderTitle').value.trim() || defaultTexts.headerTitle,
@@ -664,29 +659,18 @@
             };
 
             showGlobalLoader("MENYIMPAN KE DATABASE...");
-
-            if (dbClient) {
-                try {
-                    const { error } = await dbClient
-                        .from('app_settings')
-                        .upsert({ id: 1, ...custom });
-                    
-                    if (error) throw error;
-                    
-                    hideGlobalLoader();
-                    await loadTextCustomization();
-                    showModal("Sukses", "Kustomisasi teks berhasil disimpan dan disinkronkan secara global ke database.", "✨");
-                } catch (err) {
-                    hideGlobalLoader();
-                    showModal("Gagal Menyimpan", `Error: ${err.message}<br><br>Pastikan tabel <b>app_settings</b> sudah dibuat di Supabase.`, "❌");
-                }
-            } else {
+            try {
+                const { error } = await dbClient.from('app_settings').upsert({ id: 1, ...custom });
+                if (error) throw error;
                 hideGlobalLoader();
-                showModal("Gagal", "Koneksi database tidak tersedia.", "❌");
+                await loadTextCustomization();
+                showModal("Sukses", "Kustomisasi teks berhasil disimpan dan disinkronkan.", "✨");
+            } catch (err) {
+                hideGlobalLoader();
+                showModal("Gagal", `Error: ${err.message}`, "❌");
             }
         }
 
-        // Fungsi Kontrol Loading Spinner
         function showGlobalLoader(text = "MEMUAT DATA...") {
             const loader = document.getElementById('globalLoader');
             const loaderText = document.getElementById('globalLoaderText');
@@ -741,7 +725,6 @@
             document.getElementById('customModal').classList.add('hidden');
         }
 
-        // Fungsi Kontrol Modal Filter Mobile
         function openMobileFilterModal() {
             document.getElementById('modalFilterKecamatan').innerHTML = document.getElementById('filterKecamatan').innerHTML;
             document.getElementById('modalFilterGenerasi').innerHTML = document.getElementById('filterGenerasi').innerHTML;
@@ -772,23 +755,16 @@
             document.getElementById('mobileFilterModal').classList.add('hidden');
         }
 
-        function onModalKecamatanChange() {
-            syncModalDesaOptions();
-        }
-
+        function onModalKecamatanChange() { syncModalDesaOptions(); }
         function syncModalDesaOptions() {
             const selectedKec = document.getElementById('modalFilterKecamatan').value;
             const desaSet = new Set();
             rawVoterCache.forEach(r => {
-                if(selectedKec === 'ALL' || r.kecamatan === selectedKec) {
-                    if(r.desa) desaSet.add(r.desa);
-                }
+                if(selectedKec === 'ALL' || r.kecamatan === selectedKec) { if(r.desa) desaSet.add(r.desa); }
             });
             const desaEl = document.getElementById('modalFilterDesa');
             desaEl.innerHTML = '<option value="ALL">SEMUA DESA</option>';
-            Array.from(desaSet).sort().forEach(ds => {
-                desaEl.innerHTML += `<option value="${ds}">${ds}</option>`;
-            });
+            Array.from(desaSet).sort().forEach(ds => { desaEl.innerHTML += `<option value="${ds}">${ds}</option>`; });
         }
 
         function updateFilterBadgeStatus() {
@@ -809,55 +785,64 @@
             }
         }
 
-        function navigate(pageId) {
-            // Mencegah operator/user membuka halaman admin
-            if (pageId === 'admin') {
-                const navAdmin = document.getElementById('navAdmin');
-                if (navAdmin && navAdmin.classList.contains('hidden')) {
-                    pageId = 'dashboard';
-                }
-            }
+        // ================= NAVIGASI HALAMAN DENGAN PENGAMANAN AKSES =================
+        async function navigate(pageId) {
+            if (!dbClient) return;
 
+            // Periksa sesi pengguna saat ini
+            const { data: { session } } = await dbClient.auth.getSession();
+            const userEmail = session ? session.user.email : null;
+            const isOwner = (userEmail === 'rendatinsoppeng@gmail.com');
+
+            // 1. Validasi Akses: PENCARIAN / DATA PEMILIH (Hanya Owner & Operator Terdaftar)
             if (pageId === 'pencarian') {
-                const btnNavPencarian = document.getElementById('btnNavPencarian');
-                if (btnNavPencarian && btnNavPencarian.classList.contains('hidden')) {
-                    pageId = 'dashboard';
+                if (!session) {
+                    showModal("Autentikasi Diperlukan", "Menu <b>Data Pemilih</b> khusus untuk Admin/Operator. Silakan login terlebih dahulu.", "🔒");
+                    pageId = 'login';
+                } else if (!isOwner) {
+                    const { data: opData } = await dbClient.from('operators').select('*').eq('email', userEmail).single();
+                    if (!opData) {
+                        showModal("Akses Ditolak", `Email <b>${userEmail}</b> tidak memiliki wewenang mengakses Data Pemilih.`, "❌");
+                        pageId = 'login';
+                    }
                 }
             }
 
-            ['dashboard', 'rekapitulasi', 'pencarian', 'admin'].forEach(p => {
+            // 2. Validasi Akses: PANEL ADMIN (Eksklusif Owner Only)
+            if (pageId === 'admin') {
+                if (!isOwner) {
+                    // Alih-alih langsung menolak, arahkan ke halaman admin dengan menampilkan pesan restricted
+                    ['dashboard', 'rekapitulasi', 'pencarian', 'admin', 'login'].forEach(p => {
+                        document.getElementById('page-' + p).classList.add('hidden');
+                    });
+                    document.getElementById('page-admin').classList.remove('hidden');
+                    
+                    const restrictedNotice = document.getElementById('adminRestrictedNotice');
+                    const adminContent = document.getElementById('adminContentArea');
+                    if(restrictedNotice) restrictedNotice.classList.remove('hidden');
+                    if(adminContent) adminContent.classList.add('hidden');
+                    updateNavbarActiveState('admin');
+                    return;
+                } else {
+                    const restrictedNotice = document.getElementById('adminRestrictedNotice');
+                    const adminContent = document.getElementById('adminContentArea');
+                    if(restrictedNotice) restrictedNotice.classList.add('hidden');
+                    if(adminContent) adminContent.classList.remove('hidden');
+                    loadOperatorsList();
+                    loadDeletePeriodsDropdown();
+                    generateYearOptions();
+                }
+            }
+
+            // Render Halaman
+            ['dashboard', 'rekapitulasi', 'pencarian', 'admin', 'login'].forEach(p => {
                 const el = document.getElementById('page-' + p);
                 if (el) el.classList.add('hidden');
             });
             const target = document.getElementById('page-' + pageId);
             if (target) target.classList.remove('hidden');
-            
-            const btnDash = document.getElementById('btnNavDashboard');
-            const btnRekap = document.getElementById('btnNavRekap');
-            const btnCari = document.getElementById('btnNavPencarian');
-            const btnAdmin = document.getElementById('navAdmin');
-            const btnMobDash = document.getElementById('btnMobDashboard');
-            const btnMobRekap = document.getElementById('btnMobRekap');
-            const btnMobCari = document.getElementById('btnMobPencarian');
-            const btnMobAdmin = document.getElementById('btnMobAdmin');
-            
-            if (btnDash) btnDash.className = pageId === 'dashboard' ? "saas-nav-btn active px-4 py-2 rounded-xl text-white text-xs font-bold tracking-wide flex items-center gap-2 transition" : "saas-nav-btn px-4 py-2 rounded-xl text-slate-400 hover:text-white text-xs font-semibold tracking-wide flex items-center gap-2 transition";
-            if (btnRekap) btnRekap.className = pageId === 'rekapitulasi' ? "saas-nav-btn active px-4 py-2 rounded-xl text-white text-xs font-bold tracking-wide flex items-center gap-2 transition" : "saas-nav-btn px-4 py-2 rounded-xl text-slate-400 hover:text-white text-xs font-semibold tracking-wide flex items-center gap-2 transition";
-            if (btnCari && !btnCari.classList.contains('hidden')) {
-                btnCari.className = pageId === 'pencarian' ? "saas-nav-btn active px-4 py-2 rounded-xl text-white text-xs font-bold tracking-wide flex items-center gap-2 transition" : "saas-nav-btn px-4 py-2 rounded-xl text-slate-400 hover:text-white text-xs font-semibold tracking-wide flex items-center gap-2 transition";
-            }
-            if (btnAdmin && !btnAdmin.classList.contains('hidden')) {
-                btnAdmin.className = pageId === 'admin' ? "saas-nav-btn active px-4 py-2 rounded-xl text-white text-xs font-bold tracking-wide flex items-center gap-2 transition" : "saas-nav-btn px-4 py-2 rounded-xl text-slate-400 hover:text-white text-xs font-semibold tracking-wide flex items-center gap-2 transition";
-            }
-            
-            if (btnMobDash) btnMobDash.className = pageId === 'dashboard' ? "text-emerald-400 text-xs font-bold flex flex-col items-center gap-1" : "text-slate-400 text-xs font-semibold flex flex-col items-center gap-1";
-            if (btnMobRekap) btnMobRekap.className = pageId === 'rekapitulasi' ? "text-emerald-400 text-xs font-bold flex flex-col items-center gap-1" : "text-slate-400 text-xs font-semibold flex flex-col items-center gap-1";
-            if (btnMobCari && !btnMobCari.classList.contains('hidden')) {
-                btnMobCari.className = pageId === 'pencarian' ? "text-emerald-400 text-xs font-bold flex flex-col items-center gap-1" : "text-slate-400 text-xs font-semibold flex flex-col items-center gap-1";
-            }
-            if (btnMobAdmin && !btnMobAdmin.classList.contains('hidden')) {
-                btnMobAdmin.className = pageId === 'admin' ? "text-emerald-400 text-xs font-bold flex flex-col items-center gap-1" : "text-slate-400 text-xs font-semibold flex flex-col items-center gap-1";
-            }
+
+            updateNavbarActiveState(pageId);
 
             if(pageId === 'dashboard') loadPeriodsAndDashboard();
             if(pageId === 'rekapitulasi') {
@@ -866,88 +851,74 @@
                 rekapSelectedDesa = null;
                 renderRekapitulasiTable();
             }
+            if(pageId === 'login') {
+                updateLoginStateUI(session);
+            }
+        }
+
+        function updateNavbarActiveState(pageId) {
+            const navIds = ['dashboard', 'rekapitulasi', 'pencarian', 'admin', 'login'];
+            navIds.forEach(p => {
+                const btn = document.getElementById('btnNav' + p.charAt(0).toUpperCase() + p.slice(1));
+                const btnMob = document.getElementById('btnMob' + p.charAt(0).toUpperCase() + p.slice(1));
+                
+                if(btn) {
+                    btn.className = (p === pageId) 
+                        ? "saas-nav-btn active px-3.5 py-2 rounded-xl text-white text-xs font-bold tracking-wide flex items-center gap-1.5 transition"
+                        : "saas-nav-btn px-3.5 py-2 rounded-xl text-slate-400 hover:text-white text-xs font-semibold tracking-wide flex items-center gap-1.5 transition";
+                }
+                if(btnMob) {
+                    btnMob.className = (p === pageId)
+                        ? "text-emerald-400 text-[11px] font-bold flex flex-col items-center gap-1"
+                        : "text-slate-400 text-[11px] font-semibold flex flex-col items-center gap-1";
+                }
+            });
         }
 
         async function handleGoogleLogin() {
-            showGlobalLoader("MENENGHUBUNGKAN KE GOOGLE...");
+            showGlobalLoader("MENYAMBUNGKAN KE GOOGLE...");
             const msg = document.getElementById('loginMsg');
-            msg.innerText = "Menghubungkan ke Google...";
             const { error } = await dbClient.auth.signInWithOAuth({
                 provider: 'google',
                 options: { redirectTo: window.location.href }
             });
             if(error) {
                 hideGlobalLoader();
-                msg.innerText = error.message;
+                if(msg) msg.innerText = error.message;
             }
         }
 
-        async function checkAuth() {
+        async function checkAuthStatusForNavbar() {
             if (!dbClient) return;
             try {
-                const { data: { session }, error } = await dbClient.auth.getSession();
-                if (error) throw error;
-
-                const loginArea = document.getElementById('loginArea');
-                const uploadArea = document.getElementById('uploadArea');
-                const navAdmin = document.getElementById('navAdmin');
-                const btnMobAdmin = document.getElementById('btnMobAdmin');
-                const btnNavPencarian = document.getElementById('btnNavPencarian');
-                const btnMobPencarian = document.getElementById('btnMobPencarian');
-                const btnLogout = document.getElementById('btnLogout');
-                const btnMobLogout = document.getElementById('btnMobLogout');
-                const ownerCard = document.getElementById('ownerOperatorCard');
-
+                const { data: { session } } = await dbClient.auth.getSession();
+                const loginTextEl = document.getElementById('navLoginText');
+                const mobLoginTextEl = document.getElementById('mobLoginText');
+                
                 if (session) {
-                    const userEmail = session.user.email;
-                    // KETAT: HANYA OWNER (rendatinsoppeng@gmail.com) YANG MEMILIKI HAK AKSES ADMIN PANEL
-                    const isOwner = (userEmail === 'rendatinsoppeng@gmail.com');
-
-                    if (!isOwner) {
-                        // Jika bukan owner, periksa apakah terdaftar sebagai operator biasa (hanya bisa login untuk fungsi tertentu jika ada, namun menu Admin Panel disembunyikan ketat)
-                        const { data: opData } = await dbClient.from('operators').select('*').eq('email', userEmail).single();
-                        if (!opData) {
-                            await dbClient.auth.signOut();
-                            showModal("Akses Ditolak", `Email <b>${userEmail}</b> belum terdaftar sebagai operator.`, "❌");
-                            return;
-                        }
-                    }
-
-                    if (btnLogout) btnLogout.classList.remove('hidden');
-                    if (btnMobLogout) btnMobLogout.classList.remove('hidden');
-                    if (btnNavPencarian) btnNavPencarian.classList.remove('hidden');
-                    if (btnMobPencarian) btnMobPencarian.classList.remove('hidden');
-
-                    if (isOwner) {
-                        // SANGAT EKSKLUSIF: HANYA OWNER YANG TOMBOL ADMIN & HALAMAN UPLOADNYA MUNCUL
-                        if (navAdmin) navAdmin.classList.remove('hidden');
-                        if (btnMobAdmin) btnMobAdmin.classList.remove('hidden');
-                        if (loginArea) loginArea.classList.add('hidden');
-                        if (uploadArea) uploadArea.classList.remove('hidden');
-                        if (ownerCard) ownerCard.classList.remove('hidden');
-                        loadOperatorsList();
-                        loadDeletePeriodsDropdown();
-                        generateYearOptions();
-                    } else {
-                        // Operator biasa tidak boleh melihat atau mengakses admin panel sama sekali
-                        if (navAdmin) navAdmin.classList.add('hidden');
-                        if (btnMobAdmin) btnMobAdmin.classList.add('hidden');
-                        if (loginArea) loginArea.classList.remove('hidden');
-                        if (uploadArea) uploadArea.classList.add('hidden');
-                        if (ownerCard) ownerCard.classList.add('hidden');
-                    }
+                    if(loginTextEl) loginTextEl.innerText = "Akun";
+                    if(mobLoginTextEl) mobLoginTextEl.innerText = "Akun";
                 } else {
-                    if (loginArea) loginArea.classList.remove('hidden');
-                    if (uploadArea) uploadArea.classList.add('hidden');
-                    if (navAdmin) navAdmin.classList.add('hidden');
-                    if (btnMobAdmin) btnMobAdmin.classList.add('hidden');
-                    if (btnNavPencarian) btnNavPencarian.classList.add('hidden');
-                    if (btnMobPencarian) btnMobPencarian.classList.add('hidden');
-                    if (btnLogout) btnLogout.classList.add('hidden');
-                    if (btnMobLogout) btnMobLogout.classList.add('hidden');
+                    if(loginTextEl) loginTextEl.innerText = "Login";
+                    if(mobLoginTextEl) mobLoginTextEl.innerText = "Login";
                 }
-            } catch (err) {
-                console.error("Gagal memeriksa sesi auth:", err);
+            } catch(e) {
+                console.error(e);
+            }
+        }
+
+        async function updateLoginStateUI(session) {
+            const formCard = document.getElementById('loginFormCard');
+            const logoutCard = document.getElementById('logoutCard');
+            const emailEl = document.getElementById('loggedInUserEmail');
+
+            if (session) {
+                if(formCard) formCard.classList.add('hidden');
+                if(logoutCard) logoutCard.classList.remove('hidden');
+                if(emailEl) emailEl.innerText = session.user.email;
+            } else {
+                if(formCard) formCard.classList.remove('hidden');
+                if(logoutCard) logoutCard.classList.add('hidden');
             }
         }
 
@@ -973,7 +944,7 @@
             const emailInput = document.getElementById('newOperatorEmail');
             const email = emailInput.value.trim().toLowerCase();
             if(!email || !email.includes('@')) {
-                showModal("Peringatan", "Masukkan email operator yang valid!", "⚠️");
+                showModal("Peringatan", "Masukkan email operator yang valid!", "⚠️️");
                 return;
             }
             const { error } = await dbClient.from('operators').insert([{ email: email }]);
@@ -993,9 +964,7 @@
 
         async function logout() {
             showGlobalLoader("KELUAR DARI SISTEM...");
-            if (dbClient) {
-                await dbClient.auth.signOut();
-            }
+            if (dbClient) { await dbClient.auth.signOut(); }
             localStorage.clear();
             sessionStorage.clear();
             window.location.reload();
@@ -1050,7 +1019,6 @@
 
             document.getElementById('processLogs').innerHTML = '';
             document.getElementById('previewArea').classList.add('hidden');
-            log("Membaca struktur workbook Excel...");
 
             setTimeout(() => {
                 const reader = new FileReader();
@@ -1067,7 +1035,6 @@
                         const tempMutasi = {};
                         processedData.voterDetails = [];
 
-                        log("Memproses Agregasi & Data Rinci Pemilih Aktif...");
                         const sheetAktif = XLSX.utils.sheet_to_json(workbook.Sheets["Aktif"], { defval: "" });
                         sheetAktif.forEach(row => {
                             const kec = cleanText(row['KECAMATAN']);
@@ -1093,9 +1060,7 @@
                             if(typeof rawTgl === 'number') {
                                 let dObj = new Date(Math.round((rawTgl - 25569)*86400*1000));
                                 formattedTgl = dObj.toISOString().split('T')[0];
-                            } else if(rawTgl) {
-                                formattedTgl = rawTgl.toString();
-                            }
+                            } else if(rawTgl) { formattedTgl = rawTgl.toString(); }
 
                             processedData.voterDetails.push({
                                 nkk: cleanText(row['NKK'] || row['NO KK'] || '-'),
@@ -1115,7 +1080,6 @@
                             });
                         });
 
-                        log("Memproses Agregasi Data Mutasi & TMS...");
                         const sheetTMS = XLSX.utils.sheet_to_json(workbook.Sheets["TMS"], { defval: "" });
                         sheetTMS.forEach(row => {
                             const kec = cleanText(row['KECAMATAN']);
@@ -1133,9 +1097,7 @@
                             if(typeof rawTgl === 'number') {
                                 let dObj = new Date(Math.round((rawTgl - 25569)*86400*1000));
                                 formattedTgl = dObj.toISOString().split('T')[0];
-                            } else if(rawTgl) {
-                                formattedTgl = rawTgl.toString();
-                            }
+                            } else if(rawTgl) { formattedTgl = rawTgl.toString(); }
 
                             processedData.voterDetails.push({
                                 nkk: cleanText(row['NKK'] || row['NO KK'] || '-'),
@@ -1161,18 +1123,17 @@
                         });
 
                         processedData.mutationSummary = Object.keys(tempMutasi).map(k => {
-                        const p = k.split('|');
+                            const p = k.split('|');
                             return { kecamatan: p[0], desa: p[1], tps: p[2], mutation_type: p[3], mutation_code: p[4], gender: p[5], total_count: tempMutasi[k] };
                         });
 
                         let totalA = processedData.voterSummary.reduce((sum, item) => sum + item.total_count, 0);
                         const saveDetails = document.getElementById('checkSaveDetails').checked;
 
-                        log("✅ Kalkulasi lokal selesai dengan sukses.");
                         document.getElementById('previewList').innerHTML = `
                             <li>• Baris Agregasi Aktif: <b>${formatID(processedData.voterSummary.length)}</b> baris (Akumulasi: <b>${formatID(totalA)}</b> pemilih)</li>
-                            <li>• Total Rincian Pemilih (Aktif + TMS): <b>${formatID(processedData.voterDetails.length)}</b> baris</li>
-                            <li>• Status Simpan Rincian Individu: <b class="${saveDetails ? 'text-emerald-400' : 'text-amber-400'}">${saveDetails ? 'AKTIF (Disimpan)' : 'DILEWATI (Mode Arsip Agregat)'}</b></li>
+                            <li>• Total Rincian Pemilih: <b>${formatID(processedData.voterDetails.length)}</b> baris</li>
+                            <li>• Status Simpan Rincian: <b class="${saveDetails ? 'text-emerald-400' : 'text-amber-400'}">${saveDetails ? 'AKTIF' : 'DILEWATI'}</b></li>
                         `;
                         document.getElementById('previewArea').classList.remove('hidden');
                         hideGlobalLoader();
@@ -1194,10 +1155,8 @@
             if (!fileInput || !fileInput.files[0]) return;
             const fileName = fileInput.files[0].name;
 
-            showGlobalLoader("MENGIKAT & MENGUNGGAH KE DATABASE...");
-
+            showGlobalLoader("MENGUNGGAH KE DATABASE...");
             try {
-                log("Mendaftarkan periode ke database...");
                 const { data: periodData, error: pErr } = await dbClient.from('periods').insert([
                     { tahun: tahun, triwulan: tw, file_name: fileName }
                 ]).select().single();
@@ -1205,7 +1164,6 @@
                 if(pErr) throw pErr;
                 const periodId = periodData.id;
 
-                log("Mengunggah ringkasan pemilih aktif...");
                 const batchVoter = processedData.voterSummary.map(d => ({...d, period_id: periodId}));
                 for(let i=0; i<batchVoter.length; i+=500) {
                     const chunk = batchVoter.slice(i, i+500);
@@ -1213,7 +1171,6 @@
                     if(vErr) throw vErr;
                 }
 
-                log("Mengunggah ringkasan mutasi...");
                 const batchMut = processedData.mutationSummary.map(d => ({...d, period_id: periodId}));
                 for(let i=0; i<batchMut.length; i+=500) {
                     const chunk = batchMut.slice(i, i+500);
@@ -1221,26 +1178,21 @@
                     if(mErr) throw mErr;
                 }
 
-                // JIKA OPSI SIMPAN DETAIL DICENTANG, UNGGAH KE VOTER_DETAILS (UNTUK MENGHEMAT KUOTA PADA DATA TAHUN LAMA)
                 if (saveDetails) {
-                    log("Mengunggah data rincian pemilih (voter_details)...");
                     const batchDetails = processedData.voterDetails.map(d => ({...d, period_id: periodId}));
                     for(let i=0; i<batchDetails.length; i+=500) {
                         const chunk = batchDetails.slice(i, i+500);
                         const { error: dErr } = await dbClient.from('voter_details').insert(chunk);
                         if(dErr) throw dErr;
                     }
-                } else {
-                    log("⚠️ Mode Arsip Agregat aktif: Rincian pemilih individu dilewati untuk menghemat penyimpanan server.");
                 }
 
                 hideGlobalLoader();
-                showModal("Sukses", "Publikasi data rekapitulasi berhasil dilakukan!", "🎉", false, () => {
+                showModal("Sukses", "Publikasi data rekapitulasi berhasil!", "🎉", false, () => {
                     window.location.reload();
                 });
             } catch(e) {
                 hideGlobalLoader();
-                log(`❌ GAGAL PUBLISH: ${e.message}`);
                 showModal("Gagal Publish", e.message, "❌");
             }
         }
@@ -1262,32 +1214,26 @@
 
         function confirmDeletePeriod() {
             const selectEl = document.getElementById('delPeriodSelect');
-            if(!selectEl || !selectEl.value) {
-                showModal("Peringatan", "Pilih periode yang ingin dihapus terlebih dahulu!", "⚠️");
-                return;
-            }
+            if(!selectEl || !selectEl.value) return;
             const selectedText = selectEl.options[selectEl.selectedIndex].text;
-            showModal("Konfirmasi Hapus", `Apakah Anda yakin ingin menghapus seluruh data untuk periode <b>${selectedText}</b>? Tindakan ini permanen.`, "🗑️", true, async () => {
+            showModal("Konfirmasi Hapus", `Hapus seluruh data untuk periode <b>${selectedText}</b>?`, "🗑️", true, async () => {
                 await executeDeletePeriod(selectEl.value);
             });
         }
 
         async function executeDeletePeriod(periodId) {
-            showGlobalLoader("MENGHAPUS PERIODE DARI DATABASE...");
+            showGlobalLoader("MENGHAPUS PERIODE...");
             try {
                 await dbClient.from('voter_summary').delete().eq('period_id', periodId);
                 await dbClient.from('mutation_summary').delete().eq('period_id', periodId);
                 await dbClient.from('voter_details').delete().eq('period_id', periodId);
                 const { error } = await dbClient.from('periods').delete().eq('id', periodId);
-                
                 if(error) throw error;
                 hideGlobalLoader();
-                showModal("Berhasil", "Data periode berhasil dihapus dari database.", "✨", false, () => {
-                    window.location.reload();
-                });
+                showModal("Berhasil", "Data periode dihapus.", "✨", false, () => { window.location.reload(); });
             } catch(e) {
                 hideGlobalLoader();
-                showModal("Gagal Menghapus", e.message, "❌");
+                showModal("Gagal", e.message, "❌");
             }
         }
 
@@ -1297,7 +1243,7 @@
             const selectEl = document.getElementById('filterPeriode');
             if(!selectEl) return;
             
-            showGlobalLoader("MENYIAPKAN DASHBOAD...");
+            showGlobalLoader("MENYIAPKAN DASHBOARD...");
             const { data } = await dbClient.from('periods').select('*').order('tahun', {ascending: false}).order('triwulan', {ascending: false});
             if(data && data.length > 0) {
                 selectEl.innerHTML = '';
@@ -1318,66 +1264,43 @@
             if(!periodEl || !periodEl.value || !dbClient) return;
             const periodId = periodEl.value;
 
-            showGlobalLoader("MEMUAT CACHE WILAYAH & PEMILIH...");
-
+            showGlobalLoader("MEMUAT CACHE WILAYAH...");
             try {
                 rawVoterCache = [];
-                let step = 1000;
-                let from = 0;
-                let fetchMore = true;
-
+                let step = 1000, from = 0, fetchMore = true;
                 while (fetchMore) {
-                    const { data, error } = await dbClient
-                        .from('voter_summary')
-                        .select('*')
-                        .eq('period_id', periodId)
-                        .range(from, from + step - 1);
+                    const { data, error } = await dbClient.from('voter_summary').select('*').eq('period_id', periodId).range(from, from + step - 1);
                     if (error) throw error;
                     if (data && data.length > 0) {
                         rawVoterCache = rawVoterCache.concat(data);
                         from += step;
                         if (data.length < step) fetchMore = false;
-                    } else {
-                        fetchMore = false;
-                    }
+                    } else { fetchMore = false; }
                 }
 
                 rawMutationCache = [];
                 from = 0;
                 fetchMore = true;
-
                 while (fetchMore) {
-                    const { data, error } = await dbClient
-                        .from('mutation_summary')
-                        .select('*')
-                        .eq('period_id', periodId)
-                        .range(from, from + step - 1);
+                    const { data, error } = await dbClient.from('mutation_summary').select('*').eq('period_id', periodId).range(from, from + step - 1);
                     if (error) throw error;
                     if (data && data.length > 0) {
                         rawMutationCache = rawMutationCache.concat(data);
                         from += step;
                         if (data.length < step) fetchMore = false;
-                    } else {
-                        fetchMore = false;
-                    }
+                    } else { fetchMore = false; }
                 }
 
                 populateFilterOptions();
-                resetFilters(); // Reset filter otomatis saat muat / refresh
-
+                resetFilters();
             } catch(e) {
-                console.error("Gagal memuat cache periode", e);
+                console.error(e);
             }
-
             hideGlobalLoader();
         }
 
         function populateFilterOptions() {
-            const kecSet = new Set();
-            const genSet = new Set();
-            const disSet = new Set();
-            const kawinSet = new Set();
-
+            const kecSet = new Set(), genSet = new Set(), disSet = new Set(), kawinSet = new Set();
             rawVoterCache.forEach(r => {
                 if(r.kecamatan) kecSet.add(r.kecamatan);
                 if(r.generation) genSet.add(r.generation);
@@ -1387,51 +1310,33 @@
 
             const kecEl = document.getElementById('filterKecamatan');
             kecEl.innerHTML = '<option value="ALL">SEMUA KECAMATAN</option>';
-            Array.from(kecSet).sort().forEach(k => {
-                kecEl.innerHTML += `<option value="${k}">${k}</option>`;
-            });
+            Array.from(kecSet).sort().forEach(k => { kecEl.innerHTML += `<option value="${k}">${k}</option>`; });
 
             updateDesaOptions();
 
             const genEl = document.getElementById('filterGenerasi');
             genEl.innerHTML = '<option value="ALL">SEMUA GENERASI</option>';
-            Array.from(genSet).sort().forEach(g => {
-                genEl.innerHTML += `<option value="${g}">${g}</option>`;
-            });
+            Array.from(genSet).sort().forEach(g => { genEl.innerHTML += `<option value="${g}">${g}</option>`; });
 
             const disEl = document.getElementById('filterDisabilitas');
             disEl.innerHTML = '<option value="ALL">SEMUA DISABILITAS</option>';
-            Array.from(disSet).sort().forEach(d => {
-                disEl.innerHTML += `<option value="${d}">${d}</option>`;
-            });
+            Array.from(disSet).sort().forEach(d => { disEl.innerHTML += `<option value="${d}">${d}</option>`; });
 
             const kawinEl = document.getElementById('filterPerkawinan');
             kawinEl.innerHTML = '<option value="ALL">SEMUA STATUS</option>';
-            Array.from(kawinSet).sort().forEach(kw => {
-                kawinEl.innerHTML += `<option value="${kw}">${kw}</option>`;
-            });
+            Array.from(kawinSet).sort().forEach(kw => { kawinEl.innerHTML += `<option value="${kw}">${kw}</option>`; });
         }
 
-        function onKecamatanChange() {
-            updateDesaOptions();
-            applyFilters();
-        }
-
+        function onKecamatanChange() { updateDesaOptions(); applyFilters(); }
         function updateDesaOptions() {
             const selectedKec = document.getElementById('filterKecamatan').value;
             const desaSet = new Set();
-
             rawVoterCache.forEach(r => {
-                if(selectedKec === 'ALL' || r.kecamatan === selectedKec) {
-                    if(r.desa) desaSet.add(r.desa);
-                }
+                if(selectedKec === 'ALL' || r.kecamatan === selectedKec) { if(r.desa) desaSet.add(r.desa); }
             });
-
             const desaEl = document.getElementById('filterDesa');
             desaEl.innerHTML = '<option value="ALL">SEMUA DESA</option>';
-            Array.from(desaSet).sort().forEach(ds => {
-                desaEl.innerHTML += `<option value="${ds}">${ds}</option>`;
-            });
+            Array.from(desaSet).sort().forEach(ds => { desaEl.innerHTML += `<option value="${ds}">${ds}</option>`; });
         }
 
         function resetFilters() {
@@ -1467,9 +1372,7 @@
             document.getElementById('dashAktifP').innerText = formatID(aktifP);
             document.getElementById('dashAktifTotal').innerText = formatID(aktifL + aktifP);
 
-            let mutB_L = 0, mutB_P = 0;
-            let mutU_L = 0, mutU_P = 0;
-            let mutTMS_L = 0, mutTMS_P = 0;
+            let mutB_L = 0, mutB_P = 0, mutU_L = 0, mutU_P = 0, mutTMS_L = 0, mutTMS_P = 0;
             let tmsDetail = {};
 
             rawMutationCache.forEach(r => {
@@ -1491,17 +1394,14 @@
 
             document.getElementById('dashMutasiB').innerText = formatID(mutB_L + mutB_P);
             document.getElementById('dashMutasiBDetail').innerText = `L: ${formatID(mutB_L)} • P: ${formatID(mutB_P)}`;
-
             document.getElementById('dashMutasiU').innerText = formatID(mutU_L + mutU_P);
             document.getElementById('dashMutasiUDetail').innerText = `L: ${formatID(mutU_L)} • P: ${formatID(mutU_P)}`;
-
             document.getElementById('dashMutasiTMS').innerText = formatID(mutTMS_L + mutTMS_P);
             document.getElementById('dashMutasiTMSDetailLP').innerText = `L: ${formatID(mutTMS_L)} • P: ${formatID(mutTMS_P)}`;
 
             dbClient.from('mutation_codes').select('code, label').eq('type', 'TMS').then(({ data: mc }) => {
                 let mcMap = {};
                 if(mc) mc.forEach(m => mcMap[m.code] = m.label);
-
                 let tmsStr = [];
                 for(let code in tmsDetail) {
                     let label = mcMap[code] || `Kode ${code}`;
@@ -1511,27 +1411,16 @@
             });
         }
 
-        // ================= REKAPITULASI DRILL-DOWN & SEARCH LOGIC =================
         function rekapGoBack() {
-            if(rekapLevel === 'TPS') {
-                rekapLevel = 'DESA';
-                rekapSelectedDesa = null;
-            } else if(rekapLevel === 'DESA') {
-                rekapLevel = 'KECAMATAN';
-                rekapSelectedKec = null;
-            }
+            if(rekapLevel === 'TPS') { rekapLevel = 'DESA'; rekapSelectedDesa = null; }
+            else if(rekapLevel === 'DESA') { rekapLevel = 'KECAMATAN'; rekapSelectedKec = null; }
             document.getElementById('rekapSearch').value = '';
             renderRekapitulasiTable();
         }
 
         function handleRekapClick(name) {
-            if(rekapLevel === 'KECAMATAN') {
-                rekapSelectedKec = name;
-                rekapLevel = 'DESA';
-            } else if(rekapLevel === 'DESA') {
-                rekapSelectedDesa = name;
-                rekapLevel = 'TPS';
-            }
+            if(rekapLevel === 'KECAMATAN') { rekapSelectedKec = name; rekapLevel = 'DESA'; }
+            else if(rekapLevel === 'DESA') { rekapSelectedDesa = name; rekapLevel = 'TPS'; }
             document.getElementById('rekapSearch').value = '';
             renderRekapitulasiTable();
         }
@@ -1545,9 +1434,8 @@
             const backText = document.getElementById('rekapBackText');
 
             if(!tbody) return;
-
             if(!rawVoterCache || rawVoterCache.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" class="p-6 text-center text-slate-500 font-mono">Belum ada data cache periode aktif. Pilih periode di dashboard terlebih dahulu.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="8" class="p-6 text-center text-slate-500 font-mono">Belum ada data cache periode aktif.</td></tr>`;
                 return;
             }
 
@@ -1562,25 +1450,19 @@
 
                 rawVoterCache.forEach(r => {
                     let kec = r.kecamatan || 'LAINNYA';
-                    let desa = r.desa || '';
-                    if(searchKey && !kec.includes(searchKey) && !desa.includes(searchKey)) return;
-
+                    if(searchKey && !kec.includes(searchKey)) return;
                     if(!summaryMap[kec]) summaryMap[kec] = { aktifL: 0, aktifP: 0, baru: 0, tms: 0, ubah: 0 };
                     if(r.gender === 'L') summaryMap[kec].aktifL += r.total_count;
                     if(r.gender === 'P') summaryMap[kec].aktifP += r.total_count;
                 });
-
                 rawMutationCache.forEach(r => {
                     let kec = r.kecamatan || 'LAINNYA';
-                    let desa = r.desa || '';
-                    if(searchKey && !kec.includes(searchKey) && !desa.includes(searchKey)) return;
-
+                    if(searchKey && !kec.includes(searchKey)) return;
                     if(!summaryMap[kec]) summaryMap[kec] = { aktifL: 0, aktifP: 0, baru: 0, tms: 0, ubah: 0 };
                     if(r.mutation_type === 'BARU') summaryMap[kec].baru += r.total_count;
                     if(r.mutation_type === 'TMS') summaryMap[kec].tms += r.total_count;
                     if(r.mutation_type === 'UBAH') summaryMap[kec].ubah += r.total_count;
                 });
-
             } else if(rekapLevel === 'DESA') {
                 titleEl.innerText = `Kecamatan: ${rekapSelectedKec}`;
                 subTitleEl.innerText = "Klik pada nama desa/kelurahan untuk melihat rincian TPS.";
@@ -1592,25 +1474,21 @@
                     if(r.kecamatan === rekapSelectedKec) {
                         let ds = r.desa || 'LAINNYA';
                         if(searchKey && !ds.includes(searchKey)) return;
-
                         if(!summaryMap[ds]) summaryMap[ds] = { aktifL: 0, aktifP: 0, baru: 0, tms: 0, ubah: 0 };
                         if(r.gender === 'L') summaryMap[ds].aktifL += r.total_count;
                         if(r.gender === 'P') summaryMap[ds].aktifP += r.total_count;
                     }
                 });
-
                 rawMutationCache.forEach(r => {
                     if(r.kecamatan === rekapSelectedKec) {
                         let ds = r.desa || 'LAINNYA';
                         if(searchKey && !ds.includes(searchKey)) return;
-
                         if(!summaryMap[ds]) summaryMap[ds] = { aktifL: 0, aktifP: 0, baru: 0, tms: 0, ubah: 0 };
                         if(r.mutation_type === 'BARU') summaryMap[ds].baru += r.total_count;
                         if(r.mutation_type === 'TMS') summaryMap[ds].tms += r.total_count;
                         if(r.mutation_type === 'UBAH') summaryMap[ds].ubah += r.total_count;
                     }
                 });
-
             } else if(rekapLevel === 'TPS') {
                 titleEl.innerText = `${rekapSelectedKec} > Desa ${rekapSelectedDesa}`;
                 subTitleEl.innerText = "Rincian data pemilih berdasarkan TPS.";
@@ -1622,18 +1500,15 @@
                     if(r.kecamatan === rekapSelectedKec && r.desa === rekapSelectedDesa) {
                         let tps = `TPS ${r.tps || '001'}`;
                         if(searchKey && !tps.includes(searchKey)) return;
-
                         if(!summaryMap[tps]) summaryMap[tps] = { aktifL: 0, aktifP: 0, baru: 0, tms: 0, ubah: 0 };
                         if(r.gender === 'L') summaryMap[tps].aktifL += r.total_count;
                         if(r.gender === 'P') summaryMap[tps].aktifP += r.total_count;
                     }
                 });
-
                 rawMutationCache.forEach(r => {
                     if(r.kecamatan === rekapSelectedKec && r.desa === rekapSelectedDesa) {
                         let tps = `TPS ${r.tps || '001'}`;
                         if(searchKey && !tps.includes(searchKey)) return;
-
                         if(!summaryMap[tps]) summaryMap[tps] = { aktifL: 0, aktifP: 0, baru: 0, tms: 0, ubah: 0 };
                         if(r.mutation_type === 'BARU') summaryMap[tps].baru += r.total_count;
                         if(r.mutation_type === 'TMS') summaryMap[tps].tms += r.total_count;
@@ -1643,9 +1518,8 @@
             }
 
             let sortedKeys = Object.keys(summaryMap).sort();
-
             if(sortedKeys.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" class="p-6 text-center text-slate-500 font-mono">Tidak ditemukan wilayah atau desa yang cocok dengan kata kunci "${searchKey}".</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="8" class="p-6 text-center text-slate-500 font-mono">Tidak ditemukan wilayah.</td></tr>`;
                 return;
             }
 
@@ -1655,11 +1529,7 @@
             sortedKeys.forEach((keyName, idx) => {
                 let d = summaryMap[keyName];
                 let totAktif = d.aktifL + d.aktifP;
-                totalAktifL += d.aktifL;
-                totalAktifP += d.aktifP;
-                totalBaru += d.baru;
-                totalTms += d.tms;
-                totalUbah += d.ubah;
+                totalAktifL += d.aktifL; totalAktifP += d.aktifP; totalBaru += d.baru; totalTms += d.tms; totalUbah += d.ubah;
 
                 let isClickable = rekapLevel !== 'TPS';
                 let nameCellHtml = isClickable 
@@ -1691,11 +1561,9 @@
                     <td class="p-3 sm:p-4 text-right font-mono text-amber-400">${formatID(totalUbah)}</td>
                 </tr>
             `;
-
             tbody.innerHTML = html;
         }
 
-        // ================= TAB PENCARIAN & TABEL / CARD LUAS =================
         let searchTimer = null;
         async function handleTabVoterSearch() {
             const query = document.getElementById('tabSearchInput').value.trim();
@@ -1706,46 +1574,35 @@
 
             if(!query || query.length < 3) {
                 counterEl.innerText = "0";
-                if(tbody) tbody.innerHTML = `<tr><td colspan="13" class="p-8 text-center text-slate-500 font-mono">Masukkan minimal 3 karakter pada kotak pencarian di atas...</td></tr>`;
-                if(cardContainer) cardContainer.innerHTML = `<div class="p-6 text-center text-slate-500 font-mono text-xs">Masukkan minimal 3 karakter pada kotak pencarian di atas...</div>`;
-                return;
-            }
-
-            if(!activePeriodId) {
-                counterEl.innerText = "0";
-                if(tbody) tbody.innerHTML = `<tr><td colspan="13" class="p-8 text-center text-amber-400 font-mono">Pilih periode aktif terlebih dahulu di tab Dashboard.</td></tr>`;
-                if(cardContainer) cardContainer.innerHTML = `<div class="p-6 text-center text-amber-400 font-mono text-xs">Pilih periode aktif terlebih dahulu di tab Dashboard.</div>`;
+                if(tbody) tbody.innerHTML = `<tr><td colspan="13" class="p-8 text-center text-slate-500 font-mono">Masukkan minimal 3 karakter...</td></tr>`;
+                if(cardContainer) cardContainer.innerHTML = `<div class="p-6 text-center text-slate-500 font-mono text-xs">Masukkan minimal 3 karakter...</div>`;
                 return;
             }
 
             clearTimeout(searchTimer);
             searchTimer = setTimeout(async () => {
-                if(tbody) tbody.innerHTML = `<tr><td colspan="13" class="p-8 text-center text-emerald-400 font-mono animate-pulse">Memuat data pemilih dari database server...</td></tr>`;
-                if(cardContainer) cardContainer.innerHTML = `<div class="p-6 text-center text-emerald-400 font-mono text-xs animate-pulse">Memuat data pemilih dari database server...</div>`;
+                if(tbody) tbody.innerHTML = `<tr><td colspan="13" class="p-8 text-center text-emerald-400 font-mono animate-pulse">Memuat data pemilih...</td></tr>`;
+                if(cardContainer) cardContainer.innerHTML = `<div class="p-6 text-center text-emerald-400 font-mono text-xs animate-pulse">Memuat data pemilih...</div>`;
 
                 try {
                     const { data, error } = await dbClient.rpc('search_voters_secure', {
                         search_query: query,
                         target_period_id: activePeriodId
                     });
-
                     if(error) throw error;
 
                     if(!data || data.length === 0) {
                         counterEl.innerText = "0";
-                        if(tbody) tbody.innerHTML = `<tr><td colspan="13" class="p-8 text-center text-slate-500 font-mono">Tidak ditemukan pemilih dengan kata kunci "${query}". (Kemungkinan periode ini diunggah dalam Mode Arsip Agregat tanpa rincian individu).</td></tr>`;
-                        if(cardContainer) cardContainer.innerHTML = `<div class="p-6 text-center text-slate-500 font-mono text-xs">Tidak ditemukan pemilih dengan kata kunci "${query}". (Mode Arsip Agregat).</div>`;
+                        if(tbody) tbody.innerHTML = `<tr><td colspan="13" class="p-8 text-center text-slate-500 font-mono">Tidak ditemukan. (Mungkin mode arsip agregat).</td></tr>`;
+                        if(cardContainer) cardContainer.innerHTML = `<div class="p-6 text-center text-slate-500 font-mono text-xs">Tidak ditemukan.</div>`;
                         return;
                     }
 
                     counterEl.innerText = formatID(data.length);
-
-                    let periodName = periodsMap[activePeriodId] || 'TW? 2026';
-                    let tableHtml = '';
-                    let cardHtml = '';
+                    let periodName = periodsMap[activePeriodId] || 'Periode Aktif';
+                    let tableHtml = '', cardHtml = '';
 
                     data.forEach((v, idx) => {
-                        // Render untuk Desktop (Tabel)
                         tableHtml += `
                             <tr class="hover:bg-slate-800/40 transition cursor-pointer" onclick='openVoterModal(${JSON.stringify(v)})'>
                                 <td class="p-3 text-slate-400 font-mono">${idx + 1}</td>
@@ -1764,7 +1621,6 @@
                             </tr>
                         `;
 
-                        // Render untuk Mobile (Kartu Vertikal Bersusun ke Bawah yang Estetis & Lengkap)
                         cardHtml += `
                             <div class="bg-[#090d16] border border-[#1e294b] rounded-2xl p-4 space-y-3 shadow-md hover:border-emerald-500/50 transition cursor-pointer" onclick='openVoterModal(${JSON.stringify(v)})'>
                                 <div class="flex justify-between items-start border-b border-[#1e294b] pb-2.5">
@@ -1775,17 +1631,13 @@
                                             <div class="text-[10px] text-emerald-400 font-mono font-bold">NKK: ${v.nkk}</div>
                                         </div>
                                     </div>
-                                    <span class="px-2 py-0.5 rounded text-[10px] font-bold ${v.jenis_kelamin === 'L' ? 'bg-blue-950 text-blue-400' : 'bg-pink-950 text-pink-400'}">${v.jenis_kelamin === 'L' ? 'LAKI-LAKI' : 'PEREMPUAN'}</span>
+                                    <span class="px-2 py-0.5 rounded text-[10px] font-bold ${v.jenis_kelamin === 'L' ? 'bg-blue-950 text-blue-400' : 'bg-pink-950 text-pink-400'}">${v.jenis_kelamin}</span>
                                 </div>
                                 <div class="grid grid-cols-2 gap-2 text-[11px] text-slate-300 font-mono">
-                                    <div><span class="text-slate-500 block text-[9px] uppercase font-sans">NIK</span>${v.nik}</div>
-                                    <div><span class="text-slate-500 block text-[9px] uppercase font-sans">Tgl Lahir</span>${v.tanggal_lahir || '-'}</div>
-                                    <div><span class="text-slate-500 block text-[9px] uppercase font-sans">Desa / TPS</span>${v.desa} • TPS ${v.tps}</div>
-                                    <div><span class="text-slate-500 block text-[9px] uppercase font-sans">Status Kawin</span>${v.status_kawin || '-'}</div>
-                                </div>
-                                <div class="pt-2 border-t border-[#1e294b]/60 flex justify-between items-center text-[11px]">
-                                    <span class="text-slate-400 truncate max-w-[200px]">📍 ${v.alamat || '-'} (RT ${v.rt || '-'}/RW ${v.rw || '-'})</span>
-                                    <span class="text-amber-400 font-bold font-mono">Ket: ${v.keterangan || '0'}</span>
+                                    <div><span class="text-slate-500 block text-[9px] uppercase">NIK</span>${v.nik}</div>
+                                    <div><span class="text-slate-500 block text-[9px] uppercase">Tgl Lahir</span>${v.tanggal_lahir || '-'}</div>
+                                    <div><span class="text-slate-500 block text-[9px] uppercase">Desa / TPS</span>${v.desa} • TPS ${v.tps}</div>
+                                    <div><span class="text-slate-500 block text-[9px] uppercase">Status Kawin</span>${v.status_kawin || '-'}</div>
                                 </div>
                             </div>
                         `;
@@ -1793,7 +1645,6 @@
 
                     if(tbody) tbody.innerHTML = tableHtml;
                     if(cardContainer) cardContainer.innerHTML = cardHtml;
-
                 } catch(err) {
                     counterEl.innerText = "0";
                     if(tbody) tbody.innerHTML = `<tr><td colspan="13" class="p-8 text-center text-rose-400 font-mono">Error: ${err.message}</td></tr>`;
@@ -1809,7 +1660,7 @@
             const activePeriodId = document.getElementById('filterPeriode').value;
 
             subNkk.innerText = `NKK: ${voter.nkk} • Alamat: ${voter.alamat || '-'}`;
-            content.innerHTML = `<div class="p-6 text-center text-emerald-400 font-mono animate-pulse">Memuat seluruh anggota keluarga...</div>`;
+            content.innerHTML = `<div class="p-6 text-center text-emerald-400 font-mono animate-pulse">Memuat anggota keluarga...</div>`;
             modal.classList.remove('hidden');
 
             try {
@@ -1819,19 +1670,17 @@
                     .eq('period_id', activePeriodId)
                     .eq('nkk', voter.nkk)
                     .order('nama', {ascending: true});
-
                 if(error) throw error;
 
                 if(!familyMembers || familyMembers.length === 0) {
-                    content.innerHTML = `<div class="p-4 text-amber-400 text-center text-xs">Data detail individu tidak tersedia untuk periode ini (tersimpan dalam mode arsip agregat).</div>`;
+                    content.innerHTML = `<div class="p-4 text-amber-400 text-center text-xs">Rincian individu tidak tersedia untuk periode ini.</div>`;
                     return;
                 }
 
                 let famHtml = `
                     <div class="bg-[#090d16] p-3 rounded-xl border border-[#1e294b] text-[11px] space-y-1 mb-4">
                         <div class="text-slate-400"><b>Kecamatan:</b> ${voter.kecamatan || '-'} › Desa ${voter.desa} › TPS ${voter.tps}</div>
-                        <div class="text-slate-400"><b>Alamat:</b> ${voter.alamat || '-'} (RT: ${voter.rt || '-'} / RW: ${voter.rw || '-'})</div>
-                        <div class="text-emerald-400 font-bold pt-1">Ditemukan ${familyMembers.length} anggota keluarga dalam 1 NKK ini:</div>
+                        <div class="text-emerald-400 font-bold pt-1">Ditemukan ${familyMembers.length} anggota keluarga:</div>
                     </div>
                     <div class="space-y-3">
                 `;
@@ -1842,29 +1691,25 @@
                         <div class="p-3 rounded-xl border ${isSelected} space-y-2">
                             <div class="flex justify-between items-center">
                                 <span class="font-bold text-white text-xs">#${idx + 1} - ${m.nama}</span>
-                                <span class="px-2 py-0.5 rounded text-[10px] font-bold ${m.jenis_kelamin === 'L' ? 'bg-blue-950 text-blue-400' : 'bg-pink-950 text-pink-400'}">${m.jenis_kelamin === 'L' ? 'LAKI-LAKI' : 'PEREMPUAN'}</span>
+                                <span class="px-2 py-0.5 rounded text-[10px] font-bold ${m.jenis_kelamin === 'L' ? 'bg-blue-950 text-blue-400' : 'bg-pink-950 text-pink-400'}">${m.jenis_kelamin}</span>
                             </div>
                             <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px] text-slate-300 font-mono pt-1 border-t border-slate-800/60">
                                 <div><span class="text-slate-500 block text-[9px] uppercase">NIK</span>${m.nik}</div>
                                 <div><span class="text-slate-500 block text-[9px] uppercase">TTL</span>${m.tempat_lahir}, ${m.tanggal_lahir || '-'}</div>
-                                <div><span class="text-slate-500 block text-[9px] uppercase">STATUS KAWIN</span>${m.status_kawin || '-'}</div>
-                                <div><span class="text-slate-500 block text-[9px] uppercase">KETERANGAN</span><span class="text-amber-400 font-bold">${m.keterangan || '0'}</span></div>
+                                <div><span class="text-slate-500 block text-[9px] uppercase">KAWIN</span>${m.status_kawin || '-'}</div>
+                                <div><span class="text-slate-500 block text-[9px] uppercase">KET</span><span class="text-amber-400 font-bold">${m.keterangan || '0'}</span></div>
                             </div>
                         </div>
                     `;
                 });
-
                 famHtml += `</div>`;
                 content.innerHTML = famHtml;
-
             } catch(err) {
-                content.innerHTML = `<div class="p-4 text-rose-400 text-center text-xs">Gagal memuat anggota keluarga: ${err.message}</div>`;
+                content.innerHTML = `<div class="p-4 text-rose-400 text-center text-xs">Gagal: ${err.message}</div>`;
             }
         }
 
-        function closeVoterModal() {
-            document.getElementById('voterDetailModal').classList.add('hidden');
-        }
+        function closeVoterModal() { document.getElementById('voterDetailModal').classList.add('hidden'); }
 
         window.onload = async () => {
             showGlobalLoader("MEMVERIFIKASI SESI...");
@@ -1877,18 +1722,8 @@
             if(tabSearchInput) tabSearchInput.value = '';
 
             await loadTextCustomization();
-
             if(dbClient) {
-                const { data: { session } } = await dbClient.auth.getSession();
-                if (session) {
-                    await checkAuth();
-                } else {
-                    // Pastikan elemen admin tersembunyi total jika belum login
-                    const navAdmin = document.getElementById('navAdmin');
-                    const btnMobAdmin = document.getElementById('btnMobAdmin');
-                    if(navAdmin) navAdmin.classList.add('hidden');
-                    if(btnMobAdmin) btnMobAdmin.classList.add('hidden');
-                }
+                await checkAuthStatusForNavbar();
             }
             await loadPeriodsAndDashboard();
             hideGlobalLoader();
