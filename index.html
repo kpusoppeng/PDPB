@@ -450,6 +450,18 @@
                         <div class="p-6 text-center text-slate-500 font-mono text-xs">Gunakan kotak pencarian di atas untuk menampilkan data pemilih.</div>
                     </div>
                 </div>
+
+                <!-- NAVIGASI PAGINATION DI BAWAH -->
+                <div id="voterPaginationContainer" class="hidden flex flex-col sm:flex-row items-center justify-between p-4 bg-[#090d16] border-t border-[#1e294b] gap-3 text-xs text-slate-400 font-mono">
+                    <div id="paginationInfo">Menampilkan 0 - 0 dari 0 data</div>
+                    <div class="flex items-center gap-1.5">
+                        <button onclick="changeVoterPage('first')" class="px-3 py-1.5 rounded-lg bg-[#11172a] hover:bg-[#1e294b] text-white border border-[#1e294b] transition font-bold">⏮ First</button>
+                        <button onclick="changeVoterPage('prev')" class="px-3 py-1.5 rounded-lg bg-[#11172a] hover:bg-[#1e294b] text-white border border-[#1e294b] transition font-bold">◀ Prev</button>
+                        <span id="paginationPageIndicator" class="px-3 py-1.5 text-emerald-400 font-bold">Hal 1 / 1</span>
+                        <button onclick="changeVoterPage('next')" class="px-3 py-1.5 rounded-lg bg-[#11172a] hover:bg-[#1e294b] text-white border border-[#1e294b] transition font-bold">Next ▶</button>
+                        <button onclick="changeVoterPage('last')" class="px-3 py-1.5 rounded-lg bg-[#11172a] hover:bg-[#1e294b] text-white border border-[#1e294b] transition font-bold">Last ⏭</button>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -1570,15 +1582,22 @@
         }
 
         let searchTimer = null;
+        let currentVoterSearchResults = [];
+        let currentVoterPage = 1;
+        const voterRowsPerPage = 50;
+
         async function handleTabVoterSearch() {
             const query = document.getElementById('tabSearchInput').value.trim();
             const tbody = document.getElementById('tabSearchTableBody');
             const cardContainer = document.getElementById('tabSearchCardContainer');
             const counterEl = document.getElementById('liveResultCounter');
+            const paginationContainer = document.getElementById('voterPaginationContainer');
             const activePeriodId = document.getElementById('filterPeriode').value;
 
             if(!query || query.length < 3) {
                 counterEl.innerText = "0";
+                currentVoterSearchResults = [];
+                if(paginationContainer) paginationContainer.classList.add('hidden');
                 if(tbody) tbody.innerHTML = `<tr><td colspan="13" class="p-8 text-center text-slate-500 font-mono">Masukkan minimal 3 karakter...</td></tr>`;
                 if(cardContainer) cardContainer.innerHTML = `<div class="p-6 text-center text-slate-500 font-mono text-xs">Masukkan minimal 3 karakter...</div>`;
                 return;
@@ -1598,64 +1617,110 @@
 
                     if(!data || data.length === 0) {
                         counterEl.innerText = "0";
-                        if(tbody) tbody.innerHTML = `<tr><td colspan="13" class="p-8 text-center text-slate-500 font-mono">Tidak ditemukan. (Mungkin mode arsip agregat).</td></tr>`;
+                        currentVoterSearchResults = [];
+                        if(paginationContainer) paginationContainer.classList.add('hidden');
+                        if(tbody) tbody.innerHTML = `<tr><td colspan="13" class="p-8 text-center text-slate-500 font-mono">Tidak ditemukan.</td></tr>`;
                         if(cardContainer) cardContainer.innerHTML = `<div class="p-6 text-center text-slate-500 font-mono text-xs">Tidak ditemukan.</div>`;
                         return;
                     }
 
+                    currentVoterSearchResults = data;
+                    currentVoterPage = 1;
                     counterEl.innerText = formatID(data.length);
-                    let periodName = periodsMap[activePeriodId] || 'Periode Aktif';
-                    let tableHtml = '', cardHtml = '';
-
-                    data.forEach((v, idx) => {
-                        tableHtml += `
-                            <tr class="hover:bg-slate-800/40 transition cursor-pointer" onclick='openVoterModal(${JSON.stringify(v)})'>
-                                <td class="p-3 text-slate-400 font-mono">${idx + 1}</td>
-                                <td class="p-3 font-mono text-emerald-400 font-bold">${v.nkk}</td>
-                                <td class="p-3 font-mono text-slate-300">${v.nik}</td>
-                                <td class="p-3 font-bold text-white uppercase">${v.nama}</td>
-                                <td class="p-3 font-mono text-slate-300">${v.tanggal_lahir || '-'}</td>
-                                <td class="p-3 text-slate-300">${v.status_kawin || '-'}</td>
-                                <td class="p-3 text-center"><span class="px-1.5 py-0.5 rounded text-[9px] font-bold ${v.jenis_kelamin === 'L' ? 'bg-blue-950 text-blue-400' : 'bg-pink-950 text-pink-400'}">${v.jenis_kelamin}</span></td>
-                                <td class="p-3 uppercase text-slate-300">${v.desa}</td>
-                                <td class="p-3 font-mono text-slate-300">TPS ${v.tps}</td>
-                                <td class="p-3 text-slate-300">${v.alamat || '-'}</td>
-                                <td class="p-3 font-mono text-center text-slate-300">${v.rt || '-'}/${v.rw || '-'}</td>
-                                <td class="p-3 text-center font-mono font-bold text-amber-400">${v.keterangan || '0'}</td>
-                                <td class="p-3 font-mono text-[10px] text-goldAccent font-semibold">${periodName}</td>
-                            </tr>
-                        `;
-
-                        cardHtml += `
-                            <div class="bg-[#090d16] border border-[#1e294b] rounded-2xl p-4 space-y-3 shadow-md hover:border-emerald-500/50 transition cursor-pointer" onclick='openVoterModal(${JSON.stringify(v)})'>
-                                <div class="flex justify-between items-start border-b border-[#1e294b] pb-2.5">
-                                    <div class="flex items-center gap-2">
-                                        <span class="w-6 h-6 rounded-lg bg-emerald-500/20 text-emerald-400 font-bold text-[11px] flex items-center justify-center">${idx + 1}</span>
-                                        <div>
-                                            <div class="text-white font-extrabold text-xs uppercase">${v.nama}</div>
-                                            <div class="text-[10px] text-emerald-400 font-mono font-bold">NKK: ${v.nkk}</div>
-                                        </div>
-                                    </div>
-                                    <span class="px-2 py-0.5 rounded text-[10px] font-bold ${v.jenis_kelamin === 'L' ? 'bg-blue-950 text-blue-400' : 'bg-pink-950 text-pink-400'}">${v.jenis_kelamin}</span>
-                                </div>
-                                <div class="grid grid-cols-2 gap-2 text-[11px] text-slate-300 font-mono">
-                                    <div><span class="text-slate-500 block text-[9px] uppercase">NIK</span>${v.nik}</div>
-                                    <div><span class="text-slate-500 block text-[9px] uppercase">Tgl Lahir</span>${v.tanggal_lahir || '-'}</div>
-                                    <div><span class="text-slate-500 block text-[9px] uppercase">Desa / TPS</span>${v.desa} • TPS ${v.tps}</div>
-                                    <div class="truncate"><span class="text-slate-500 block text-[9px] uppercase">Alamat</span>${v.alamat || '-'}</div>
-                                </div>
-                            </div>
-                        `;
-                    });
-
-                    if(tbody) tbody.innerHTML = tableHtml;
-                    if(cardContainer) cardContainer.innerHTML = cardHtml;
+                    renderVoterPaginatedTable();
                 } catch(err) {
                     counterEl.innerText = "0";
+                    currentVoterSearchResults = [];
+                    if(paginationContainer) paginationContainer.classList.add('hidden');
                     if(tbody) tbody.innerHTML = `<tr><td colspan="13" class="p-8 text-center text-rose-400 font-mono">Error: ${err.message}</td></tr>`;
                     if(cardContainer) cardContainer.innerHTML = `<div class="p-6 text-center text-rose-400 font-mono text-xs">Error: ${err.message}</div>`;
                 }
             }, 300);
+        }
+
+        function renderVoterPaginatedTable() {
+            const tbody = document.getElementById('tabSearchTableBody');
+            const cardContainer = document.getElementById('tabSearchCardContainer');
+            const paginationContainer = document.getElementById('voterPaginationContainer');
+            const activePeriodId = document.getElementById('filterPeriode').value;
+            let periodName = periodsMap[activePeriodId] || 'Periode Aktif';
+
+            const totalData = currentVoterSearchResults.length;
+            const totalPages = Math.ceil(totalData / voterRowsPerPage) || 1;
+            if (currentVoterPage > totalPages) currentVoterPage = totalPages;
+            if (currentVoterPage < 1) currentVoterPage = 1;
+
+            const startIndex = (currentVoterPage - 1) * voterRowsPerPage;
+            const endIndex = Math.min(startIndex + voterRowsPerPage, totalData);
+            const paginatedData = currentVoterSearchResults.slice(startIndex, endIndex);
+
+            let tableHtml = '', cardHtml = '';
+
+            paginatedData.forEach((v, idx) => {
+                let absoluteIdx = startIndex + idx + 1;
+                tableHtml += `
+                    <tr class="hover:bg-slate-800/40 transition cursor-pointer" onclick='openVoterModal(${JSON.stringify(v)})'>
+                        <td class="p-3 text-slate-400 font-mono">${absoluteIdx}</td>
+                        <td class="p-3 font-mono text-emerald-400 font-bold">${v.nkk}</td>
+                        <td class="p-3 font-mono text-slate-300">${v.nik}</td>
+                        <td class="p-3 font-bold text-white uppercase">${v.nama}</td>
+                        <td class="p-3 font-mono text-slate-300">${v.tanggal_lahir || '-'}</td>
+                        <td class="p-3 text-slate-300">${v.status_kawin || '-'}</td>
+                        <td class="p-3 text-center"><span class="px-1.5 py-0.5 rounded text-[9px] font-bold ${v.jenis_kelamin === 'L' ? 'bg-blue-950 text-blue-400' : 'bg-pink-950 text-pink-400'}">${v.jenis_kelamin}</span></td>
+                        <td class="p-3 uppercase text-slate-300">${v.desa}</td>
+                        <td class="p-3 font-mono text-slate-300">TPS ${v.tps}</td>
+                        <td class="p-3 text-slate-300">${v.alamat || '-'}</td>
+                        <td class="p-3 font-mono text-center text-slate-300">${v.rt || '-'}/${v.rw || '-'}</td>
+                        <td class="p-3 text-center font-mono font-bold text-amber-400">${v.keterangan || '0'}</td>
+                        <td class="p-3 font-mono text-[10px] text-goldAccent font-semibold">${periodName}</td>
+                    </tr>
+                `;
+
+                cardHtml += `
+                    <div class="bg-[#090d16] border border-[#1e294b] rounded-2xl p-4 space-y-3 shadow-md hover:border-emerald-500/50 transition cursor-pointer" onclick='openVoterModal(${JSON.stringify(v)})'>
+                        <div class="flex justify-between items-start border-b border-[#1e294b] pb-2.5">
+                            <div class="flex items-center gap-2">
+                                <span class="w-6 h-6 rounded-lg bg-emerald-500/20 text-emerald-400 font-bold text-[11px] flex items-center justify-center">${absoluteIdx}</span>
+                                <div>
+                                    <div class="text-white font-extrabold text-xs uppercase">${v.nama}</div>
+                                    <div class="text-[10px] text-emerald-400 font-mono font-bold">NKK: ${v.nkk}</div>
+                                </div>
+                            </div>
+                            <span class="px-2 py-0.5 rounded text-[10px] font-bold ${v.jenis_kelamin === 'L' ? 'bg-blue-950 text-blue-400' : 'bg-pink-950 text-pink-400'}">${v.jenis_kelamin}</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 text-[11px] text-slate-300 font-mono">
+                            <div><span class="text-slate-500 block text-[9px] uppercase">NIK</span>${v.nik}</div>
+                            <div><span class="text-slate-500 block text-[9px] uppercase">Tgl Lahir</span>${v.tanggal_lahir || '-'}</div>
+                            <div><span class="text-slate-500 block text-[9px] uppercase">Desa / TPS</span>${v.desa} • TPS ${v.tps}</div>
+                            <div class="truncate"><span class="text-slate-500 block text-[9px] uppercase">Alamat</span>${v.alamat || '-'}</div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            if(tbody) tbody.innerHTML = tableHtml;
+            if(cardContainer) cardContainer.innerHTML = cardHtml;
+
+            if(paginationContainer) {
+                if(totalData > 0) {
+                    paginationContainer.classList.remove('hidden');
+                    document.getElementById('paginationInfo').innerText = `Menampilkan ${startIndex + 1} - ${endIndex} dari ${formatID(totalData)} data`;
+                    document.getElementById('paginationPageIndicator').innerText = `Hal ${currentVoterPage} / ${totalPages}`;
+                } else {
+                    paginationContainer.classList.add('hidden');
+                }
+            }
+        }
+
+        function changeVoterPage(action) {
+            const totalPages = Math.ceil(currentVoterSearchResults.length / voterRowsPerPage) || 1;
+            if (action === 'first') currentVoterPage = 1;
+            else if (action === 'prev' && currentVoterPage > 1) currentVoterPage--;
+            else if (action === 'next' && currentVoterPage < totalPages) currentVoterPage++;
+            else if (action === 'last') currentVoterPage = totalPages;
+            
+            renderVoterPaginatedTable();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         async function openVoterModal(voter) {
