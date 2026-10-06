@@ -101,57 +101,6 @@
         </div>
     </div>
 
-    <!-- MODAL FILTER KHUSUS HP -->
-    <div id="mobileFilterModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm hidden p-4">
-        <div class="saas-card max-w-md w-full p-6 space-y-4 border border-emerald-500/40 shadow-2xl max-h-[90vh] overflow-y-auto font-sans">
-            <div class="flex justify-between items-center border-b border-[#1e294b] pb-3">
-                <div class="flex items-center gap-2">
-                    <span class="text-emerald-400 font-bold">🔍</span>
-                    <h3 class="text-white font-bold text-sm tracking-wide">Panel Filter Data</h3>
-                </div>
-                <button onclick="closeMobileFilterModal(false)" class="text-slate-400 hover:text-white bg-[#090d16] px-3 py-1.5 rounded-xl border border-[#1e294b] text-xs font-bold">Tutup ✕</button>
-            </div>
-            
-            <div class="space-y-3">
-                <div class="space-y-1">
-                    <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Kecamatan</label>
-                    <select id="modalFilterKecamatan" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-3 py-2.5 rounded-xl text-xs font-bold focus:outline-none focus:border-emerald-500 font-sans" onchange="onModalKecamatanChange()">
-                        <option value="ALL">SEMUA KECAMATAN</option>
-                    </select>
-                </div>
-                <div class="space-y-1">
-                    <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Desa/Kelurahan</label>
-                    <select id="modalFilterDesa" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-3 py-2.5 rounded-xl text-xs font-bold focus:outline-none focus:border-emerald-500 font-sans">
-                        <option value="ALL">SEMUA DESA</option>
-                    </select>
-                </div>
-                <div class="space-y-1">
-                    <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Generasi</label>
-                    <select id="modalFilterGenerasi" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-3 py-2.5 rounded-xl text-xs font-bold focus:outline-none focus:border-emerald-500 font-sans">
-                        <option value="ALL">SEMUA GENERASI</option>
-                    </select>
-                </div>
-                <div class="space-y-1">
-                    <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Disabilitas</label>
-                    <select id="modalFilterDisabilitas" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-3 py-2.5 rounded-xl text-xs font-bold focus:outline-none focus:border-emerald-500 font-sans">
-                        <option value="ALL">SEMUA DISABILITAS</option>
-                    </select>
-                </div>
-                <div class="space-y-1">
-                    <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Status Perkawinan</label>
-                    <select id="modalFilterPerkawinan" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-3 py-2.5 rounded-xl text-xs font-bold focus:outline-none focus:border-emerald-500 font-sans">
-                        <option value="ALL">SEMUA STATUS</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="flex gap-3 pt-3 border-t border-[#1e294b]">
-                <button onclick="closeMobileFilterModal(true)" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-xl transition text-xs tracking-wider shadow-lg shadow-emerald-600/30">OK</button>
-                <button onclick="closeMobileFilterModal(false)" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-2.5 rounded-xl transition text-xs tracking-wider border border-slate-700">Batal</button>
-            </div>
-        </div>
-    </div>
-
     <!-- MODAL POPUP RINCIAN KELUARGA / PEMILIH -->
     <div id="voterDetailModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm hidden p-4">
         <div class="saas-card max-w-3xl w-full p-6 space-y-5 border border-emerald-500/40 shadow-2xl max-h-[90vh] overflow-y-auto">
@@ -169,7 +118,7 @@
         </div>
     </div>
 
-    <!-- TOP HEADER / NAVBAR (SEMUA MENU UTAMA TAMPIL TRANSPARAN TANPA HIDDEN) -->
+    <!-- TOP HEADER / NAVBAR -->
     <header class="bg-[#090d16] border-b border-[#1e294b] sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-4 sm:px-6">
             <div class="flex justify-between items-center h-16 sm:h-20">
@@ -181,7 +130,7 @@
                     </div>
                 </div>
 
-                <!-- DESKTOP NAVBAR: 5 Menu Komplet Terlihat Publik -->
+                <!-- DESKTOP NAVBAR -->
                 <nav class="hidden md:flex items-center gap-2">
                     <button onclick="navigate('dashboard')" id="btnNavDashboard" class="saas-nav-btn active px-3.5 py-2 rounded-xl text-white text-xs font-bold tracking-wide flex items-center gap-1.5 transition">
                         📊 Dashboard
@@ -201,7 +150,7 @@
                 </nav>
             </div>
         </div>
-        <!-- MOBILE BOTTOM NAVBAR (5 Menu Komplet Terlihat Publik) -->
+        <!-- MOBILE BOTTOM NAVBAR -->
         <div class="flex md:hidden bg-[#11172a] border-t border-[#1e294b] px-1 py-2.5 justify-around items-center">
             <button onclick="navigate('dashboard')" id="btnMobDashboard" class="text-emerald-400 text-[11px] font-bold flex flex-col items-center gap-1">
                 <span>📊</span> Dashboard
@@ -225,66 +174,54 @@
     <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 flex-grow w-full space-y-6">
         
         <!-- ================= DASHBOARD PAGE ================= -->
-        <section id="page-dashboard" class="space-y-6 block">
+        <section id="page-dashboard" class="space-y-4 sm:space-y-6 block">
+            
+            <!-- HEADER INFO & PERIODE -->
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                    <h2 id="customDashTitle" class="text-lg sm:text-xl font-extrabold text-white tracking-tight">Ringkasan Eksekutif</h2>
-                    <p id="customDashSub" class="text-[11px] sm:text-xs text-slate-400 mt-0.5 tracking-wide">PEMUTAKHIRAN DATA PEMILIH BERKELANJUTAN</p>
+                    <h2 id="customDashTitle" class="text-xl font-extrabold text-white tracking-tight">Ringkasan Eksekutif</h2>
+                    <p id="customDashSub" class="text-xs text-slate-400 mt-0.5 tracking-wide">PEMUTAKHIRAN DATA PEMILIH BERKELANJUTAN</p>
                 </div>
-                <div class="flex items-center gap-3 bg-[#11172a] border border-[#1e294b] px-3 py-2 rounded-xl shadow-inner w-full sm:w-auto justify-between sm:justify-start">
-                    <span class="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-widest">PERIODE:</span>
-                    <select id="filterPeriode" class="bg-transparent text-xs font-bold text-white focus:outline-none cursor-pointer font-sans" onchange="onPeriodChange()">
+                <div class="flex items-center gap-3 bg-[#11172a] border border-[#1e294b] px-3.5 py-2 rounded-xl shadow-inner w-full sm:w-auto justify-between sm:justify-start">
+                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">PERIODE:</span>
+                    <select id="filterPeriode" class="bg-transparent text-xs font-bold text-emerald-400 focus:outline-none cursor-pointer font-sans" onchange="onPeriodChange()">
                         <option value="" class="bg-[#11172a]">Memuat periode...</option>
                     </select>
                 </div>
             </div>
 
-            <!-- TOMBOL BADGE FILTER KHUSUS HP -->
-            <div class="block md:hidden">
-                <button onclick="openMobileFilterModal()" class="w-full bg-emerald-600/20 border border-emerald-500/40 text-emerald-400 hover:bg-emerald-600/30 px-4 py-3 rounded-xl text-xs font-bold flex items-center justify-between transition shadow-lg">
-                    <span class="flex items-center gap-2"><span>🔍</span> Buka Panel Filter Data</span>
-                    <span class="bg-emerald-500 text-black px-2 py-0.5 rounded-full text-[10px] font-extrabold" id="filterActiveBadge">Filter Aktif</span>
-                </button>
-            </div>
-
-            <!-- PANEL FILTER KUSTOMISASI DATA (DESKTOP) -->
-            <div class="hidden md:block saas-card p-4 sm:p-5 space-y-3 border border-emerald-500/20 bg-gradient-to-r from-[#11172a] to-[#0f172a]">
-                <div class="flex justify-between items-center border-b border-[#1e294b] pb-2 sm:pb-3">
-                    <div class="text-[11px] sm:text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-2">
-                        <span>🔍</span> PANEL FILTER DATA
-                    </div>
-                    <button onclick="resetFilters()" class="text-[10px] sm:text-[11px] text-slate-400 hover:text-white bg-[#090d16] px-2.5 py-1 rounded-lg border border-[#1e294b] transition flex items-center gap-1">
-                        <span>🔄</span> Reset
-                    </button>
+            <!-- FILTER WILAYAH & KATEGORI UTAMA (TERSEDIA DI DOM AGAR TIDAK ERROR) -->
+            <div class="saas-card p-4 sm:p-5 space-y-3 border border-emerald-500/20 bg-[#11172a]/9fn">
+                <div class="text-[10px] font-bold text-emerald-400 uppercase tracking-widest flex items-center gap-1.5">
+                    <span>🔍</span> PANEL FILTER DATA & WILAYAH
                 </div>
-
-                <div class="grid grid-cols-2 md:grid-cols-5 gap-2.5 sm:gap-3">
+                <div class="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
                     <div class="space-y-1">
-                        <label class="block text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-slate-400">Kecamatan</label>
+                        <label class="block text-[9px] font-bold uppercase tracking-wider text-slate-400">Kecamatan</label>
                         <select id="filterKecamatan" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-2.5 py-2 rounded-xl text-xs font-bold focus:outline-none focus:border-emerald-500 font-sans" onchange="onKecamatanChange()">
                             <option value="ALL">SEMUA KECAMATAN</option>
                         </select>
                     </div>
                     <div class="space-y-1">
-                        <label class="block text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-slate-400">Desa/Kelurahan</label>
+                        <label class="block text-[9px] font-bold uppercase tracking-wider text-slate-400">Desa/Kelurahan</label>
                         <select id="filterDesa" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-2.5 py-2 rounded-xl text-xs font-bold focus:outline-none focus:border-emerald-500 font-sans" onchange="applyFilters()">
                             <option value="ALL">SEMUA DESA</option>
                         </select>
                     </div>
                     <div class="space-y-1">
-                        <label class="block text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-slate-400">Generasi</label>
+                        <label class="block text-[9px] font-bold uppercase tracking-wider text-slate-400">Generasi</label>
                         <select id="filterGenerasi" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-2.5 py-2 rounded-xl text-xs font-bold focus:outline-none focus:border-emerald-500 font-sans" onchange="applyFilters()">
                             <option value="ALL">SEMUA GENERASI</option>
                         </select>
                     </div>
                     <div class="space-y-1">
-                        <label class="block text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-slate-400">Disabilitas</label>
+                        <label class="block text-[9px] font-bold uppercase tracking-wider text-slate-400">Disabilitas</label>
                         <select id="filterDisabilitas" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-2.5 py-2 rounded-xl text-xs font-bold focus:outline-none focus:border-emerald-500 font-sans" onchange="applyFilters()">
                             <option value="ALL">SEMUA DISABILITAS</option>
                         </select>
                     </div>
-                    <div class="space-y-1 col-span-2 md:col-span-1">
-                        <label class="block text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-slate-400">Status Perkawinan</label>
+                    <div class="space-y-1 col-span-2 sm:col-span-1">
+                        <label class="block text-[9px] font-bold uppercase tracking-wider text-slate-400">Status Perkawinan</label>
                         <select id="filterPerkawinan" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-2.5 py-2 rounded-xl text-xs font-bold focus:outline-none focus:border-emerald-500 font-sans" onchange="applyFilters()">
                             <option value="ALL">SEMUA STATUS</option>
                         </select>
@@ -321,7 +258,7 @@
             <!-- KARTU PERGERAKAN DATA (TMS & UBAH) -->
             <div class="saas-card p-5 sm:p-6 space-y-4">
                 <div class="text-xs font-bold text-emerald-400 uppercase tracking-widest flex items-center gap-2">
-                    <span>⚡</span> MUTASI DATA (TMS & UBAH)
+                    <span>⚡</span> MUTASI DATA (BARU, TMS & UBAH)
                 </div>
                 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6 pt-2">
@@ -583,7 +520,7 @@
                     <h2 class="text-lg font-bold text-white">Anda Sudah Masuk</h2>
                     <p id="loggedInUserEmail" class="text-xs text-emerald-400 font-mono font-semibold">-</p>
                 </div>
-                <button onclick="logout()" class="w-full bg-rose-600 hover:bg-rose-500 text-white font-bold py-3 rounded-xl transition text-xs tracking-wider shadow-lg shadow-rose-600/30">
+                <button onclick="logout()" class="w-full bg-rose-600 hover:bg-rose-500 text-white font-bold py-3 rounded-xl transition text-xs tracking-wider shadow-lg shadow-emerald-600/30">
                     KELUAR DARI SISTEM (LOGOUT)
                 </button>
             </div>
@@ -725,76 +662,14 @@
             document.getElementById('customModal').classList.add('hidden');
         }
 
-        function openMobileFilterModal() {
-            document.getElementById('modalFilterKecamatan').innerHTML = document.getElementById('filterKecamatan').innerHTML;
-            document.getElementById('modalFilterGenerasi').innerHTML = document.getElementById('filterGenerasi').innerHTML;
-            document.getElementById('modalFilterDisabilitas').innerHTML = document.getElementById('filterDisabilitas').innerHTML;
-            document.getElementById('modalFilterPerkawinan').innerHTML = document.getElementById('filterPerkawinan').innerHTML;
-
-            document.getElementById('modalFilterKecamatan').value = document.getElementById('filterKecamatan').value;
-            syncModalDesaOptions();
-            document.getElementById('modalFilterDesa').value = document.getElementById('filterDesa').value;
-            document.getElementById('modalFilterGenerasi').value = document.getElementById('filterGenerasi').value;
-            document.getElementById('modalFilterDisabilitas').value = document.getElementById('filterDisabilitas').value;
-            document.getElementById('modalFilterPerkawinan').value = document.getElementById('filterPerkawinan').value;
-
-            document.getElementById('mobileFilterModal').classList.remove('hidden');
-        }
-
-        function closeMobileFilterModal(apply = false) {
-            if (apply) {
-                document.getElementById('filterKecamatan').value = document.getElementById('modalFilterKecamatan').value;
-                updateDesaOptions();
-                document.getElementById('filterDesa').value = document.getElementById('modalFilterDesa').value;
-                document.getElementById('filterGenerasi').value = document.getElementById('modalFilterGenerasi').value;
-                document.getElementById('filterDisabilitas').value = document.getElementById('modalFilterDisabilitas').value;
-                document.getElementById('filterPerkawinan').value = document.getElementById('modalFilterPerkawinan').value;
-                applyFilters();
-                updateFilterBadgeStatus();
-            }
-            document.getElementById('mobileFilterModal').classList.add('hidden');
-        }
-
-        function onModalKecamatanChange() { syncModalDesaOptions(); }
-        function syncModalDesaOptions() {
-            const selectedKec = document.getElementById('modalFilterKecamatan').value;
-            const desaSet = new Set();
-            rawVoterCache.forEach(r => {
-                if(selectedKec === 'ALL' || r.kecamatan === selectedKec) { if(r.desa) desaSet.add(r.desa); }
-            });
-            const desaEl = document.getElementById('modalFilterDesa');
-            desaEl.innerHTML = '<option value="ALL">SEMUA DESA</option>';
-            Array.from(desaSet).sort().forEach(ds => { desaEl.innerHTML += `<option value="${ds}">${ds}</option>`; });
-        }
-
-        function updateFilterBadgeStatus() {
-            const badge = document.getElementById('filterActiveBadge');
-            if(!badge) return;
-            const fKec = document.getElementById('filterKecamatan').value;
-            const fDesa = document.getElementById('filterDesa').value;
-            const fGen = document.getElementById('filterGenerasi').value;
-            const fDis = document.getElementById('filterDisabilitas').value;
-            const fKawin = document.getElementById('filterPerkawinan').value;
-
-            if (fKec !== 'ALL' || fDesa !== 'ALL' || fGen !== 'ALL' || fDis !== 'ALL' || fKawin !== 'ALL') {
-                badge.innerText = "Aktif (Difilter)";
-                badge.className = "bg-amber-400 text-black px-2 py-0.5 rounded-full text-[10px] font-extrabold";
-            } else {
-                badge.innerText = "Semua Data";
-                badge.className = "bg-emerald-500 text-black px-2 py-0.5 rounded-full text-[10px] font-extrabold";
-            }
-        }
-
-        // ================= NAVIGASI HALAMAN DENGAN PENGAMANAN AKSES =================
+        // NAVIGASI HALAMAN
         async function navigate(pageId) {
             if (!dbClient) return;
 
-            // Periksa sesi pengguna saat ini
             const { data: { session } } = await dbClient.auth.getSession();
             const userEmail = session ? session.user.email : null;
             const isOwner = (userEmail === 'rendatinsoppeng@gmail.com');
 
-            // 1. Validasi Akses: PENCARIAN / DATA PEMILIH (Hanya Owner & Operator Terdaftar)
             if (pageId === 'pencarian') {
                 if (!session) {
                     showModal("Autentikasi Diperlukan", "Menu <b>Data Pemilih</b> khusus untuk Admin/Operator. Silakan login terlebih dahulu.", "🔒");
@@ -808,10 +683,8 @@
                 }
             }
 
-            // 2. Validasi Akses: PANEL ADMIN (Eksklusif Owner Only)
             if (pageId === 'admin') {
                 if (!isOwner) {
-                    // Alih-alih langsung menolak, arahkan ke halaman admin dengan menampilkan pesan restricted
                     ['dashboard', 'rekapitulasi', 'pencarian', 'admin', 'login'].forEach(p => {
                         document.getElementById('page-' + p).classList.add('hidden');
                     });
@@ -834,7 +707,6 @@
                 }
             }
 
-            // Render Halaman
             ['dashboard', 'rekapitulasi', 'pencarian', 'admin', 'login'].forEach(p => {
                 const el = document.getElementById('page-' + p);
                 if (el) el.classList.add('hidden');
@@ -944,7 +816,7 @@
             const emailInput = document.getElementById('newOperatorEmail');
             const email = emailInput.value.trim().toLowerCase();
             if(!email || !email.includes('@')) {
-                showModal("Peringatan", "Masukkan email operator yang valid!", "⚠️️");
+                showModal("Peringatan", "Masukkan email operator yang valid!", "⚠️");
                 return;
             }
             const { error } = await dbClient.from('operators').insert([{ email: email }]);
@@ -1309,52 +1181,67 @@
             });
 
             const kecEl = document.getElementById('filterKecamatan');
-            kecEl.innerHTML = '<option value="ALL">SEMUA KECAMATAN</option>';
-            Array.from(kecSet).sort().forEach(k => { kecEl.innerHTML += `<option value="${k}">${k}</option>`; });
+            if(kecEl) {
+                kecEl.innerHTML = '<option value="ALL">SEMUA KECAMATAN</option>';
+                Array.from(kecSet).sort().forEach(k => { kecEl.innerHTML += `<option value="${k}">${k}</option>`; });
+            }
 
             updateDesaOptions();
 
             const genEl = document.getElementById('filterGenerasi');
-            genEl.innerHTML = '<option value="ALL">SEMUA GENERASI</option>';
-            Array.from(genSet).sort().forEach(g => { genEl.innerHTML += `<option value="${g}">${g}</option>`; });
+            if(genEl) {
+                genEl.innerHTML = '<option value="ALL">SEMUA GENERASI</option>';
+                Array.from(genSet).sort().forEach(g => { genEl.innerHTML += `<option value="${g}">${g}</option>`; });
+            }
 
             const disEl = document.getElementById('filterDisabilitas');
-            disEl.innerHTML = '<option value="ALL">SEMUA DISABILITAS</option>';
-            Array.from(disSet).sort().forEach(d => { disEl.innerHTML += `<option value="${d}">${d}</option>`; });
+            if(disEl) {
+                disEl.innerHTML = '<option value="ALL">SEMUA DISABILITAS</option>';
+                Array.from(disSet).sort().forEach(d => { disEl.innerHTML += `<option value="${d}">${d}</option>`; });
+            }
 
             const kawinEl = document.getElementById('filterPerkawinan');
-            kawinEl.innerHTML = '<option value="ALL">SEMUA STATUS</option>';
-            Array.from(kawinSet).sort().forEach(kw => { kawinEl.innerHTML += `<option value="${kw}">${kw}</option>`; });
+            if(kawinEl) {
+                kawinEl.innerHTML = '<option value="ALL">SEMUA STATUS</option>';
+                Array.from(kawinSet).sort().forEach(kw => { kawinEl.innerHTML += `<option value="${kw}">${kw}</option>`; });
+            }
         }
 
         function onKecamatanChange() { updateDesaOptions(); applyFilters(); }
         function updateDesaOptions() {
-            const selectedKec = document.getElementById('filterKecamatan').value;
+            const kecEl = document.getElementById('filterKecamatan');
+            const desaEl = document.getElementById('filterDesa');
+            if(!kecEl || !desaEl) return;
+
+            const selectedKec = kecEl.value;
             const desaSet = new Set();
             rawVoterCache.forEach(r => {
                 if(selectedKec === 'ALL' || r.kecamatan === selectedKec) { if(r.desa) desaSet.add(r.desa); }
             });
-            const desaEl = document.getElementById('filterDesa');
             desaEl.innerHTML = '<option value="ALL">SEMUA DESA</option>';
             Array.from(desaSet).sort().forEach(ds => { desaEl.innerHTML += `<option value="${ds}">${ds}</option>`; });
         }
 
         function resetFilters() {
-            document.getElementById('filterKecamatan').value = 'ALL';
+            const kecEl = document.getElementById('filterKecamatan');
+            const genEl = document.getElementById('filterGenerasi');
+            const disEl = document.getElementById('filterDisabilitas');
+            const kawinEl = document.getElementById('filterPerkawinan');
+
+            if(kecEl) kecEl.value = 'ALL';
             updateDesaOptions();
-            document.getElementById('filterGenerasi').value = 'ALL';
-            document.getElementById('filterDisabilitas').value = 'ALL';
-            document.getElementById('filterPerkawinan').value = 'ALL';
+            if(genEl) genEl.value = 'ALL';
+            if(disEl) disEl.value = 'ALL';
+            if(kawinEl) kawinEl.value = 'ALL';
             applyFilters();
-            updateFilterBadgeStatus();
         }
 
         function applyFilters() {
-            const fKec = document.getElementById('filterKecamatan').value;
-            const fDesa = document.getElementById('filterDesa').value;
-            const fGen = document.getElementById('filterGenerasi').value;
-            const fDis = document.getElementById('filterDisabilitas').value;
-            const fKawin = document.getElementById('filterPerkawinan').value;
+            const fKec = document.getElementById('filterKecamatan')?.value || 'ALL';
+            const fDesa = document.getElementById('filterDesa')?.value || 'ALL';
+            const fGen = document.getElementById('filterGenerasi')?.value || 'ALL';
+            const fDis = document.getElementById('filterDisabilitas')?.value || 'ALL';
+            const fKawin = document.getElementById('filterPerkawinan')?.value || 'ALL';
 
             let aktifL = 0, aktifP = 0;
             rawVoterCache.forEach(r => {
