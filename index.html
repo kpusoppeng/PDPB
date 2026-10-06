@@ -319,21 +319,32 @@
                 </div>
             </div>
 
-            <!-- KARTU PERGERAKAN DATA (TMS & UBAH) (PADAT KHUSUS HP) -->
+            <!-- KARTU PERGERAKAN DATA (TMS & UBAH) -->
             <div class="saas-card p-3.5 sm:p-6 space-y-3 sm:space-y-4">
                 <div class="text-xs font-bold text-emerald-400 uppercase tracking-widest flex items-center gap-2">
                     <span>⚡</span> MUTASI DATA (TMS & UBAH)
                 </div>
                 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-6 pt-1 sm:pt-2">
-                    <div class="bg-[#090d16] border border-[#1e294b] p-3 sm:p-5 rounded-xl flex flex-col justify-between">
-                        <div>
-                            <div class="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider">PEMILIH BARU (B)</div>
-                            <div id="dashMutasiB" class="text-xl sm:text-2xl font-extrabold text-emerald-400 mt-1 sm:mt-2">0</div>
+                    <!-- Baris Atas HP: Pemilih Baru & Ubah Data Berdampingan (di Desktop tetap 3 kolom) -->
+                    <div class="grid grid-cols-2 md:contents gap-3">
+                        <div class="bg-[#090d16] border border-[#1e294b] p-3 sm:p-5 rounded-xl flex flex-col justify-between">
+                            <div>
+                                <div class="text-[9px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider truncate">PEMILIH BARU (B)</div>
+                                <div id="dashMutasiB" class="text-lg sm:text-2xl font-extrabold text-emerald-400 mt-1 sm:mt-2">0</div>
+                            </div>
+                            <div id="dashMutasiBDetail" class="text-[9px] sm:text-[11px] text-slate-400 mt-2 sm:mt-3 pt-1.5 sm:pt-2 border-t border-slate-800">L: 0 • P: 0</div>
                         </div>
-                        <div id="dashMutasiBDetail" class="text-[10px] sm:text-[11px] text-slate-400 mt-2 sm:mt-3 pt-1.5 sm:pt-2 border-t border-slate-800">L: 0 • P: 0</div>
+                        <div class="bg-[#090d16] border border-[#1e294b] p-3 sm:p-5 rounded-xl flex flex-col justify-between">
+                            <div>
+                                <div class="text-[9px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider truncate">UBAH DATA (U)</div>
+                                <div id="dashMutasiU" class="text-lg sm:text-2xl font-extrabold text-amber-400 mt-1 sm:mt-2">0</div>
+                            </div>
+                            <div id="dashMutasiUDetail" class="text-[9px] sm:text-[11px] text-slate-400 mt-2 sm:mt-3 pt-1.5 sm:pt-2 border-t border-slate-800">L: 0 • P: 0</div>
+                        </div>
                     </div>
-                    <div class="bg-[#090d16] border border-[#1e294b] p-3 sm:p-5 rounded-xl flex flex-col justify-between">
+                    <!-- Baris Bawah HP: TMS Sendiri Penuh -->
+                    <div class="bg-[#090d16] border border-[#1e294b] p-3 sm:p-5 rounded-xl flex flex-col justify-between md:col-span-3">
                         <div>
                             <div class="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider">TIDAK MEMENUHI SYARAT (TMS)</div>
                             <div id="dashMutasiTMS" class="text-xl sm:text-2xl font-extrabold text-rose-400 mt-1 sm:mt-2">0</div>
@@ -342,13 +353,6 @@
                             <div id="dashMutasiTMSDetailLP" class="text-[10px] sm:text-[11px] text-slate-300 font-semibold">L: 0 • P: 0</div>
                             <div id="dashTMSDetail" class="text-[10px] sm:text-[11px] text-slate-400 truncate">Detail: -</div>
                         </div>
-                    </div>
-                    <div class="bg-[#090d16] border border-[#1e294b] p-3 sm:p-5 rounded-xl flex flex-col justify-between">
-                        <div>
-                            <div class="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider">UBAH DATA (U)</div>
-                            <div id="dashMutasiU" class="text-xl sm:text-2xl font-extrabold text-amber-400 mt-1 sm:mt-2">0</div>
-                        </div>
-                        <div id="dashMutasiUDetail" class="text-[10px] sm:text-[11px] text-slate-400 mt-2 sm:mt-3 pt-1.5 sm:pt-2 border-t border-slate-800">L: 0 • P: 0</div>
                     </div>
                 </div>
             </div>
