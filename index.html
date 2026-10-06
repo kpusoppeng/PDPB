@@ -169,7 +169,7 @@
         </div>
     </div>
 
-    <!-- TOP HEADER / NAVBAR (SEMUA MENU UTAMA TAMPIL TRANSPARAN TANPA HIDDEN) -->
+    <!-- TOP HEADER / NAVBAR -->
     <header class="bg-[#090d16] border-b border-[#1e294b] sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-4 sm:px-6">
             <div class="flex justify-between items-center h-16 sm:h-20">
@@ -181,7 +181,7 @@
                     </div>
                 </div>
 
-                <!-- DESKTOP NAVBAR: 5 Menu Komplet Terlihat Publik -->
+                <!-- DESKTOP NAVBAR -->
                 <nav class="hidden md:flex items-center gap-2">
                     <button onclick="navigate('dashboard')" id="btnNavDashboard" class="saas-nav-btn active px-3.5 py-2 rounded-xl text-white text-xs font-bold tracking-wide flex items-center gap-1.5 transition">
                         📊 Dashboard
@@ -201,7 +201,7 @@
                 </nav>
             </div>
         </div>
-        <!-- MOBILE BOTTOM NAVBAR (5 Menu Komplet Terlihat Publik) -->
+        <!-- MOBILE BOTTOM NAVBAR -->
         <div class="flex md:hidden bg-[#11172a] border-t border-[#1e294b] px-1 py-2.5 justify-around items-center">
             <button onclick="navigate('dashboard')" id="btnMobDashboard" class="text-emerald-400 text-[11px] font-bold flex flex-col items-center gap-1">
                 <span>📊</span> Dashboard
@@ -226,7 +226,6 @@
         
         <!-- ================= DASHBOARD PAGE ================= -->
         <section id="page-dashboard" class="space-y-3 sm:space-y-6 block">
-            <!-- HEADER DASHBOARD & FILTER PERIODE YANG LEBIH MENONJOL DI HP -->
             <div class="flex flex-col gap-3 bg-[#11172a]/90 p-3.5 sm:p-0 rounded-xl sm:rounded-none border border-[#1e294b] sm:border-none sm:flex-row sm:justify-between sm:items-center">
                 <div>
                     <h2 id="customDashTitle" class="text-base sm:text-xl font-extrabold text-white tracking-tight">Ringkasan Eksekutif</h2>
@@ -240,7 +239,6 @@
                 </div>
             </div>
 
-            <!-- TOMBOL BADGE FILTER KHUSUS HP -->
             <div class="block md:hidden">
                 <button onclick="openMobileFilterModal()" class="w-full bg-emerald-600/20 border border-emerald-500/40 text-emerald-400 hover:bg-emerald-600/30 px-3.5 py-2.5 rounded-xl text-xs font-bold flex items-center justify-between transition shadow-lg">
                     <span class="flex items-center gap-2"><span>🔍</span> Buka Panel Filter Data</span>
@@ -248,7 +246,6 @@
                 </button>
             </div>
 
-            <!-- PANEL FILTER KUSTOMISASI DATA (DESKTOP) -->
             <div class="hidden md:block saas-card p-4 sm:p-5 space-y-3 border border-emerald-500/20 bg-gradient-to-r from-[#11172a] to-[#0f172a]">
                 <div class="flex justify-between items-center border-b border-[#1e294b] pb-2 sm:pb-3">
                     <div class="text-[11px] sm:text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-2">
@@ -293,7 +290,6 @@
                 </div>
             </div>
 
-            <!-- KARTU STATISTIK PEMILIH AKTIF (PADAT BERDAMPINGAN KHUSUS HP) -->
             <div class="grid grid-cols-3 md:grid-cols-3 gap-2 sm:gap-6">
                 <div class="saas-card p-3 sm:p-7 flex flex-col justify-between">
                     <div class="text-[9px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-widest truncate">LAKI-LAKI</div>
@@ -319,14 +315,12 @@
                 </div>
             </div>
 
-            <!-- KARTU PERGERAKAN DATA (TMS & UBAH) -->
             <div class="saas-card p-3.5 sm:p-6 space-y-3 sm:space-y-4">
                 <div class="text-xs font-bold text-emerald-400 uppercase tracking-widest flex items-center gap-2">
                     <span>⚡</span> MUTASI DATA (TMS & UBAH)
                 </div>
                 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-6 pt-1 sm:pt-2">
-                    <!-- Baris Atas HP: Pemilih Baru & Ubah Data Berdampingan -->
                     <div class="grid grid-cols-2 md:contents gap-3">
                         <div class="bg-[#090d16] border border-[#1e294b] p-3 sm:p-5 rounded-xl flex flex-col justify-between">
                             <div>
@@ -343,7 +337,6 @@
                             <div id="dashMutasiUDetail" class="text-[9px] sm:text-[11px] text-slate-400 mt-2 sm:mt-3 pt-1.5 sm:pt-2 border-t border-slate-800">L: 0 • P: 0</div>
                         </div>
                     </div>
-                    <!-- TMS: Di HP tetap baris sendiri penuh, di Desktop berjejer 3 kolom -->
                     <div class="bg-[#090d16] border border-[#1e294b] p-3 sm:p-5 rounded-xl flex flex-col justify-between md:col-span-1">
                         <div>
                             <div class="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider">TIDAK MEMENUHI SYARAT (TMS)</div>
@@ -400,7 +393,7 @@
             </div>
         </section>
 
-        <!-- ================= PENCARIAN PEMILIH PAGE (TERPROTEKSI: OWNER & OPERATOR) ================= -->
+        <!-- ================= PENCARIAN PEMILIH PAGE (DENGAN 3 FILTER COMPACT DI BAWAH NAVBAR) ================= -->
         <section id="page-pencarian" class="hidden space-y-4">
             <div class="sticky top-20 z-30 saas-card p-4 sm:p-5 space-y-3 border border-emerald-500/30 bg-[#11172a]/95 backdrop-blur-md shadow-2xl">
                 <div class="flex flex-col md:flex-row justify-between items-center gap-4">
@@ -413,6 +406,30 @@
                     </div>
                     <div class="w-full md:w-80">
                         <input type="text" id="tabSearchInput" placeholder="Ketik minimal 3 karakter..." class="w-full bg-[#090d16] border border-[#1e294b] text-white px-4 py-2.5 rounded-xl text-xs focus:outline-none focus:border-emerald-500 transition" oninput="handleTabVoterSearch()">
+                    </div>
+                </div>
+
+                <!-- 3 FILTER KOMPAK: KECAMATAN, DESA, GENDER -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-3 border-t border-[#1e294b]">
+                    <div class="space-y-1">
+                        <label class="block text-[9px] font-bold uppercase tracking-wider text-slate-400">Filter Kecamatan</label>
+                        <select id="searchFilterKecamatan" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-2.5 py-2 rounded-xl text-xs font-bold focus:outline-none focus:border-emerald-500 font-sans" onchange="onSearchKecamatanChange()">
+                            <option value="ALL">SEMUA KECAMATAN</option>
+                        </select>
+                    </div>
+                    <div class="space-y-1">
+                        <label class="block text-[9px] font-bold uppercase tracking-wider text-slate-400">Filter Desa/Kelurahan</label>
+                        <select id="searchFilterDesa" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-2.5 py-2 rounded-xl text-xs font-bold focus:outline-none focus:border-emerald-500 font-sans" onchange="renderVoterPaginatedTable()">
+                            <option value="ALL">SEMUA DESA</option>
+                        </select>
+                    </div>
+                    <div class="space-y-1">
+                        <label class="block text-[9px] font-bold uppercase tracking-wider text-slate-400">Filter Jenis Kelamin</label>
+                        <select id="searchFilterGender" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-2.5 py-2 rounded-xl text-xs font-bold focus:outline-none focus:border-emerald-500 font-sans" onchange="renderVoterPaginatedTable()">
+                            <option value="ALL">SEMUA (L & P)</option>
+                            <option value="L">LAKI-LAKI (L)</option>
+                            <option value="P">PEREMPUAN (P)</option>
+                        </select>
                     </div>
                 </div>
             </div>
@@ -465,7 +482,7 @@
             </div>
         </section>
 
-        <!-- ================= PANEL ADMIN PAGE (TERPROTEKSI EKSLUSIF: OWNER ONLY) ================= -->
+        <!-- ================= PANEL ADMIN PAGE ================= -->
         <section id="page-admin" class="hidden max-w-3xl mx-auto space-y-6">
             <div id="adminRestrictedNotice" class="hidden saas-card p-6 sm:p-8 text-center space-y-4 border-rose-950/50">
                 <div class="w-12 h-12 bg-rose-600/20 text-rose-400 border border-rose-500/40 rounded-xl flex items-center justify-center font-bold text-lg mx-auto">🔒</div>
@@ -475,7 +492,6 @@
             </div>
 
             <div id="adminContentArea" class="hidden space-y-6">
-                <!-- PANEL KUSTOMISASI TEKS HEADER & DASHBOARD -->
                 <div class="saas-card p-6 sm:p-8 space-y-4 border-emerald-500/30 bg-gradient-to-r from-[#11172a] to-[#0f172a]">
                     <div>
                         <h2 class="text-base font-bold text-emerald-400 flex items-center gap-2"><span>✏</span> Kustomisasi Teks Antarmuka</h2>
@@ -504,7 +520,6 @@
                     </div>
                 </div>
 
-                <!-- MANAJEMEN OPERATOR KHUSUS OWNER -->
                 <div class="saas-card p-6 sm:p-8 space-y-4 border-amber-500/30 bg-gradient-to-r from-[#11172a] to-[#161d2f]">
                     <div>
                         <h2 class="text-base font-bold text-amber-400 flex items-center gap-2"><span>👥</span> Manajemen Akun Operator</h2>
@@ -517,7 +532,6 @@
                     <div id="operatorListContainer" class="text-xs space-y-1 pt-2 max-h-36 overflow-y-auto"></div>
                 </div>
 
-                <!-- IMPORT DATA PDPB -->
                 <div class="saas-card p-6 sm:p-8 space-y-6">
                     <div>
                         <h2 class="text-lg font-bold text-white">Import Data PDPB</h2>
@@ -802,16 +816,13 @@
             }
         }
 
-        // ================= NAVIGASI HALAMAN DENGAN PENGAMANAN AKSES =================
         async function navigate(pageId) {
             if (!dbClient) return;
 
-            // Periksa sesi pengguna saat ini
             const { data: { session } } = await dbClient.auth.getSession();
             const userEmail = session ? session.user.email : null;
             const isOwner = (userEmail === 'rendatinsoppeng@gmail.com');
 
-            // 1. Validasi Akses: PENCARIAN / DATA PEMILIH (Hanya Owner & Operator Terdaftar)
             if (pageId === 'pencarian') {
                 if (!session) {
                     showModal("Autentikasi Diperlukan", "Menu <b>Data Pemilih</b> khusus untuk Admin/Operator. Silakan login terlebih dahulu.", "🔒");
@@ -825,10 +836,8 @@
                 }
             }
 
-            // 2. Validasi Akses: PANEL ADMIN (Eksklusif Owner Only)
             if (pageId === 'admin') {
                 if (!isOwner) {
-                    // Alih-alih langsung menolak, arahkan ke halaman admin dengan menampilkan pesan restricted
                     ['dashboard', 'rekapitulasi', 'pencarian', 'admin', 'login'].forEach(p => {
                         document.getElementById('page-' + p).classList.add('hidden');
                     });
@@ -851,7 +860,6 @@
                 }
             }
 
-            // Render Halaman
             ['dashboard', 'rekapitulasi', 'pencarian', 'admin', 'login'].forEach(p => {
                 const el = document.getElementById('page-' + p);
                 if (el) el.classList.add('hidden');
@@ -985,14 +993,6 @@
             localStorage.clear();
             sessionStorage.clear();
             window.location.reload();
-        }
-
-        function log(msg) {
-            const el = document.getElementById('processLogs');
-            if (!el) return;
-            el.classList.remove('hidden');
-            el.innerHTML += `> ${msg}<br>`;
-            el.scrollTop = el.scrollHeight;
         }
 
         function cleanText(text) {
@@ -1157,7 +1157,7 @@
 
                     } catch (error) {
                         hideGlobalLoader();
-                        log(`❌ ERROR: ${error.message}`);
+                        console.error(error);
                     }
                 };
                 reader.readAsArrayBuffer(file);
@@ -1329,6 +1329,15 @@
             kecEl.innerHTML = '<option value="ALL">SEMUA KECAMATAN</option>';
             Array.from(kecSet).sort().forEach(k => { kecEl.innerHTML += `<option value="${k}">${k}</option>`; });
 
+            // Sinkronisasi pilihan kecamatan ke halaman Data Pemilih
+            const searchKecEl = document.getElementById('searchFilterKecamatan');
+            if(searchKecEl) {
+                searchKecEl.innerHTML = '<option value="ALL">SEMUA KECAMATAN</option>';
+                Array.from(kecSet).sort().forEach(k => { searchKecEl.innerHTML += `<option value="${k}">${k}</option>`; });
+                searchKecEl.value = 'ALL';
+                updateSearchDesaOptions();
+            }
+
             updateDesaOptions();
 
             const genEl = document.getElementById('filterGenerasi');
@@ -1354,6 +1363,24 @@
             const desaEl = document.getElementById('filterDesa');
             desaEl.innerHTML = '<option value="ALL">SEMUA DESA</option>';
             Array.from(desaSet).sort().forEach(ds => { desaEl.innerHTML += `<option value="${ds}">${ds}</option>`; });
+        }
+
+        function onSearchKecamatanChange() {
+            updateSearchDesaOptions();
+            renderVoterPaginatedTable();
+        }
+
+        function updateSearchDesaOptions() {
+            const selectedKec = document.getElementById('searchFilterKecamatan').value;
+            const desaSet = new Set();
+            rawVoterCache.forEach(r => {
+                if(selectedKec === 'ALL' || r.kecamatan === selectedKec) { if(r.desa) desaSet.add(r.desa); }
+            });
+            const desaEl = document.getElementById('searchFilterDesa');
+            if(!desaEl) return;
+            desaEl.innerHTML = '<option value="ALL">SEMUA DESA</option>';
+            Array.from(desaSet).sort().forEach(ds => { desaEl.innerHTML += `<option value="${ds}">${ds}</option>`; });
+            desaEl.value = 'ALL';
         }
 
         function resetFilters() {
@@ -1626,7 +1653,6 @@
 
                     currentVoterSearchResults = data;
                     currentVoterPage = 1;
-                    counterEl.innerText = formatID(data.length);
                     renderVoterPaginatedTable();
                 } catch(err) {
                     counterEl.innerText = "0";
@@ -1645,14 +1671,26 @@
             const activePeriodId = document.getElementById('filterPeriode').value;
             let periodName = periodsMap[activePeriodId] || 'Periode Aktif';
 
-            const totalData = currentVoterSearchResults.length;
+            // Ambil nilai dari 3 filter tambahan
+            const fKec = document.getElementById('searchFilterKecamatan') ? document.getElementById('searchFilterKecamatan').value : 'ALL';
+            const fDesa = document.getElementById('searchFilterDesa') ? document.getElementById('searchFilterDesa').value : 'ALL';
+            const fGender = document.getElementById('searchFilterGender') ? document.getElementById('searchFilterGender').value : 'ALL';
+
+            const filteredResults = currentVoterSearchResults.filter(v => {
+                if (fKec !== 'ALL' && v.kecamatan !== fKec) return false;
+                if (fDesa !== 'ALL' && v.desa !== fDesa) return false;
+                if (fGender !== 'ALL' && v.jenis_kelamin !== fGender) return false;
+                return true;
+            });
+
+            const totalData = filteredResults.length;
             const totalPages = Math.ceil(totalData / voterRowsPerPage) || 1;
             if (currentVoterPage > totalPages) currentVoterPage = totalPages;
             if (currentVoterPage < 1) currentVoterPage = 1;
 
             const startIndex = (currentVoterPage - 1) * voterRowsPerPage;
             const endIndex = Math.min(startIndex + voterRowsPerPage, totalData);
-            const paginatedData = currentVoterSearchResults.slice(startIndex, endIndex);
+            const paginatedData = filteredResults.slice(startIndex, endIndex);
 
             let tableHtml = '', cardHtml = '';
 
@@ -1698,8 +1736,11 @@
                 `;
             });
 
-            if(tbody) tbody.innerHTML = tableHtml;
-            if(cardContainer) cardContainer.innerHTML = cardHtml;
+            if(tbody) tbody.innerHTML = tableHtml || `<tr><td colspan="13" class="p-8 text-center text-slate-500 font-mono">Tidak ada data yang cocok dengan filter.</td></tr>`;
+            if(cardContainer) cardContainer.innerHTML = cardHtml || `<div class="p-6 text-center text-slate-500 font-mono text-xs">Tidak ada data yang cocok dengan filter.</div>`;
+
+            const counterEl = document.getElementById('liveResultCounter');
+            if(counterEl) counterEl.innerText = formatID(totalData);
 
             if(paginationContainer) {
                 if(totalData > 0) {
@@ -1713,7 +1754,18 @@
         }
 
         function changeVoterPage(action) {
-            const totalPages = Math.ceil(currentVoterSearchResults.length / voterRowsPerPage) || 1;
+            const fKec = document.getElementById('searchFilterKecamatan') ? document.getElementById('searchFilterKecamatan').value : 'ALL';
+            const fDesa = document.getElementById('searchFilterDesa') ? document.getElementById('searchFilterDesa').value : 'ALL';
+            const fGender = document.getElementById('searchFilterGender') ? document.getElementById('searchFilterGender').value : 'ALL';
+
+            const filteredResults = currentVoterSearchResults.filter(v => {
+                if (fKec !== 'ALL' && v.kecamatan !== fKec) return false;
+                if (fDesa !== 'ALL' && v.desa !== fDesa) return false;
+                if (fGender !== 'ALL' && v.jenis_kelamin !== fGender) return false;
+                return true;
+            });
+
+            const totalPages = Math.ceil(filteredResults.length / voterRowsPerPage) || 1;
             if (action === 'first') currentVoterPage = 1;
             else if (action === 'prev' && currentVoterPage > 1) currentVoterPage--;
             else if (action === 'next' && currentVoterPage < totalPages) currentVoterPage++;
