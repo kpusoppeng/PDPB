@@ -1420,14 +1420,31 @@
 
         function populateVoterSearchDropdowns() {
             const kecSet = new Set(), tpsSet = new Set(), kawinSet = new Set(), disSet = new Set(), ketSet = new Set();
+            
+            // Peta teks disabilitas yang bersih sesuai keinginan Anda
+            const disTextMap = {
+                '0': 'Normal',
+                '1': 'Fisik',
+                '2': 'Intelektual',
+                '3': 'Mental',
+                '4': 'Wicara',
+                '5': 'Rungu',
+                '6': 'Netra'
+            };
+
             fullVoterDetailsCache.forEach(r => {
                 if(r.kecamatan) kecSet.add(r.kecamatan);
                 if(r.tps) tpsSet.add(r.tps);
                 if(r.status_kawin) kawinSet.add(r.status_kawin);
                 
-                // Mendukung berbagai variasi penamaan properti disabilitas pada data
-                let disVal = r.disability || r.disabilitas;
-                if(disVal) disSet.add(disVal);
+                // Ambil nilai disabilitas (bisa berupa angka string/number dari db)
+                let rawDis = r.disability !== undefined ? String(r.disability) : (r.disabilitas !== undefined ? String(r.disabilitas) : '');
+                if (rawDis !== '') {
+                    // Ambil karakter pertama jika formatnya "1-Fisik" atau langsung angka "1"
+                    let cleanCode = rawDis.charAt(0);
+                    let label = disTextMap[cleanCode] || rawDis;
+                    if (label) disSet.add(label);
+                }
 
                 if(r.keterangan) ketSet.add(r.keterangan);
             });
