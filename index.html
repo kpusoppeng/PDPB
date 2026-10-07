@@ -1438,36 +1438,6 @@
                 updateSearchDesaOptions();
             }
 
-            // Populasi opsi tambahan untuk 8 filter pencarian
-            const tpsSet = new Set(), kawinSet = new Set(), disSet = new Set(), ketSet = new Set();
-            fullVoterDetailsCache.forEach(r => {
-                if(r.tps) tpsSet.add(r.tps);
-                if(r.status_kawin) kawinSet.add(r.status_kawin);
-                if(r.disability) disSet.add(r.disability);
-                if(r.keterangan) ketSet.add(r.keterangan);
-            });
-
-            const sTps = document.getElementById('searchFilterTps');
-            if(sTps) {
-                sTps.innerHTML = '<option value="ALL">SEMUA</option>';
-                Array.from(tpsSet).sort((a,b)=>a.localeCompare(b, undefined, {numeric: true})).forEach(t => { sTps.innerHTML += `<option value="${t}">TPS ${t}</option>`; });
-            }
-            const sKawin = document.getElementById('searchFilterKawin');
-            if(sKawin) {
-                sKawin.innerHTML = '<option value="ALL">SEMUA</option>';
-                Array.from(kawinSet).sort().forEach(kw => { sKawin.innerHTML += `<option value="${kw}">${kw}</option>`; });
-            }
-            const sDis = document.getElementById('searchFilterDisabilitas');
-            if(sDis) {
-                sDis.innerHTML = '<option value="ALL">SEMUA</option>';
-                Array.from(disSet).sort().forEach(d => { sDis.innerHTML += `<option value="${d}">${d}</option>`; });
-            }
-            const sKet = document.getElementById('searchFilterKet');
-            if(sKet) {
-                sKet.innerHTML = '<option value="ALL">SEMUA</option>';
-                Array.from(ketSet).sort().forEach(kt => { sKet.innerHTML += `<option value="${kt}">Ket ${kt}</option>`; });
-            }
-
             updateDesaOptions();
 
             const genEl = document.getElementById('filterGenerasi');
@@ -1481,6 +1451,36 @@
             const kawinEl = document.getElementById('filterPerkawinan');
             kawinEl.innerHTML = '<option value="ALL">SEMUA STATUS</option>';
             Array.from(kawinSet).sort().forEach(kw => { kawinEl.innerHTML += `<option value="${kw}">${kw}</option>`; });
+
+            // Populasi opsi tambahan untuk 8 filter pencarian Data Pemilih
+            const tpsSet = new Set(), sKawinSet = new Set(), sDisSet = new Set(), ketSet = new Set();
+            fullVoterDetailsCache.forEach(r => {
+                if(r.tps) tpsSet.add(r.tps);
+                if(r.status_kawin) sKawinSet.add(r.status_kawin);
+                if(r.disability) sDisSet.add(r.disability);
+                if(r.keterangan) ketSet.add(r.keterangan);
+            });
+
+            const sTps = document.getElementById('searchFilterTps');
+            if(sTps) {
+                sTps.innerHTML = '<option value="ALL">SEMUA</option>';
+                Array.from(tpsSet).sort((a,b)=>a.localeCompare(b, undefined, {numeric: true})).forEach(t => { sTps.innerHTML += `<option value="${t}">TPS ${t}</option>`; });
+            }
+            const sKawin = document.getElementById('searchFilterKawin');
+            if(sKawin) {
+                sKawin.innerHTML = '<option value="ALL">SEMUA</option>';
+                Array.from(sKawinSet).sort().forEach(kw => { sKawin.innerHTML += `<option value="${kw}">${kw}</option>`; });
+            }
+            const sDis = document.getElementById('searchFilterDisabilitas');
+            if(sDis) {
+                sDis.innerHTML = '<option value="ALL">SEMUA</option>';
+                Array.from(sDisSet).sort().forEach(d => { sDis.innerHTML += `<option value="${d}">${d}</option>`; });
+            }
+            const sKet = document.getElementById('searchFilterKet');
+            if(sKet) {
+                sKet.innerHTML = '<option value="ALL">SEMUA</option>';
+                Array.from(ketSet).sort().forEach(kt => { sKet.innerHTML += `<option value="${kt}">Ket ${kt}</option>`; });
+            }
         }
 
         function onKecamatanChange() { updateDesaOptions(); applyFilters(); }
@@ -1876,17 +1876,7 @@
             const activePeriodId = document.getElementById('filterPeriode').value;
             let periodName = periodsMap[activePeriodId] || 'Periode Aktif';
 
-            // Ambil nilai dari 3 filter tambahan
-            const fKec = document.getElementById('searchFilterKecamatan') ? document.getElementById('searchFilterKecamatan').value : 'ALL';
-            const fDesa = document.getElementById('searchFilterDesa') ? document.getElementById('searchFilterDesa').value : 'ALL';
-            const fGender = document.getElementById('searchFilterGender') ? document.getElementById('searchFilterGender').value : 'ALL';
-
-            const filteredResults = currentVoterSearchResults.filter(v => {
-                if (fKec !== 'ALL' && v.kecamatan !== fKec) return false;
-                if (fDesa !== 'ALL' && v.desa !== fDesa) return false;
-                if (fGender !== 'ALL' && v.jenis_kelamin !== fGender) return false;
-                return true;
-            });
+            const filteredResults = currentVoterSearchResults;
 
             const totalData = filteredResults.length;
             const totalPages = Math.ceil(totalData / voterRowsPerPage) || 1;
