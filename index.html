@@ -1438,7 +1438,7 @@
 
             const sKec = document.getElementById('searchFilterKecamatan');
             if(sKec) {
-                sKec.innerHTML = '<option value="ALL">Semua Kecamatan</option>';
+                sKec.innerHTML = '<option value="ALL">All</option>';
                 Array.from(kecSet).sort().forEach(k => { sKec.innerHTML += `<option value="${k}">${k}</option>`; });
                 sKec.value = 'ALL';
                 updateSearchDesaOptions();
@@ -1446,19 +1446,19 @@
 
             const sTps = document.getElementById('searchFilterTps');
             if(sTps) {
-                sTps.innerHTML = '<option value="ALL">Semua TPS</option>';
+                sTps.innerHTML = '<option value="ALL">All</option>';
                 Array.from(tpsSet).sort((a,b)=>a.localeCompare(b, undefined, {numeric: true})).forEach(t => { sTps.innerHTML += `<option value="${t}">TPS ${t}</option>`; });
             }
 
             const sKawin = document.getElementById('searchFilterKawin');
             if(sKawin) {
-                sKawin.innerHTML = '<option value="ALL">Semua Status</option>';
+                sKawin.innerHTML = '<option value="ALL">All</option>';
                 Array.from(kawinSet).sort().forEach(kw => { sKawin.innerHTML += `<option value="${kw}">${kw}</option>`; });
             }
 
             const sKet = document.getElementById('searchFilterKet');
             if(sKet) {
-                sKet.innerHTML = '<option value="ALL">Semua Ket</option>';
+                sKet.innerHTML = '<option value="ALL">All</option>';
                 Array.from(ketSet).sort().forEach(kt => { sKet.innerHTML += `<option value="${kt}">Ket ${kt}</option>`; });
             }
         }
@@ -1549,7 +1549,7 @@
                 if(selectedKec === 'ALL' || r.kecamatan === selectedKec) { if(r.desa) desaSet.add(r.desa); }
             });
             
-            desaEl.innerHTML = '<option value="ALL">Semua Desa</option>';
+            desaEl.innerHTML = '<option value="ALL">All</option>';
             Array.from(desaSet).sort().forEach(ds => { desaEl.innerHTML += `<option value="${ds}">${ds}</option>`; });
             desaEl.value = 'ALL';
         }
