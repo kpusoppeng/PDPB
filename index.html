@@ -450,11 +450,13 @@
                         </select>
                     </div>
                     <div class="space-y-1">
-                        <label class="block text-[9px] font-extrabold uppercase tracking-wider text-slate-400">E-KTP</label>
-                        <select id="searchFilterEktp" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-2 py-1.5 rounded-xl text-[10px] font-bold focus:outline-none focus:border-emerald-500 font-sans truncate" onchange="executeLocalVoterFilter()">
-                            <option value="ALL">Semua E-KTP</option>
-                            <option value="SUDAH">Sudah</option>
-                            <option value="BELUM">Belum</option>
+                        <label class="block text-[9px] font-extrabold uppercase tracking-wider text-slate-400">Rentang Usia</label>
+                        <select id="searchFilterUsia" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-2 py-1.5 rounded-xl text-[10px] font-bold focus:outline-none focus:border-emerald-500 font-sans truncate" onchange="executeLocalVoterFilter()">
+                            <option value="ALL">Semua Usia</option>
+                            <option value="BELUM_17">Belum 17 tahun</option>
+                            <option value="17_30">17 s.d 30 tahun</option>
+                            <option value="31_50">31 s.d 50 tahun</option>
+                            <option value="LEBIH_50">Lebih 50 tahun</option>
                         </select>
                     </div>
                     <div class="space-y-1">
@@ -1422,7 +1424,11 @@
                 if(r.kecamatan) kecSet.add(r.kecamatan);
                 if(r.tps) tpsSet.add(r.tps);
                 if(r.status_kawin) kawinSet.add(r.status_kawin);
-                if(r.disability) disSet.add(r.disability);
+                
+                // Mendukung berbagai variasi penamaan properti disabilitas pada data
+                let disVal = r.disability || r.disabilitas;
+                if(disVal) disSet.add(disVal);
+
                 if(r.keterangan) ketSet.add(r.keterangan);
             });
 
@@ -1545,13 +1551,15 @@
 
         function updateSearchDesaOptions() {
             const selectedKec = document.getElementById('searchFilterKecamatan').value;
+            const desaEl = document.getElementById('searchFilterDesa');
+            if(!desaEl) return;
+
             const desaSet = new Set();
             fullVoterDetailsCache.forEach(r => {
                 if(selectedKec === 'ALL' || r.kecamatan === selectedKec) { if(r.desa) desaSet.add(r.desa); }
             });
-            const desaEl = document.getElementById('searchFilterDesa');
-            if(!desaEl) return;
-            desaEl.innerHTML = '<option value="ALL">SEMUA</option>';
+            
+            desaEl.innerHTML = '<option value="ALL">Semua Desa</option>';
             Array.from(desaSet).sort().forEach(ds => { desaEl.innerHTML += `<option value="${ds}">${ds}</option>`; });
             desaEl.value = 'ALL';
         }
@@ -1860,6 +1868,19 @@
             executeLocalVoterFilter();
         }
 
+        function getAge(birthDateString) {
+            if (!birthDateString) return 0;
+            const today = new Date();
+            const birthDate = new Date(birthDateString);
+            if (isNaN(birthDate.getTime())) return 0;
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const m = today.getMonth() - birthDate.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            return age;
+        }
+
         function executeLocalVoterFilter() {
             const query = document.getElementById('tabSearchInput').value.trim().toLowerCase();
             const fKec = document.getElementById('searchFilterKecamatan') ? document.getElementById('searchFilterKecamatan').value : 'ALL';
@@ -1868,21 +1889,26 @@
             const fKawin = document.getElementById('searchFilterKawin') ? document.getElementById('searchFilterKawin').value : 'ALL';
             const fGender = document.getElementById('searchFilterGender') ? document.getElementById('searchFilterGender').value : 'ALL';
             const fDis = document.getElementById('searchFilterDisabilitas') ? document.getElementById('searchFilterDisabilitas').value : 'ALL';
-            const fEktp = document.getElementById('searchFilterEktp') ? document.getElementById('searchFilterEktp').value : 'ALL';
+            const fUsia = document.getElementById('searchFilterUsia') ? document.getElementById('searchFilterUsia').value : 'ALL';
             const fKet = document.getElementById('searchFilterKet') ? document.getElementById('searchFilterKet').value : 'ALL';
 
-            // Filter data secara instan dari memori lokal berdasarkan 8 kriteria
+            // Filter data secara instan dari memori lokal berdasarkan kriteria
             currentVoterSearchResults = fullVoterDetailsCache.filter(v => {
                 if (fKec !== 'ALL' && v.kecamatan !== fKec) return false;
                 if (fDesa !== 'ALL' && v.desa !== fDesa) return false;
                 if (fTps !== 'ALL' && v.tps !== fTps) return false;
                 if (fKawin !== 'ALL' && v.status_kawin !== fKawin) return false;
                 if (fGender !== 'ALL' && v.jenis_kelamin !== fGender) return false;
-                if (fDis !== 'ALL' && v.disability !== fDis) return false;
-                if (fEktp !== 'ALL') {
-                    let hasEktp = (v.ektp && v.ektp.toUpperCase() === 'SUDAH') || true;
-                    if (fEktp === 'BELUM' && hasEktp) return false;
+                if (fDis !== 'ALL' && (v.disability !== fDis && v.disabilitas !== fDis)) return false;
+                
+                if (fUsia !== 'ALL') {
+                    let age = getAge(v.tanggal_lahir);
+                    if (fUsia === 'BELUM_17' && age >= 17) return false;
+                    if (fUsia === '17_30' && (age < 17 || age > 30)) return false;
+                    if (fUsia === '31_50' && (age < 31 || age > 50)) return false;
+                    if (fUsia === 'LEBIH_50' && age <= 50) return false;
                 }
+
                 if (fKet !== 'ALL' && v.keterangan !== fKet) return false;
 
                 // Filter teks pencarian (NKK, NIK, Nama) jika diketik oleh user
@@ -1908,7 +1934,7 @@
             if(document.getElementById('searchFilterKawin')) document.getElementById('searchFilterKawin').value = 'ALL';
             if(document.getElementById('searchFilterGender')) document.getElementById('searchFilterGender').value = 'ALL';
             if(document.getElementById('searchFilterDisabilitas')) document.getElementById('searchFilterDisabilitas').value = 'ALL';
-            if(document.getElementById('searchFilterEktp')) document.getElementById('searchFilterEktp').value = 'ALL';
+            if(document.getElementById('searchFilterUsia')) document.getElementById('searchFilterUsia').value = 'ALL';
             if(document.getElementById('searchFilterKet')) document.getElementById('searchFilterKet').value = 'ALL';
             executeLocalVoterFilter();
         }
