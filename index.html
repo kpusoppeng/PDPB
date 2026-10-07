@@ -1062,7 +1062,7 @@
                 }
             });
             const desaEl = document.getElementById('modalVoterFilterDesa');
-            desaEl.innerHTML = '<option value="ALL">Semua Desa</option>';
+            desaEl.innerHTML = '<option value="ALL">All</option>';
             Array.from(desaSet).sort().forEach(ds => { desaEl.innerHTML += `<option value="${ds}">${ds}</option>`; });
         }
 
