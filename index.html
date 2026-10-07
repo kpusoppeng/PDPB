@@ -393,7 +393,7 @@
             </div>
         </section>
 
-        <!-- ================= PENCARIAN PEMILIH PAGE (DENGAN 3 FILTER COMPACT DI BAWAH NAVBAR) ================= -->
+        <!-- ================= PENCARIAN PEMILIH PAGE ================= -->
         <section id="page-pencarian" class="hidden space-y-4">
             <div class="sticky top-20 z-30 saas-card p-4 sm:p-5 space-y-3 border border-emerald-500/30 bg-[#11172a]/95 backdrop-blur-md shadow-2xl">
                 <div class="flex flex-col md:flex-row justify-between items-center gap-4">
@@ -409,7 +409,7 @@
                     </div>
                 </div>
 
-                <!-- REDESIGNED 8 FILTER SEBARIS & RESPONSIF -->
+                <!-- 9 FILTER SEBARIS & RESPONSIF -->
                 <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-9 gap-1.5 pt-3 border-t border-[#1e294b] items-end">
                     <div class="space-y-1">
                         <label class="block text-[9px] font-extrabold uppercase tracking-wider text-slate-400">Kecamatan</label>
@@ -447,6 +447,13 @@
                         <label class="block text-[9px] font-extrabold uppercase tracking-wider text-slate-400">Disabilitas</label>
                         <select id="searchFilterDisabilitas" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-2 py-1.5 rounded-xl text-[10px] font-bold focus:outline-none focus:border-emerald-500 font-sans truncate" onchange="executeLocalVoterFilter()">
                             <option value="ALL">Semua Disabilitas</option>
+                            <option value="0">Normal</option>
+                            <option value="1">Fisik</option>
+                            <option value="2">Intelektual</option>
+                            <option value="3">Mental</option>
+                            <option value="4">Wicara</option>
+                            <option value="5">Rungu</option>
+                            <option value="6">Netra</option>
                         </select>
                     </div>
                     <div class="space-y-1">
@@ -1194,7 +1201,8 @@
                                 keterangan: ketAktif,
                                 kecamatan: kec,
                                 desa: desa,
-                                tps: tps
+                                tps: tps,
+                                disability: row['DISABILITAS'] !== undefined ? String(row['DISABILITAS']) : '0'
                             });
                         });
 
@@ -1232,7 +1240,8 @@
                                 keterangan: ket,
                                 kecamatan: kec,
                                 desa: desa,
-                                tps: tps
+                                tps: tps,
+                                disability: row['DISABILITAS'] !== undefined ? String(row['DISABILITAS']) : '0'
                             });
                         });
                         
@@ -1419,33 +1428,11 @@
         }
 
         function populateVoterSearchDropdowns() {
-            const kecSet = new Set(), tpsSet = new Set(), kawinSet = new Set(), disSet = new Set(), ketSet = new Set();
-            
-            // Peta teks disabilitas yang bersih sesuai keinginan Anda
-            const disTextMap = {
-                '0': 'Normal',
-                '1': 'Fisik',
-                '2': 'Intelektual',
-                '3': 'Mental',
-                '4': 'Wicara',
-                '5': 'Rungu',
-                '6': 'Netra'
-            };
-
+            const kecSet = new Set(), tpsSet = new Set(), kawinSet = new Set(), ketSet = new Set();
             fullVoterDetailsCache.forEach(r => {
                 if(r.kecamatan) kecSet.add(r.kecamatan);
                 if(r.tps) tpsSet.add(r.tps);
                 if(r.status_kawin) kawinSet.add(r.status_kawin);
-                
-                // Ambil nilai disabilitas (bisa berupa angka string/number dari db)
-                let rawDis = r.disability !== undefined ? String(r.disability) : (r.disabilitas !== undefined ? String(r.disabilitas) : '');
-                if (rawDis !== '') {
-                    // Ambil karakter pertama jika formatnya "1-Fisik" atau langsung angka "1"
-                    let cleanCode = rawDis.charAt(0);
-                    let label = disTextMap[cleanCode] || rawDis;
-                    if (label) disSet.add(label);
-                }
-
                 if(r.keterangan) ketSet.add(r.keterangan);
             });
 
@@ -1469,12 +1456,6 @@
                 Array.from(kawinSet).sort().forEach(kw => { sKawin.innerHTML += `<option value="${kw}">${kw}</option>`; });
             }
 
-            const sDis = document.getElementById('searchFilterDisabilitas');
-            if(sDis) {
-                sDis.innerHTML = '<option value="ALL">Semua Disabilitas</option>';
-                Array.from(disSet).sort().forEach(d => { sDis.innerHTML += `<option value="${d}">${d}</option>`; });
-            }
-
             const sKet = document.getElementById('searchFilterKet');
             if(sKet) {
                 sKet.innerHTML = '<option value="ALL">Semua Ket</option>';
@@ -1495,7 +1476,6 @@
             kecEl.innerHTML = '<option value="ALL">SEMUA KECAMATAN</option>';
             Array.from(kecSet).sort().forEach(k => { kecEl.innerHTML += `<option value="${k}">${k}</option>`; });
 
-            // Sinkronisasi pilihan dropdown ke halaman Data Pemilih (8 Filter)
             const searchKecEl = document.getElementById('searchFilterKecamatan');
             if(searchKecEl) {
                 searchKecEl.innerHTML = '<option value="ALL">SEMUA</option>';
@@ -1518,12 +1498,10 @@
             kawinEl.innerHTML = '<option value="ALL">SEMUA STATUS</option>';
             Array.from(kawinSet).sort().forEach(kw => { kawinEl.innerHTML += `<option value="${kw}">${kw}</option>`; });
 
-            // Populasi opsi tambahan untuk 8 filter pencarian Data Pemilih
-            const tpsSet = new Set(), sKawinSet = new Set(), sDisSet = new Set(), ketSet = new Set();
+            const tpsSet = new Set(), sKawinSet = new Set(), ketSet = new Set();
             fullVoterDetailsCache.forEach(r => {
                 if(r.tps) tpsSet.add(r.tps);
                 if(r.status_kawin) sKawinSet.add(r.status_kawin);
-                if(r.disability) sDisSet.add(r.disability);
                 if(r.keterangan) ketSet.add(r.keterangan);
             });
 
@@ -1536,11 +1514,6 @@
             if(sKawin) {
                 sKawin.innerHTML = '<option value="ALL">SEMUA</option>';
                 Array.from(sKawinSet).sort().forEach(kw => { sKawin.innerHTML += `<option value="${kw}">${kw}</option>`; });
-            }
-            const sDis = document.getElementById('searchFilterDisabilitas');
-            if(sDis) {
-                sDis.innerHTML = '<option value="ALL">SEMUA</option>';
-                Array.from(sDisSet).sort().forEach(d => { sDis.innerHTML += `<option value="${d}">${d}</option>`; });
             }
             const sKet = document.getElementById('searchFilterKet');
             if(sKet) {
@@ -1810,9 +1783,8 @@
         let currentVoterSearchResults = [];
         let currentVoterPage = 1;
         const voterRowsPerPage = 50;
-        let fullVoterDetailsCache = []; // Penampung memori lokal untuk live filter kilat
+        let fullVoterDetailsCache = [];
 
-        // Fungsi utama untuk memuat seluruh rincian pemilih (Chunking + IndexedDB)
         async function loadAllVoterDetailsForActivePeriod() {
             const activePeriodId = document.getElementById('filterPeriode').value;
             const tbody = document.getElementById('tabSearchTableBody');
@@ -1821,25 +1793,22 @@
 
             if (!activePeriodId) return;
 
-            // 1. Cek dulu apakah data sudah ada di IndexedDB (Sangat cepat < 0.1 detik)
             showGlobalLoader("MEMUAT DATA PEMILIH...");
             let cachedData = await getCachedVotersFromIDB(activePeriodId);
 
             if (cachedData && cachedData.length > 0) {
                 fullVoterDetailsCache = cachedData;
-                populateVoterSearchDropdowns(); // <-- Tambahkan ini agar dropdown terisi dari cache!
+                populateVoterSearchDropdowns();
                 hideGlobalLoader();
                 executeLocalVoterFilter();
                 return;
             }
 
-            // 2. Jika belum ada di browser, unduh secara bertahap (chunking per 1.000 baris) dengan indikator cantik
             try {
                 let allRows = [];
                 let step = 1000, from = 0, fetchMore = true;
 
                 while (fetchMore) {
-                    // Update teks persentase / jumlah baris secara real-time di loader global
                     showGlobalLoader(`MENGUNDUH DATA: ${formatID(allRows.length)} BARIS...`);
                     
                     if(tbody) tbody.innerHTML = `<tr><td colspan="13" class="p-8 text-center text-emerald-400 font-mono animate-pulse">⚡ Mengunduh data pemilih dari server: <b>${formatID(allRows.length)}</b> baris terkumpul...</td></tr>`;
@@ -1862,13 +1831,12 @@
                     }
                 }
 
-                // 3. Simpan permanen ke IndexedDB agar kunjungan berikutnya instan
                 if (allRows.length > 0) {
                     await saveVotersToIDB(activePeriodId, allRows);
                 }
 
                 fullVoterDetailsCache = allRows;
-                populateVoterSearchDropdowns(); // <-- Mengisi 8 dropdown filter otomatis
+                populateVoterSearchDropdowns();
                 hideGlobalLoader();
                 executeLocalVoterFilter();
 
@@ -1879,7 +1847,6 @@
             }
         }
 
-        // Live filter lokal yang berjalan sangat cepat dari memori browser (IndexedDB cache)
         function handleTabVoterSearch() {
             currentVoterPage = 1;
             executeLocalVoterFilter();
@@ -1909,21 +1876,17 @@
             const fUsia = document.getElementById('searchFilterUsia') ? document.getElementById('searchFilterUsia').value : 'ALL';
             const fKet = document.getElementById('searchFilterKet') ? document.getElementById('searchFilterKet').value : 'ALL';
 
-            // Filter data secara instan dari memori lokal berdasarkan kriteria
             currentVoterSearchResults = fullVoterDetailsCache.filter(v => {
                 if (fKec !== 'ALL' && v.kecamatan !== fKec) return false;
                 if (fDesa !== 'ALL' && v.desa !== fDesa) return false;
                 if (fTps !== 'ALL' && v.tps !== fTps) return false;
                 if (fKawin !== 'ALL' && v.status_kawin !== fKawin) return false;
                 if (fGender !== 'ALL' && v.jenis_kelamin !== fGender) return false;
+                
                 if (fDis !== 'ALL') {
-                    let rawDis = v.disability !== undefined ? String(v.disability) : (v.disabilitas !== undefined ? String(v.disabilitas) : '');
-                    let cleanCode = rawDis.charAt(0);
-                    
-                    const reverseMap = { 'Normal': '0', 'Fisik': '1', 'Intelektual': '2', 'Mental': '3', 'Wicara': '4', 'Rungu': '5', 'Netra': '6' };
-                    let targetCode = reverseMap[fDis] || fDis;
-
-                    if (cleanCode !== targetCode && rawDis !== fDis) return false;
+                    let vDis = v.disability !== undefined ? String(v.disability) : (v.disabilitas !== undefined ? String(v.disabilitas) : '0');
+                    let cleanCode = vDis.charAt(0);
+                    if (cleanCode !== fDis && vDis !== fDis) return false;
                 }
                 
                 if (fUsia !== 'ALL') {
@@ -1936,7 +1899,6 @@
 
                 if (fKet !== 'ALL' && v.keterangan !== fKet) return false;
 
-                // Filter teks pencarian (NKK, NIK, Nama) jika diketik oleh user
                 if (query) {
                     const matchNkk = v.nkk && v.nkk.toLowerCase().includes(query);
                     const matchNik = v.nik && v.nik.toLowerCase().includes(query);
@@ -2076,7 +2038,6 @@
             modal.classList.remove('hidden');
 
             try {
-                // Cari anggota keluarga dari cache lokal agar instan, atau fallback ke database
                 let familyMembers = fullVoterDetailsCache.filter(m => m.nkk === voter.nkk);
                 if (!familyMembers || familyMembers.length === 0) {
                     const { data, error } = await dbClient
