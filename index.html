@@ -635,6 +635,65 @@
             console.error("Gagal inisialisasi Supabase:", e);
         }
 
+        // ==========================================
+        // MODUL PERSISTENT CACHING DENGAN INDEXEDDB
+        // ==========================================
+        const IDB_CONFIG = {
+            dbName: 'KpuSoppengPDPB_DB',
+            storeName: 'voter_cache',
+            version: 1
+        };
+
+        function openIndexedDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open(IDB_CONFIG.dbName, IDB_CONFIG.version);
+                request.onerror = () => reject(request.error);
+                request.onsuccess = () => resolve(request.result);
+                request.onupgradeneeded = (event) => {
+                    const db = event.target.result;
+                    if (!db.objectStoreNames.contains(IDB_CONFIG.storeName)) {
+                        const store = db.createObjectStore(IDB_CONFIG.storeName, { keyPath: 'period_id' });
+                        store.createIndex('period_id', 'period_id', { unique: true });
+                    }
+                };
+            });
+        }
+
+        async function getCachedVotersFromIDB(periodId) {
+            try {
+                const db = await openIndexedDB();
+                return new Promise((resolve, reject) => {
+                    const transaction = db.transaction(IDB_CONFIG.storeName, 'readonly');
+                    const store = transaction.objectStore(IDB_CONFIG.storeName);
+                    const request = store.get(periodId);
+                    request.onsuccess = () => {
+                        const result = request.result;
+                        resolve(result ? result.data : null);
+                    };
+                    request.onerror = () => reject(request.error);
+                });
+            } catch (e) {
+                console.error("Gagal membaca IndexedDB:", e);
+                return null;
+            }
+        }
+
+        async function saveVotersToIDB(periodId, votersArray) {
+            try {
+                const db = await openIndexedDB();
+                return new Promise((resolve, reject) => {
+                    const transaction = db.transaction(IDB_CONFIG.storeName, 'readwrite');
+                    const store = transaction.objectStore(IDB_CONFIG.storeName);
+                    const request = store.put({ period_id: periodId, data: votersArray, timestamp: Date.now() });
+                    request.onsuccess = () => resolve(true);
+                    request.onerror = () => reject(request.error);
+                });
+            } catch (e) {
+                console.error("Gagal menyimpan ke IndexedDB:", e);
+                return false;
+            }
+        }
+
         let rawVoterCache = [];
         let rawMutationCache = [];
         let processedData = { voterSummary: [], mutationSummary: [], voterDetails: [] };
@@ -875,6 +934,9 @@
                 rekapSelectedKec = null;
                 rekapSelectedDesa = null;
                 renderRekapitulasiTable();
+            }
+            if(pageId === 'pencarian') {
+                loadAllVoterDetailsForActivePeriod();
             }
             if(pageId === 'login') {
                 updateLoginStateUI(session);
@@ -1613,35 +1675,49 @@
         let currentVoterSearchResults = [];
         let currentVoterPage = 1;
         const voterRowsPerPage = 50;
+        let fullVoterDetailsCache = []; // Penampung memori lokal untuk live filter kilat
 
-        let allVotersCache = []; // Mini memory penampung seluruh data pemilih periode aktif
+        // Fungsi utama untuk memuat seluruh rincian pemilih (Chunking + IndexedDB)
+        async function loadAllVoterDetailsForActivePeriod() {
+            const activePeriodId = document.getElementById('filterPeriode').value;
+            const tbody = document.getElementById('tabSearchTableBody');
+            const cardContainer = document.getElementById('tabSearchCardContainer');
+            const counterEl = document.getElementById('liveResultCounter');
+            const paginationContainer = document.getElementById('voterPaginationContainer');
 
-        async function loadVotersIntoMiniMemory(periodId) {
-            // 1. Cek dulu apakah data sudah ada di IndexedDB HP (Secepat kilat)
-            let cached = await getCachedVotersFromDevice(periodId);
-            if (cached && cached.length > 0) {
-                allVotersCache = cached;
-                console.log("Memuat data pemilih dari IndexedDB lokal (Instan):", allVotersCache.length, "data");
+            if (!activePeriodId) return;
+
+            // 1. Cek dulu apakah data sudah ada di IndexedDB (Sangat cepat < 0.1 detik)
+            showGlobalLoader("MEMUAT DATA PEMILIH...");
+            let cachedData = await getCachedVotersFromIDB(activePeriodId);
+
+            if (cachedData && cachedData.length > 0) {
+                fullVoterDetailsCache = cachedData;
+                hideGlobalLoader();
+                // Langsung tampilkan seluruh data
+                executeLocalVoterFilter();
                 return;
             }
 
-            // 2. Jika belum ada, download bertahap (chunking) dari Supabase di latar belakang
-            showGlobalLoader("MENYIAPKAN BASIS DATA LOKAL... (MOHON TUNGGU SEBENTAR)");
+            // 2. Jika belum ada di browser, unduh secara bertahap (chunking per 1.000 baris) dari Supabase
+            if(tbody) tbody.innerHTML = `<tr><td colspan="13" class="p-8 text-center text-emerald-400 font-mono animate-pulse">Mengunduh data pemilih dari server (bertahap)...</td></tr>`;
+            if(cardContainer) cardContainer.innerHTML = `<div class="p-6 text-center text-emerald-400 font-mono text-xs animate-pulse">Mengunduh data pemilih dari server (bertahap)...</div>`;
+
             try {
-                let fetchedData = [];
+                let allRows = [];
                 let step = 1000, from = 0, fetchMore = true;
-                
+
                 while (fetchMore) {
                     const { data, error } = await dbClient
                         .from('voter_details')
                         .select('*')
-                        .eq('period_id', periodId)
+                        .eq('period_id', activePeriodId)
                         .range(from, from + step - 1);
-                    
+
                     if (error) throw error;
-                    
+
                     if (data && data.length > 0) {
-                        fetchedData = fetchedData.concat(data);
+                        allRows = allRows.concat(data);
                         from += step;
                         if (data.length < step) fetchMore = false;
                     } else {
@@ -1649,69 +1725,86 @@
                     }
                 }
 
-                allVotersCache = fetchedData;
-                
-                // 3. Simpan permanen ke IndexedDB HP agar kunjungan berikutnya instan
-                if (allVotersCache.length > 0) {
-                    await saveVotersToDevice(periodId, allVotersCache);
+                // 3. Simpan permanen ke IndexedDB agar kunjungan berikutnya instan
+                if (allRows.length > 0) {
+                    await saveVotersToIDB(activePeriodId, allRows);
                 }
-                console.log("Berhasil mengunduh dan menyimpan cache lokal:", allVotersCache.length, "data");
-            } catch (err) {
-                console.error("Gagal mengunduh rincian pemilih:", err);
-                allVotersCache = [];
-            } finally {
+
+                fullVoterDetailsCache = allRows;
                 hideGlobalLoader();
+                executeLocalVoterFilter();
+
+            } catch (err) {
+                hideGlobalLoader();
+                console.error("Gagal mengunduh rincian pemilih:", err);
+                if(tbody) tbody.innerHTML = `<tr><td colspan="13" class="p-8 text-center text-rose-400 font-mono">Gagal memuat data: ${err.message}</td></tr>`;
             }
         }
 
-        async function handleTabVoterSearch() {
-            const query = document.getElementById('tabSearchInput').value.trim().toUpperCase();
-            const activePeriodId = document.getElementById('filterPeriode').value;
-            const paginationContainer = document.getElementById('voterPaginationContainer');
-            const tbody = document.getElementById('tabSearchTableBody');
-            const cardContainer = document.getElementById('tabSearchCardContainer');
-            const counterEl = document.getElementById('liveResultCounter');
+        // Live filter lokal yang berjalan sangat cepat dari memori browser (IndexedDB cache)
+        function handleTabVoterSearch() {
+            currentVoterPage = 1;
+            executeLocalVoterFilter();
+        }
 
-            // Pastikan mini memory terisi (jika kosong/ganti periode, sistem otomatis meloadnya sekali saja)
-            if (!allVotersCache || allVotersCache.length === 0) {
-                await loadVotersIntoMiniMemory(activePeriodId);
-            }
-
-            // Ambil nilai dari 3 filter tambahan
+        function executeLocalVoterFilter() {
+            const query = document.getElementById('tabSearchInput').value.trim().toLowerCase();
             const fKec = document.getElementById('searchFilterKecamatan') ? document.getElementById('searchFilterKecamatan').value : 'ALL';
             const fDesa = document.getElementById('searchFilterDesa') ? document.getElementById('searchFilterDesa').value : 'ALL';
             const fGender = document.getElementById('searchFilterGender') ? document.getElementById('searchFilterGender').value : 'ALL';
 
-            // Jika kotak pencarian kosong DAN semua filter dalam posisi ALL, tampilkan tabel kosong seperti semula
-            if (!query && fKec === 'ALL' && fDesa === 'ALL' && fGender === 'ALL') {
-                counterEl.innerText = "0";
-                currentVoterSearchResults = [];
-                if(paginationContainer) paginationContainer.classList.add('hidden');
-                if(tbody) tbody.innerHTML = `<tr><td colspan="13" class="p-8 text-center text-slate-500 font-mono">Gunakan kotak pencarian atau filter di atas untuk menampilkan data pemilih.</td></tr>`;
-                if(cardContainer) cardContainer.innerHTML = `<div class="p-6 text-center text-slate-500 font-mono text-xs">Gunakan kotak pencarian atau filter di atas untuk menampilkan data pemilih.</div>`;
-                return;
-            }
-
-            // Lakukan penyaringan secara instan dari memori lokal (Mini Memory / IndexedDB)
-            currentVoterSearchResults = allVotersCache.filter(v => {
-                // Filter berdasarkan 3 dropdown
+            // Filter data secara instan dari memori lokal
+            currentVoterSearchResults = fullVoterDetailsCache.filter(v => {
+                // Filter dropdown wilayah & gender
                 if (fKec !== 'ALL' && v.kecamatan !== fKec) return false;
                 if (fDesa !== 'ALL' && v.desa !== fDesa) return false;
                 if (fGender !== 'ALL' && v.jenis_kelamin !== fGender) return false;
 
-                // Jika ada kata kunci pencarian, cek apakah NKK, NIK, atau Nama mengandung kata kunci tersebut
+                // Filter teks pencarian (NKK, NIK, Nama) jika diketik oleh user
                 if (query) {
-                    const matchNkk = v.nkk && v.nkk.includes(query);
-                    const matchNik = v.nik && v.nik.includes(query);
-                    const matchNama = v.nama && v.nama.includes(query);
+                    const matchNkk = v.nkk && v.nkk.toLowerCase().includes(query);
+                    const matchNik = v.nik && v.nik.toLowerCase().includes(query);
+                    const matchNama = v.nama && v.nama.toLowerCase().includes(query);
                     if (!matchNkk && !matchNik && !matchNama) return false;
                 }
-
                 return true;
             });
 
-            currentVoterPage = 1;
             renderVoterPaginatedTable();
+        }
+
+            clearTimeout(searchTimer);
+            searchTimer = setTimeout(async () => {
+                if(tbody) tbody.innerHTML = `<tr><td colspan="13" class="p-8 text-center text-emerald-400 font-mono animate-pulse">Memuat data pemilih...</td></tr>`;
+                if(cardContainer) cardContainer.innerHTML = `<div class="p-6 text-center text-emerald-400 font-mono text-xs animate-pulse">Memuat data pemilih...</div>`;
+
+                try {
+                    const { data, error } = await dbClient.rpc('search_voters_secure', {
+                        search_query: query,
+                        target_period_id: activePeriodId
+                    });
+                    if(error) throw error;
+
+                    if(!data || data.length === 0) {
+                        counterEl.innerText = "0";
+                        currentVoterSearchResults = [];
+                        if(paginationContainer) paginationContainer.classList.add('hidden');
+                        if(tbody) tbody.innerHTML = `<tr><td colspan="13" class="p-8 text-center text-slate-500 font-mono">Tidak ditemukan.</td></tr>`;
+                        if(cardContainer) cardContainer.innerHTML = `<div class="p-6 text-center text-slate-500 font-mono text-xs">Tidak ditemukan.</div>`;
+                        return;
+                    }
+
+                    currentVoterSearchResults = data;
+                    currentVoterPage = 1;
+                    renderVoterPaginatedTable();
+                } catch(err) {
+                    counterEl.innerText = "0";
+                    currentVoterSearchResults = [];
+                    if(paginationContainer) paginationContainer.classList.add('hidden');
+                    if(tbody) tbody.innerHTML = `<tr><td colspan="13" class="p-8 text-center text-rose-400 font-mono">Error: ${err.message}</td></tr>`;
+                    if(cardContainer) cardContainer.innerHTML = `<div class="p-6 text-center text-rose-400 font-mono text-xs">Error: ${err.message}</div>`;
+                }
+            }, 300);
         }
 
         function renderVoterPaginatedTable() {
@@ -1882,57 +1975,7 @@
         }
 
         function closeVoterModal() { document.getElementById('voterDetailModal').classList.add('hidden'); }
-        // ================= INDEXEDDB LOCAL STORAGE UTILS (FIXED VERSION) =================
-        const DB_NAME = "KpuSoppengPDPB";
-        const DB_VERSION = 2; // Naikkan versi ke 2 agar browser membuat ulang object store yang hilang
-        const STORE_NAME = "voters_cache";
 
-        function openVoterDB() {
-            return new Promise((resolve, reject) => {
-                const request = indexedDB.open(DB_NAME, DB_VERSION);
-                request.onerror = () => reject(request.error);
-                request.onsuccess = () => resolve(request.result);
-                request.upgradeneeded = (event) => {
-                    const db = event.target.result;
-                    if (db.objectStoreNames.contains(STORE_NAME)) {
-                        db.deleteObjectStore(STORE_NAME);
-                    }
-                    db.createObjectStore(STORE_NAME, { keyPath: "period_id" });
-                };
-            });
-        }
-
-        async function getCachedVotersFromDevice(periodId) {
-            try {
-                const db = await openVoterDB();
-                return new Promise((resolve, reject) => {
-                    const transaction = db.transaction(STORE_NAME, "readonly");
-                    const store = transaction.objectStore(STORE_NAME);
-                    const request = store.get(periodId);
-                    request.onsuccess = () => resolve(request.result ? request.result.data : null);
-                    request.onerror = () => reject(request.error);
-                });
-            } catch (e) {
-                console.error("Gagal membaca IndexedDB:", e);
-                return null;
-            }
-        }
-
-        async function saveVotersToDevice(periodId, votersArray) {
-            try {
-                const db = await openVoterDB();
-                return new Promise((resolve, reject) => {
-                    const transaction = db.transaction(STORE_NAME, "readwrite");
-                    const store = transaction.objectStore(STORE_NAME);
-                    const request = store.put({ period_id: periodId, data: votersArray, timestamp: Date.now() });
-                    request.onsuccess = () => resolve(true);
-                    request.onerror = () => reject(request.error);
-                });
-            } catch (e) {
-                console.error("Gagal menyimpan ke IndexedDB:", e);
-                return false;
-            }
-        }
         window.onload = async () => {
             showGlobalLoader("MEMVERIFIKASI SESI...");
             
