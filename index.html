@@ -1103,6 +1103,7 @@
                             const desa = cleanText(row['KEL/DESA']);
                             const tps = cleanText(row['TPS']);
                             const jk = cleanText(row['JENIS KELAMIN']) === 'P' ? 'P' : 'L';
+                            const kawin = cleanText(row['STATU KAWIN'] || row['STATUS KAWIN']);
                             let ket = cleanText(row['KETERANGAN'] || '1');
                             if(ket === '-' || ket === '') ket = '1'; 
 
@@ -1123,7 +1124,7 @@
                                 tempat_lahir: cleanText(row['TEMPAT LAHIR'] || '-'),
                                 tanggal_lahir: formattedTgl,
                                 jenis_kelamin: jk,
-                                status_kawin: cleanText(row['STATU KAWIN'] || row['STATUS KAWIN']),
+                                status_kawin: kawin,
                                 alamat: cleanText(row['ALAMAT'] || '-'),
                                 rt: cleanText(row['RT'] || '-'),
                                 rw: cleanText(row['RW'] || '-'),
