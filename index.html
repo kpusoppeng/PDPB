@@ -1802,8 +1802,8 @@
 
             if (cachedData && cachedData.length > 0) {
                 fullVoterDetailsCache = cachedData;
+                populateVoterSearchDropdowns(); // <-- Tambahkan ini agar dropdown terisi dari cache!
                 hideGlobalLoader();
-                // Langsung tampilkan seluruh data
                 executeLocalVoterFilter();
                 return;
             }
