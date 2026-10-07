@@ -1877,9 +1877,15 @@
             const fKet = document.getElementById('searchFilterKet') ? document.getElementById('searchFilterKet').value : 'ALL';
 
             currentVoterSearchResults = fullVoterDetailsCache.filter(v => {
-                if (fKec !== 'ALL' && v.kecamatan !== fKec) return false;
-                if (fDesa !== 'ALL' && v.desa !== fDesa) return false;
-                if (fTps !== 'ALL' && v.tps !== fTps) return false;
+                if (fKec !== 'ALL') {
+                    const vKec = v.kecamatan ? v.kecamatan.trim().toUpperCase() : '';
+                    if (vKec !== fKec.trim().toUpperCase()) return false;
+                }
+                if (fDesa !== 'ALL') {
+                    const vDesa = v.desa ? v.desa.trim().toUpperCase() : '';
+                    if (vDesa !== fDesa.trim().toUpperCase()) return false;
+                }
+                if (fTps !== 'ALL' && String(v.tps).trim() !== String(fTps).trim()) return false;
                 if (fKawin !== 'ALL' && v.status_kawin !== fKawin) return false;
                 if (fGender !== 'ALL' && v.jenis_kelamin !== fGender) return false;
                 
