@@ -1916,7 +1916,15 @@
                 if (fTps !== 'ALL' && v.tps !== fTps) return false;
                 if (fKawin !== 'ALL' && v.status_kawin !== fKawin) return false;
                 if (fGender !== 'ALL' && v.jenis_kelamin !== fGender) return false;
-                if (fDis !== 'ALL' && (v.disability !== fDis && v.disabilitas !== fDis)) return false;
+                if (fDis !== 'ALL') {
+                    let rawDis = v.disability !== undefined ? String(v.disability) : (v.disabilitas !== undefined ? String(v.disabilitas) : '');
+                    let cleanCode = rawDis.charAt(0);
+                    
+                    const reverseMap = { 'Normal': '0', 'Fisik': '1', 'Intelektual': '2', 'Mental': '3', 'Wicara': '4', 'Rungu': '5', 'Netra': '6' };
+                    let targetCode = reverseMap[fDis] || fDis;
+
+                    if (cleanCode !== targetCode && rawDis !== fDis) return false;
+                }
                 
                 if (fUsia !== 'ALL') {
                     let age = getAge(v.tanggal_lahir);
