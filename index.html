@@ -101,7 +101,7 @@
         </div>
     </div>
 
-    <!-- MODAL FILTER KHUSUS HP -->
+    <!-- MODAL FILTER KHUSUS HP (DASHBOARD) -->
     <div id="mobileFilterModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm hidden p-4">
         <div class="saas-card max-w-md w-full p-6 space-y-4 border border-emerald-500/40 shadow-2xl max-h-[90vh] overflow-y-auto font-sans">
             <div class="flex justify-between items-center border-b border-[#1e294b] pb-3">
@@ -148,6 +148,89 @@
             <div class="flex gap-3 pt-3 border-t border-[#1e294b]">
                 <button onclick="closeMobileFilterModal(true)" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-xl transition text-xs tracking-wider shadow-lg shadow-emerald-600/30">OK</button>
                 <button onclick="closeMobileFilterModal(false)" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-2.5 rounded-xl transition text-xs tracking-wider border border-slate-700">Batal</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL FILTER PEMILIH KHUSUS HP (DATA PEMILIH) -->
+    <div id="mobileVoterFilterModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm hidden p-4">
+        <div class="saas-card max-w-md w-full p-6 space-y-4 border border-emerald-500/40 shadow-2xl max-h-[90vh] overflow-y-auto font-sans">
+            <div class="flex justify-between items-center border-b border-[#1e294b] pb-3">
+                <div class="flex items-center gap-2">
+                    <span class="text-emerald-400 font-bold">🔍</span>
+                    <h3 class="text-white font-bold text-sm tracking-wide">Panel Filter Data Pemilih</h3>
+                </div>
+                <button onclick="closeMobileVoterFilterModal(false)" class="text-slate-400 hover:text-white bg-[#090d16] px-3 py-1.5 rounded-xl border border-[#1e294b] text-xs font-bold">Tutup ✕</button>
+            </div>
+            
+            <div class="space-y-3">
+                <div class="space-y-1">
+                    <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Kecamatan</label>
+                    <select id="modalVoterFilterKecamatan" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-3 py-2.5 rounded-xl text-xs font-bold focus:outline-none focus:border-emerald-500 font-sans" onchange="onModalVoterKecamatanChange()">
+                        <option value="ALL">Semua Kecamatan</option>
+                    </select>
+                </div>
+                <div class="space-y-1">
+                    <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Desa/Kelurahan</label>
+                    <select id="modalVoterFilterDesa" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-3 py-2.5 rounded-xl text-xs font-bold focus:outline-none focus:border-emerald-500 font-sans">
+                        <option value="ALL">Semua Desa</option>
+                    </select>
+                </div>
+                <div class="space-y-1">
+                    <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">TPS</label>
+                    <select id="modalVoterFilterTps" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-3 py-2.5 rounded-xl text-xs font-bold focus:outline-none focus:border-emerald-500 font-sans">
+                        <option value="ALL">Semua TPS</option>
+                    </select>
+                </div>
+                <div class="space-y-1">
+                    <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Status Kawin</label>
+                    <select id="modalVoterFilterKawin" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-3 py-2.5 rounded-xl text-xs font-bold focus:outline-none focus:border-emerald-500 font-sans">
+                        <option value="ALL">Semua Status</option>
+                    </select>
+                </div>
+                <div class="space-y-1">
+                    <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Kelamin</label>
+                    <select id="modalVoterFilterGender" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-3 py-2.5 rounded-xl text-xs font-bold focus:outline-none focus:border-emerald-500 font-sans">
+                        <option value="ALL">Semua (L/P)</option>
+                        <option value="L">Laki-Laki</option>
+                        <option value="P">Perempuan</option>
+                    </select>
+                </div>
+                <div class="space-y-1">
+                    <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Disabilitas</label>
+                    <select id="modalVoterFilterDisabilitas" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-3 py-2.5 rounded-xl text-xs font-bold focus:outline-none focus:border-emerald-500 font-sans">
+                        <option value="ALL">Semua Disabilitas</option>
+                        <option value="0">Normal</option>
+                        <option value="1">Fisik</option>
+                        <option value="2">Intelektual</option>
+                        <option value="3">Mental</option>
+                        <option value="4">Wicara</option>
+                        <option value="5">Rungu</option>
+                        <option value="6">Netra</option>
+                    </select>
+                </div>
+                <div class="space-y-1">
+                    <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Rentang Usia</label>
+                    <select id="modalVoterFilterUsia" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-3 py-2.5 rounded-xl text-xs font-bold focus:outline-none focus:border-emerald-500 font-sans">
+                        <option value="ALL">Semua Usia</option>
+                        <option value="BELUM_17">Belum 17 tahun</option>
+                        <option value="17_30">17 s.d 30 tahun</option>
+                        <option value="31_50">31 s.d 50 tahun</option>
+                        <option value="LEBIH_50">Lebih 50 tahun</option>
+                    </select>
+                </div>
+                <div class="space-y-1">
+                    <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Keterangan</label>
+                    <select id="modalVoterFilterKet" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-3 py-2.5 rounded-xl text-xs font-bold focus:outline-none focus:border-emerald-500 font-sans">
+                        <option value="ALL">Semua Ket</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="flex gap-3 pt-3 border-t border-[#1e294b]">
+                <button onclick="closeMobileVoterFilterModal(true)" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-xl transition text-xs tracking-wider shadow-lg shadow-emerald-600/30">OK</button>
+                <button onclick="resetMobileVoterFiltersInModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-3 py-2.5 rounded-xl transition text-xs border border-slate-700">Reset</button>
+                <button onclick="closeMobileVoterFilterModal(false)" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-2.5 rounded-xl transition text-xs tracking-wider border border-slate-700">Batal</button>
             </div>
         </div>
     </div>
@@ -409,8 +492,16 @@
                     </div>
                 </div>
 
-                <!-- 9 FILTER SEBARIS & RESPONSIF -->
-                <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-9 gap-1.5 pt-3 border-t border-[#1e294b] items-end">
+                <!-- TOMBOL FILTER KHUSUS HP -->
+                <div class="block md:hidden pt-2">
+                    <button onclick="openMobileVoterFilterModal()" class="w-full bg-emerald-600/20 border border-emerald-500/40 text-emerald-400 hover:bg-emerald-600/30 px-3.5 py-2.5 rounded-xl text-xs font-bold flex items-center justify-between transition shadow-lg">
+                        <span class="flex items-center gap-2"><span>🔍</span> Buka Panel Filter Data Pemilih</span>
+                        <span class="bg-emerald-500 text-black px-2 py-0.5 rounded-full text-[10px] font-extrabold" id="voterFilterActiveBadge">Filter Aktif</span>
+                    </button>
+                </div>
+
+                <!-- 9 FILTER SEBARIS & RESPONSIF (DESKTOP) -->
+                <div class="hidden md:grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-9 gap-1.5 pt-3 border-t border-[#1e294b] items-end">
                     <div class="space-y-1">
                         <label class="block text-[9px] font-extrabold uppercase tracking-wider text-slate-400">Kecamatan</label>
                         <select id="searchFilterKecamatan" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-2 py-1.5 rounded-xl text-[10px] font-bold focus:outline-none focus:border-emerald-500 font-sans truncate" onchange="onSearchKecamatanChange()">
@@ -913,6 +1004,93 @@
             const fKawin = document.getElementById('filterPerkawinan').value;
 
             if (fKec !== 'ALL' || fDesa !== 'ALL' || fGen !== 'ALL' || fDis !== 'ALL' || fKawin !== 'ALL') {
+                badge.innerText = "Aktif (Difilter)";
+                badge.className = "bg-amber-400 text-black px-2 py-0.5 rounded-full text-[10px] font-extrabold";
+            } else {
+                badge.innerText = "Semua Data";
+                badge.className = "bg-emerald-500 text-black px-2 py-0.5 rounded-full text-[10px] font-extrabold";
+            }
+        }
+
+        function openMobileVoterFilterModal() {
+            document.getElementById('modalVoterFilterKecamatan').innerHTML = document.getElementById('searchFilterKecamatan').innerHTML;
+            document.getElementById('modalVoterFilterTps').innerHTML = document.getElementById('searchFilterTps').innerHTML;
+            document.getElementById('modalVoterFilterKawin').innerHTML = document.getElementById('searchFilterKawin').innerHTML;
+            document.getElementById('modalVoterFilterGender').value = document.getElementById('searchFilterGender').value;
+            document.getElementById('modalVoterFilterDisabilitas').value = document.getElementById('searchFilterDisabilitas').value;
+            document.getElementById('modalVoterFilterUsia').value = document.getElementById('searchFilterUsia').value;
+            document.getElementById('modalVoterFilterKet').innerHTML = document.getElementById('searchFilterKet').innerHTML;
+
+            document.getElementById('modalVoterFilterKecamatan').value = document.getElementById('searchFilterKecamatan').value;
+            syncModalVoterDesaOptions();
+            document.getElementById('modalVoterFilterDesa').value = document.getElementById('searchFilterDesa').value;
+            document.getElementById('modalVoterFilterTps').value = document.getElementById('searchFilterTps').value;
+            document.getElementById('modalVoterFilterKawin').value = document.getElementById('searchFilterKawin').value;
+            document.getElementById('modalVoterFilterDisabilitas').value = document.getElementById('searchFilterDisabilitas').value;
+            document.getElementById('modalVoterFilterUsia').value = document.getElementById('searchFilterUsia').value;
+            document.getElementById('modalVoterFilterKet').value = document.getElementById('searchFilterKet').value;
+
+            document.getElementById('mobileVoterFilterModal').classList.remove('hidden');
+        }
+
+        function closeMobileVoterFilterModal(apply = false) {
+            if (apply) {
+                document.getElementById('searchFilterKecamatan').value = document.getElementById('modalVoterFilterKecamatan').value;
+                updateSearchDesaOptions();
+                document.getElementById('searchFilterDesa').value = document.getElementById('modalVoterFilterDesa').value;
+                document.getElementById('searchFilterTps').value = document.getElementById('modalVoterFilterTps').value;
+                document.getElementById('searchFilterKawin').value = document.getElementById('modalVoterFilterKawin').value;
+                document.getElementById('searchFilterGender').value = document.getElementById('modalVoterFilterGender').value;
+                document.getElementById('searchFilterDisabilitas').value = document.getElementById('modalVoterFilterDisabilitas').value;
+                document.getElementById('searchFilterUsia').value = document.getElementById('modalVoterFilterUsia').value;
+                document.getElementById('searchFilterKet').value = document.getElementById('modalVoterFilterKet').value;
+                
+                executeLocalVoterFilter();
+                updateVoterFilterBadgeStatus();
+            }
+            document.getElementById('mobileVoterFilterModal').classList.add('hidden');
+        }
+
+        function onModalVoterKecamatanChange() { syncModalVoterDesaOptions(); }
+        function syncModalVoterDesaOptions() {
+            const selectedKec = document.getElementById('modalVoterFilterKecamatan').value;
+            const desaSet = new Set();
+            fullVoterDetailsCache.forEach(r => {
+                const vKec = r.kecamatan ? r.kecamatan.trim().toUpperCase() : '';
+                if(selectedKec === 'ALL' || vKec === selectedKec.trim().toUpperCase()) { 
+                    if(r.desa) desaSet.add(r.desa.trim().toUpperCase()); 
+                }
+            });
+            const desaEl = document.getElementById('modalVoterFilterDesa');
+            desaEl.innerHTML = '<option value="ALL">Semua Desa</option>';
+            Array.from(desaSet).sort().forEach(ds => { desaEl.innerHTML += `<option value="${ds}">${ds}</option>`; });
+        }
+
+        function resetMobileVoterFiltersInModal() {
+            document.getElementById('modalVoterFilterKecamatan').value = 'ALL';
+            syncModalVoterDesaOptions();
+            document.getElementById('modalVoterFilterDesa').value = 'ALL';
+            document.getElementById('modalVoterFilterTps').value = 'ALL';
+            document.getElementById('modalVoterFilterKawin').value = 'ALL';
+            document.getElementById('modalVoterFilterGender').value = 'ALL';
+            document.getElementById('modalVoterFilterDisabilitas').value = 'ALL';
+            document.getElementById('modalVoterFilterUsia').value = 'ALL';
+            document.getElementById('modalVoterFilterKet').value = 'ALL';
+        }
+
+        function updateVoterFilterBadgeStatus() {
+            const badge = document.getElementById('voterFilterActiveBadge');
+            if(!badge) return;
+            const fKec = document.getElementById('searchFilterKecamatan').value;
+            const fDesa = document.getElementById('searchFilterDesa').value;
+            const fTps = document.getElementById('searchFilterTps').value;
+            const fKawin = document.getElementById('searchFilterKawin').value;
+            const fGender = document.getElementById('searchFilterGender').value;
+            const fDis = document.getElementById('searchFilterDisabilitas').value;
+            const fUsia = document.getElementById('searchFilterUsia').value;
+            const fKet = document.getElementById('searchFilterKet').value;
+
+            if (fKec !== 'ALL' || fDesa !== 'ALL' || fTps !== 'ALL' || fKawin !== 'ALL' || fGender !== 'ALL' || fDis !== 'ALL' || fUsia !== 'ALL' || fKet !== 'ALL') {
                 badge.innerText = "Aktif (Difilter)";
                 badge.className = "bg-amber-400 text-black px-2 py-0.5 rounded-full text-[10px] font-extrabold";
             } else {
@@ -1518,7 +1696,7 @@
             const sKet = document.getElementById('searchFilterKet');
             if(sKet) {
                 sKet.innerHTML = '<option value="ALL">SEMUA</option>';
-                Array.from(ketSet).sort().forEach(kt => { sKet.innerHTML += `<option value="${kt}">Ket ${kt}</option>`; });
+                Array.from(ketSet).sort().forEach(kt => { sKet.innerHTML += `<option value="${kt}">${kt}</option>`; });
             }
         }
 
@@ -1931,6 +2109,7 @@
             if(document.getElementById('searchFilterUsia')) document.getElementById('searchFilterUsia').value = 'ALL';
             if(document.getElementById('searchFilterKet')) document.getElementById('searchFilterKet').value = 'ALL';
             executeLocalVoterFilter();
+            updateVoterFilterBadgeStatus();
         }
 
         function renderVoterPaginatedTable() {
