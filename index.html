@@ -1882,9 +1882,9 @@
         }
 
         function closeVoterModal() { document.getElementById('voterDetailModal').classList.add('hidden'); }
-        // ================= INDEXEDDB LOCAL STORAGE UTILS =================
+        // ================= INDEXEDDB LOCAL STORAGE UTILS (FIXED VERSION) =================
         const DB_NAME = "KpuSoppengPDPB";
-        const DB_VERSION = 1;
+        const DB_VERSION = 2; // Naikkan versi ke 2 agar browser membuat ulang object store yang hilang
         const STORE_NAME = "voters_cache";
 
         function openVoterDB() {
@@ -1894,9 +1894,10 @@
                 request.onsuccess = () => resolve(request.result);
                 request.upgradeneeded = (event) => {
                     const db = event.target.result;
-                    if (!db.objectStoreNames.contains(STORE_NAME)) {
-                        db.createObjectStore(STORE_NAME, { keyPath: "period_id" });
+                    if (db.objectStoreNames.contains(STORE_NAME)) {
+                        db.deleteObjectStore(STORE_NAME);
                     }
+                    db.createObjectStore(STORE_NAME, { keyPath: "period_id" });
                 };
             });
         }
