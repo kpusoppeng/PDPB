@@ -398,8 +398,8 @@
             <div class="sticky top-20 z-30 saas-card p-4 sm:p-5 space-y-3 border border-emerald-500/30 bg-[#11172a]/95 backdrop-blur-md shadow-2xl">
                 <div class="flex flex-col md:flex-row justify-between items-center gap-4">
                     <div class="w-full md:w-auto">
-                        <h2 class="text-base sm:text-lg font-extrabold text-white tracking-tight flex items-center gap-2"><span>🔍</span> Data Pemilih Secara Utuh</h2>
-                        <p class="text-[11px] text-slate-400">Menampilkan seluruh data pemilih secara instan. Gunakan pencarian atau filter di bawah.</p>
+                        <h2 class="text-base sm:text-lg font-extrabold text-white tracking-tight flex items-center gap-2"><span>🔍</span> Data Pemilih</h2>
+                        <p class="text-[11px] text-slate-400">Gunakan pencarian atau filter yang tersedia.</p>
                     </div>
                     <div class="flex items-center justify-center bg-[#090d16] px-5 py-1.5 rounded-2xl border border-emerald-500/40 shadow-[0_0_15px_rgba(16,185,129,0.15)]">
                         <span id="liveResultCounter" class="text-2xl sm:text-3xl font-extrabold text-goldAccent font-mono tracking-wider">0</span>
@@ -409,27 +409,64 @@
                     </div>
                 </div>
 
-                <!-- 3 FILTER KOMPAK: KECAMATAN, DESA, GENDER -->
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-3 border-t border-[#1e294b]">
+                <!-- 8 FILTER KOMPAK SEBARIS (KECAMATAN, DESA, TPS, STATUS KAWIN, GENDER, DISABILITAS, E-KTP, KET) + RESET -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-9 gap-2 pt-3 border-t border-[#1e294b] items-end">
                     <div class="space-y-1">
-                        <label class="block text-[9px] font-bold uppercase tracking-wider text-slate-400">Filter Kecamatan</label>
-                        <select id="searchFilterKecamatan" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-2.5 py-2 rounded-xl text-xs font-bold focus:outline-none focus:border-emerald-500 font-sans" onchange="onSearchKecamatanChange()">
-                            <option value="ALL">SEMUA KECAMATAN</option>
+                        <label class="block text-[8px] font-bold uppercase tracking-wider text-slate-400 truncate">Kecamatan</label>
+                        <select id="searchFilterKecamatan" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-2 py-1.5 rounded-xl text-[11px] font-bold focus:outline-none focus:border-emerald-500 font-sans" onchange="onSearchKecamatanChange()">
+                            <option value="ALL">SEMUA</option>
                         </select>
                     </div>
                     <div class="space-y-1">
-                        <label class="block text-[9px] font-bold uppercase tracking-wider text-slate-400">Filter Desa/Kelurahan</label>
-                        <select id="searchFilterDesa" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-2.5 py-2 rounded-xl text-xs font-bold focus:outline-none focus:border-emerald-500 font-sans" onchange="renderVoterPaginatedTable()">
-                            <option value="ALL">SEMUA DESA</option>
+                        <label class="block text-[8px] font-bold uppercase tracking-wider text-slate-400 truncate">Desa/Kel</label>
+                        <select id="searchFilterDesa" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-2 py-1.5 rounded-xl text-[11px] font-bold focus:outline-none focus:border-emerald-500 font-sans" onchange="renderVoterPaginatedTable()">
+                            <option value="ALL">SEMUA</option>
                         </select>
                     </div>
                     <div class="space-y-1">
-                        <label class="block text-[9px] font-bold uppercase tracking-wider text-slate-400">Filter Jenis Kelamin</label>
-                        <select id="searchFilterGender" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-2.5 py-2 rounded-xl text-xs font-bold focus:outline-none focus:border-emerald-500 font-sans" onchange="renderVoterPaginatedTable()">
-                            <option value="ALL">SEMUA (L & P)</option>
-                            <option value="L">LAKI-LAKI (L)</option>
-                            <option value="P">PEREMPUAN (P)</option>
+                        <label class="block text-[8px] font-bold uppercase tracking-wider text-slate-400 truncate">TPS</label>
+                        <select id="searchFilterTps" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-2 py-1.5 rounded-xl text-[11px] font-bold focus:outline-none focus:border-emerald-500 font-sans" onchange="renderVoterPaginatedTable()">
+                            <option value="ALL">SEMUA</option>
                         </select>
+                    </div>
+                    <div class="space-y-1">
+                        <label class="block text-[8px] font-bold uppercase tracking-wider text-slate-400 truncate">Status Kawin</label>
+                        <select id="searchFilterKawin" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-2 py-1.5 rounded-xl text-[11px] font-bold focus:outline-none focus:border-emerald-500 font-sans" onchange="renderVoterPaginatedTable()">
+                            <option value="ALL">SEMUA</option>
+                        </select>
+                    </div>
+                    <div class="space-y-1">
+                        <label class="block text-[8px] font-bold uppercase tracking-wider text-slate-400 truncate">Kelamin</label>
+                        <select id="searchFilterGender" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-2 py-1.5 rounded-xl text-[11px] font-bold focus:outline-none focus:border-emerald-500 font-sans" onchange="renderVoterPaginatedTable()">
+                            <option value="ALL">SEMUA</option>
+                            <option value="L">L (Laki)</option>
+                            <option value="P">P (Perempuan)</option>
+                        </select>
+                    </div>
+                    <div class="space-y-1">
+                        <label class="block text-[8px] font-bold uppercase tracking-wider text-slate-400 truncate">Disabilitas</label>
+                        <select id="searchFilterDisabilitas" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-2 py-1.5 rounded-xl text-[11px] font-bold focus:outline-none focus:border-emerald-500 font-sans" onchange="renderVoterPaginatedTable()">
+                            <option value="ALL">SEMUA</option>
+                        </select>
+                    </div>
+                    <div class="space-y-1">
+                        <label class="block text-[8px] font-bold uppercase tracking-wider text-slate-400 truncate">E-KTP</label>
+                        <select id="searchFilterEktp" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-2 py-1.5 rounded-xl text-[11px] font-bold focus:outline-none focus:border-emerald-500 font-sans" onchange="renderVoterPaginatedTable()">
+                            <option value="ALL">SEMUA</option>
+                            <option value="SUDAH">SUDAH</option>
+                            <option value="BELUM">BELUM</option>
+                        </select>
+                    </div>
+                    <div class="space-y-1">
+                        <label class="block text-[8px] font-bold uppercase tracking-wider text-slate-400 truncate">Keterangan</label>
+                        <select id="searchFilterKet" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-2 py-1.5 rounded-xl text-[11px] font-bold focus:outline-none focus:border-emerald-500 font-sans" onchange="renderVoterPaginatedTable()">
+                            <option value="ALL">SEMUA</option>
+                        </select>
+                    </div>
+                    <div class="space-y-1 col-span-2 sm:col-span-1 lg:col-span-1">
+                        <button onclick="resetSearchFilters()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white font-bold py-1.5 px-2 rounded-xl transition text-[11px] border border-slate-700 flex items-center justify-center gap-1">
+                            <span>🔄</span> Reset
+                        </button>
                     </div>
                 </div>
             </div>
@@ -1392,13 +1429,43 @@
             kecEl.innerHTML = '<option value="ALL">SEMUA KECAMATAN</option>';
             Array.from(kecSet).sort().forEach(k => { kecEl.innerHTML += `<option value="${k}">${k}</option>`; });
 
-            // Sinkronisasi pilihan kecamatan ke halaman Data Pemilih
+            // Sinkronisasi pilihan dropdown ke halaman Data Pemilih (8 Filter)
             const searchKecEl = document.getElementById('searchFilterKecamatan');
             if(searchKecEl) {
-                searchKecEl.innerHTML = '<option value="ALL">SEMUA KECAMATAN</option>';
+                searchKecEl.innerHTML = '<option value="ALL">SEMUA</option>';
                 Array.from(kecSet).sort().forEach(k => { searchKecEl.innerHTML += `<option value="${k}">${k}</option>`; });
                 searchKecEl.value = 'ALL';
                 updateSearchDesaOptions();
+            }
+
+            // Populasi opsi tambahan untuk 8 filter pencarian
+            const tpsSet = new Set(), kawinSet = new Set(), disSet = new Set(), ketSet = new Set();
+            fullVoterDetailsCache.forEach(r => {
+                if(r.tps) tpsSet.add(r.tps);
+                if(r.status_kawin) kawinSet.add(r.status_kawin);
+                if(r.disability) disSet.add(r.disability);
+                if(r.keterangan) ketSet.add(r.keterangan);
+            });
+
+            const sTps = document.getElementById('searchFilterTps');
+            if(sTps) {
+                sTps.innerHTML = '<option value="ALL">SEMUA</option>';
+                Array.from(tpsSet).sort((a,b)=>a.localeCompare(b, undefined, {numeric: true})).forEach(t => { sTps.innerHTML += `<option value="${t}">TPS ${t}</option>`; });
+            }
+            const sKawin = document.getElementById('searchFilterKawin');
+            if(sKawin) {
+                sKawin.innerHTML = '<option value="ALL">SEMUA</option>';
+                Array.from(kawinSet).sort().forEach(kw => { sKawin.innerHTML += `<option value="${kw}">${kw}</option>`; });
+            }
+            const sDis = document.getElementById('searchFilterDisabilitas');
+            if(sDis) {
+                sDis.innerHTML = '<option value="ALL">SEMUA</option>';
+                Array.from(disSet).sort().forEach(d => { sDis.innerHTML += `<option value="${d}">${d}</option>`; });
+            }
+            const sKet = document.getElementById('searchFilterKet');
+            if(sKet) {
+                sKet.innerHTML = '<option value="ALL">SEMUA</option>';
+                Array.from(ketSet).sort().forEach(kt => { sKet.innerHTML += `<option value="${kt}">Ket ${kt}</option>`; });
             }
 
             updateDesaOptions();
@@ -1436,12 +1503,12 @@
         function updateSearchDesaOptions() {
             const selectedKec = document.getElementById('searchFilterKecamatan').value;
             const desaSet = new Set();
-            rawVoterCache.forEach(r => {
+            fullVoterDetailsCache.forEach(r => {
                 if(selectedKec === 'ALL' || r.kecamatan === selectedKec) { if(r.desa) desaSet.add(r.desa); }
             });
             const desaEl = document.getElementById('searchFilterDesa');
             if(!desaEl) return;
-            desaEl.innerHTML = '<option value="ALL">SEMUA DESA</option>';
+            desaEl.innerHTML = '<option value="ALL">SEMUA</option>';
             Array.from(desaSet).sort().forEach(ds => { desaEl.innerHTML += `<option value="${ds}">${ds}</option>`; });
             desaEl.value = 'ALL';
         }
@@ -1698,15 +1765,18 @@
                 return;
             }
 
-            // 2. Jika belum ada di browser, unduh secara bertahap (chunking per 1.000 baris) dari Supabase
-            if(tbody) tbody.innerHTML = `<tr><td colspan="13" class="p-8 text-center text-emerald-400 font-mono animate-pulse">Mengunduh data pemilih dari server (bertahap)...</td></tr>`;
-            if(cardContainer) cardContainer.innerHTML = `<div class="p-6 text-center text-emerald-400 font-mono text-xs animate-pulse">Mengunduh data pemilih dari server (bertahap)...</div>`;
-
+            // 2. Jika belum ada di browser, unduh secara bertahap (chunking per 1.000 baris) dengan indikator cantik
             try {
                 let allRows = [];
                 let step = 1000, from = 0, fetchMore = true;
 
                 while (fetchMore) {
+                    // Update teks persentase / jumlah baris secara real-time di loader global
+                    showGlobalLoader(`MENGUNDUH DATA: ${formatID(allRows.length)} BARIS...`);
+                    
+                    if(tbody) tbody.innerHTML = `<tr><td colspan="13" class="p-8 text-center text-emerald-400 font-mono animate-pulse">⚡ Mengunduh data pemilih dari server: <b>${formatID(allRows.length)}</b> baris terkumpul...</td></tr>`;
+                    if(cardContainer) cardContainer.innerHTML = `<div class="p-6 text-center text-emerald-400 font-mono text-xs animate-pulse">⚡ Mengunduh data pemilih: <b>${formatID(allRows.length)}</b> baris...</div>`;
+
                     const { data, error } = await dbClient
                         .from('voter_details')
                         .select('*')
@@ -1750,14 +1820,26 @@
             const query = document.getElementById('tabSearchInput').value.trim().toLowerCase();
             const fKec = document.getElementById('searchFilterKecamatan') ? document.getElementById('searchFilterKecamatan').value : 'ALL';
             const fDesa = document.getElementById('searchFilterDesa') ? document.getElementById('searchFilterDesa').value : 'ALL';
+            const fTps = document.getElementById('searchFilterTps') ? document.getElementById('searchFilterTps').value : 'ALL';
+            const fKawin = document.getElementById('searchFilterKawin') ? document.getElementById('searchFilterKawin').value : 'ALL';
             const fGender = document.getElementById('searchFilterGender') ? document.getElementById('searchFilterGender').value : 'ALL';
+            const fDis = document.getElementById('searchFilterDisabilitas') ? document.getElementById('searchFilterDisabilitas').value : 'ALL';
+            const fEktp = document.getElementById('searchFilterEktp') ? document.getElementById('searchFilterEktp').value : 'ALL';
+            const fKet = document.getElementById('searchFilterKet') ? document.getElementById('searchFilterKet').value : 'ALL';
 
-            // Filter data secara instan dari memori lokal
+            // Filter data secara instan dari memori lokal berdasarkan 8 kriteria
             currentVoterSearchResults = fullVoterDetailsCache.filter(v => {
-                // Filter dropdown wilayah & gender
                 if (fKec !== 'ALL' && v.kecamatan !== fKec) return false;
                 if (fDesa !== 'ALL' && v.desa !== fDesa) return false;
+                if (fTps !== 'ALL' && v.tps !== fTps) return false;
+                if (fKawin !== 'ALL' && v.status_kawin !== fKawin) return false;
                 if (fGender !== 'ALL' && v.jenis_kelamin !== fGender) return false;
+                if (fDis !== 'ALL' && v.disability !== fDis) return false;
+                if (fEktp !== 'ALL') {
+                    let hasEktp = (v.ektp && v.ektp.toUpperCase() === 'SUDAH') || true;
+                    if (fEktp === 'BELUM' && hasEktp) return false;
+                }
+                if (fKet !== 'ALL' && v.keterangan !== fKet) return false;
 
                 // Filter teks pencarian (NKK, NIK, Nama) jika diketik oleh user
                 if (query) {
@@ -1770,6 +1852,21 @@
             });
 
             renderVoterPaginatedTable();
+        }
+
+        function resetSearchFilters() {
+            const sIn = document.getElementById('tabSearchInput');
+            if(sIn) sIn.value = '';
+            if(document.getElementById('searchFilterKecamatan')) document.getElementById('searchFilterKecamatan').value = 'ALL';
+            updateSearchDesaOptions();
+            if(document.getElementById('searchFilterDesa')) document.getElementById('searchFilterDesa').value = 'ALL';
+            if(document.getElementById('searchFilterTps')) document.getElementById('searchFilterTps').value = 'ALL';
+            if(document.getElementById('searchFilterKawin')) document.getElementById('searchFilterKawin').value = 'ALL';
+            if(document.getElementById('searchFilterGender')) document.getElementById('searchFilterGender').value = 'ALL';
+            if(document.getElementById('searchFilterDisabilitas')) document.getElementById('searchFilterDisabilitas').value = 'ALL';
+            if(document.getElementById('searchFilterEktp')) document.getElementById('searchFilterEktp').value = 'ALL';
+            if(document.getElementById('searchFilterKet')) document.getElementById('searchFilterKet').value = 'ALL';
+            executeLocalVoterFilter();
         }
 
         function renderVoterPaginatedTable() {
