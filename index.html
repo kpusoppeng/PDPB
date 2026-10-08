@@ -1910,7 +1910,7 @@
                 });
             }
 
-            let sortedKeys = Object.keys(summaryMap).sort();
+            let sortedKeys = Object.keys(summaryMap).sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }));
             if(sortedKeys.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="8" class="p-6 text-center text-slate-500 font-mono">Tidak ditemukan wilayah.</td></tr>`;
                 return;
