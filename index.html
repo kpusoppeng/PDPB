@@ -666,7 +666,7 @@
                         <p class="text-xs text-slate-400 mt-0.5">Unggah file Excel resmi berisikan Sheet Aktif dan TMS.</p>
                     </div>
                     
-                    <div class="grid grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         <div>
                             <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">Tahun Anggaran</label>
                             <select id="impTahun" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-3 py-2.5 rounded-xl text-xs font-bold font-sans"></select>
@@ -676,6 +676,10 @@
                             <select id="impTw" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-3 py-2.5 rounded-xl text-xs font-bold font-sans">
                                 <option>TW1</option><option>TW2</option><option>TW3</option><option>TW4</option>
                             </select>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">Keterangan (Opsional)</label>
+                            <input type="text" id="impKet" placeholder="Misal: DPT Pemilu" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-3 py-2.5 rounded-xl text-xs font-bold focus:outline-none focus:border-emerald-500">
                         </div>
                     </div>
 
@@ -704,16 +708,33 @@
                     </div>
                 </div>
 
-                <div class="saas-card p-6 sm:p-8 space-y-4 border-rose-950/50">
-                    <div>
-                        <h2 class="text-base font-bold text-rose-400 flex items-center gap-2"><span>🗑️</span> Manajemen Hapus Data Periode</h2>
-                        <p class="text-xs text-slate-400 mt-0.5">Pilih periode yang ingin dihapus permanen dari database server.</p>
+                <!-- MANAJEMEN KETERANGAN & HAPUS PERIODE -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div class="saas-card p-6 space-y-4 border-amber-500/30">
+                        <div>
+                            <h2 class="text-base font-bold text-amber-400 flex items-center gap-2"><span>✏️</span> Edit Keterangan Periode</h2>
+                            <p class="text-xs text-slate-400 mt-0.5">Tambahkan/ubah keterangan data periode yang sudah ada.</p>
+                        </div>
+                        <div class="space-y-3">
+                            <select id="editPeriodSelect" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-3 py-2.5 rounded-xl text-xs font-bold font-sans" onchange="onEditPeriodSelectChange()">
+                                <option value="">Memuat daftar periode...</option>
+                            </select>
+                            <input type="text" id="editPeriodKetInput" placeholder="Masukkan keterangan baru..." class="w-full bg-[#090d16] border border-[#1e294b] text-white px-3 py-2.5 rounded-xl text-xs font-bold focus:outline-none focus:border-amber-500">
+                            <button onclick="savePeriodKeterangan()" class="w-full bg-amber-600 hover:bg-amber-500 text-white font-bold py-2.5 rounded-xl transition text-xs shadow-lg">Simpan Keterangan</button>
+                        </div>
                     </div>
-                    <div class="flex gap-3">
-                        <select id="delPeriodSelect" class="flex-1 bg-[#090d16] border border-[#1e294b] text-white px-3 py-2.5 rounded-xl text-xs font-bold font-sans">
-                            <option value="">Memuat daftar periode...</option>
-                        </select>
-                        <button onclick="confirmDeletePeriod()" class="bg-rose-600 hover:bg-rose-500 text-white font-bold px-5 py-2.5 rounded-xl transition text-xs tracking-wider shadow-lg shadow-rose-600/30">HAPUS PERIODE</button>
+
+                    <div class="saas-card p-6 space-y-4 border-rose-950/50">
+                        <div>
+                            <h2 class="text-base font-bold text-rose-400 flex items-center gap-2"><span>🗑️</span> Hapus Periode</h2>
+                            <p class="text-xs text-slate-400 mt-0.5">Hapus permanen periode dari database server.</p>
+                        </div>
+                        <div class="space-y-3">
+                            <select id="delPeriodSelect" class="w-full bg-[#090d16] border border-[#1e294b] text-white px-3 py-2.5 rounded-xl text-xs font-bold font-sans">
+                                <option value="">Memuat daftar periode...</option>
+                            </select>
+                            <button onclick="confirmDeletePeriod()" class="w-full bg-rose-600 hover:bg-rose-500 text-white font-bold py-2.5 rounded-xl transition text-xs tracking-wider shadow-lg shadow-rose-600/30">HAPUS PERIODE</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -829,6 +850,8 @@
         let rekapLevel = 'KECAMATAN';
         let rekapSelectedKec = null;
         let rekapSelectedDesa = null;
+
+        let loadedPeriodsData = [];
 
         const defaultTexts = {
             headerTitle: "KPU Kabupaten Soppeng",
@@ -1129,7 +1152,7 @@
                     if(restrictedNotice) restrictedNotice.classList.add('hidden');
                     if(adminContent) adminContent.classList.remove('hidden');
                     loadOperatorsList();
-                    loadDeletePeriodsDropdown();
+                    loadAdminPeriodDropdowns();
                     generateYearOptions();
                 }
             }
@@ -1447,6 +1470,7 @@
         async function publishData() {
             const tahun = document.getElementById('impTahun').value;
             const tw = document.getElementById('impTw').value;
+            const ket = document.getElementById('impKet').value.trim();
             const fileInput = document.getElementById('fileExcel');
             const saveDetails = document.getElementById('checkSaveDetails').checked;
             if (!fileInput || !fileInput.files[0]) return;
@@ -1455,7 +1479,7 @@
             showGlobalLoader("MENGUNGGAH KE DATABASE...");
             try {
                 const { data: periodData, error: pErr } = await dbClient.from('periods').insert([
-                    { tahun: tahun, triwulan: tw, file_name: fileName }
+                    { tahun: tahun, triwulan: tw, keterangan: ket, file_name: fileName }
                 ]).select().single();
 
                 if(pErr) throw pErr;
@@ -1494,18 +1518,66 @@
             }
         }
 
-        async function loadDeletePeriodsDropdown() {
+        async function loadAdminPeriodDropdowns() {
             if(!dbClient) return;
-            const selectEl = document.getElementById('delPeriodSelect');
-            if(!selectEl) return;
+            const delSelectEl = document.getElementById('delPeriodSelect');
+            const editSelectEl = document.getElementById('editPeriodSelect');
+            if(!delSelectEl || !editSelectEl) return;
+
             const { data } = await dbClient.from('periods').select('*').order('tahun', {ascending: false}).order('triwulan', {ascending: false});
-            if(data && data.length > 0) {
-                selectEl.innerHTML = '';
-                data.forEach(p => {
-                    selectEl.innerHTML += `<option value="${p.id}" class="bg-[#11172a] text-white">${p.nama_periode} (${p.file_name})</option>`;
+            loadedPeriodsData = data || [];
+
+            if(loadedPeriodsData.length > 0) {
+                delSelectEl.innerHTML = '';
+                editSelectEl.innerHTML = '<option value="">-- Pilih Periode untuk Diedit --</option>';
+                loadedPeriodsData.forEach(p => {
+                    let ketFormatted = p.keterangan ? ` (${p.keterangan})` : '';
+                    let label = `${p.tahun} ${p.triwulan}${ketFormatted} - [${p.file_name}]`;
+                    delSelectEl.innerHTML += `<option value="${p.id}" class="bg-[#11172a] text-white">${label}</option>`;
+                    editSelectEl.innerHTML += `<option value="${p.id}" class="bg-[#11172a] text-white">${label}</option>`;
                 });
             } else {
-                selectEl.innerHTML = '<option value="">Tidak ada data periode tersedia</option>';
+                delSelectEl.innerHTML = '<option value="">Tidak ada data periode tersedia</option>';
+                editSelectEl.innerHTML = '<option value="">Tidak ada data periode tersedia</option>';
+            }
+        }
+
+        function onEditPeriodSelectChange() {
+            const editSelectEl = document.getElementById('editPeriodSelect');
+            const editInput = document.getElementById('editPeriodKetInput');
+            if(!editSelectEl || !editInput) return;
+
+            const selectedId = editSelectEl.value;
+            const found = loadedPeriodsData.find(p => p.id == selectedId);
+            if(found) {
+                editInput.value = found.keterangan || '';
+            } else {
+                editInput.value = '';
+            }
+        }
+
+        async function savePeriodKeterangan() {
+            const editSelectEl = document.getElementById('editPeriodSelect');
+            const editInput = document.getElementById('editPeriodKetInput');
+            if(!editSelectEl || !editSelectEl.value) {
+                showModal("Peringatan", "Pilih periode yang ingin disunting keterangannya!", "⚠️");
+                return;
+            }
+
+            const periodId = editSelectEl.value;
+            const newKet = editInput.value.trim();
+
+            showGlobalLoader("MENYIMPAN KETERANGAN...");
+            try {
+                const { error } = await dbClient.from('periods').update({ keterangan: newKet }).eq('id', periodId);
+                if(error) throw error;
+                hideGlobalLoader();
+                showModal("Berhasil", "Keterangan periode berhasil diperbarui.", "✨", false, () => {
+                    window.location.reload();
+                });
+            } catch(e) {
+                hideGlobalLoader();
+                showModal("Gagal", e.message, "❌");
             }
         }
 
@@ -1546,8 +1618,10 @@
                 selectEl.innerHTML = '';
                 periodsMap = {};
                 data.forEach(p => {
-                    periodsMap[p.id] = `${p.triwulan} ${p.tahun}`;
-                    selectEl.innerHTML += `<option value="${p.id}" class="bg-[#11172a] text-white">${p.nama_periode}</option>`;
+                    let ketFormatted = p.keterangan ? ` (${p.keterangan})` : '';
+                    let displayText = `${p.tahun} ${p.triwulan}${ketFormatted}`;
+                    periodsMap[p.id] = displayText;
+                    selectEl.innerHTML += `<option value="${p.id}" class="bg-[#11172a] text-white">${displayText}</option>`;
                 });
                 await onPeriodChange();
             } else {
@@ -1839,7 +1913,6 @@
             const searchKey = document.getElementById('rekapSearch') ? document.getElementById('rekapSearch').value.trim().toUpperCase() : '';
             let summaryMap = {};
 
-            // Render Header & Logika Berdasarkan Level Rekapitulasi
             if(rekapLevel === 'KECAMATAN') {
                 titleEl.innerText = "Rekapitulasi per Kecamatan";
                 subTitleEl.innerText = "Klik pada nama kecamatan untuk melihat rincian Desa/Kelurahan.";
@@ -1939,7 +2012,6 @@
                 backBtn.classList.remove('hidden');
                 backText.innerText = "Kembali ke Desa";
 
-                // Tingkat TPS: Kolom "Jumlah TPS" ditiadakan
                 thead.innerHTML = `
                     <tr class="bg-[#090d16] text-slate-400 text-[10px] font-extrabold uppercase tracking-wider border-b border-[#1e294b]">
                         <th class="p-3 sm:p-4">No</th>
@@ -2001,7 +2073,6 @@
                     : `<span class="font-bold text-white uppercase">${keyName}</span>`;
 
                 if (rekapLevel === 'TPS') {
-                    // Baris level TPS (Tanpa Kolom Jumlah TPS)
                     html += `
                         <tr class="hover:bg-slate-800/40 transition">
                             <td class="p-3 sm:p-4 text-slate-400 font-mono">${idx + 1}</td>
@@ -2015,7 +2086,6 @@
                         </tr>
                     `;
                 } else {
-                    // Baris level Kecamatan / Desa (Dengan Kolom Jumlah TPS)
                     let jumlahTpsVal = formatID(d.tpsSet.size);
                     d.tpsSet.forEach(t => globalUniqueTpsSet.add(t));
 
