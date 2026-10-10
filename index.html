@@ -454,21 +454,12 @@
             <div class="saas-card overflow-hidden">
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="bg-[#090d16] text-slate-400 text-[10px] font-extrabold uppercase tracking-wider border-b border-[#1e294b]">
-                                <th class="p-3 sm:p-4">No</th>
-                                <th class="p-3 sm:p-4" id="rekapColHeader">Kecamatan</th>
-                                <th class="p-3 sm:p-4 text-right">Aktif (L)</th>
-                                <th class="p-3 sm:p-4 text-right">Aktif (P)</th>
-                                <th class="p-3 sm:p-4 text-right">Total Aktif</th>
-                                <th class="p-3 sm:p-4 text-right">Baru (B)</th>
-                                <th class="p-3 sm:p-4 text-right">TMS</th>
-                                <th class="p-3 sm:p-4 text-right">Ubah (U)</th>
-                            </tr>
+                        <thead id="rekapTableHead">
+                            <!-- Header dinamis diatur via JavaScript -->
                         </thead>
                         <tbody id="rekapTableBody" class="text-xs divide-y divide-[#1e294b]/50">
                             <tr>
-                                <td colspan="8" class="p-6 text-center text-slate-500 font-mono">Memuat rekapitulasi wilayah...</td>
+                                <td colspan="9" class="p-6 text-center text-slate-500 font-mono">Memuat rekapitulasi wilayah...</td>
                             </tr>
                         </tbody>
                     </table>
@@ -1820,54 +1811,109 @@
 
         function renderRekapitulasiTable() {
             const tbody = document.getElementById('rekapTableBody');
+            const thead = document.getElementById('rekapTableHead');
             const titleEl = document.getElementById('rekapTitle');
             const subTitleEl = document.getElementById('rekapSubTitle');
-            const colHeaderEl = document.getElementById('rekapColHeader');
             const backBtn = document.getElementById('rekapBackBtn');
             const backText = document.getElementById('rekapBackText');
 
-            if(!tbody) return;
+            if(!tbody || !thead) return;
             if(!rawVoterCache || rawVoterCache.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" class="p-6 text-center text-slate-500 font-mono">Belum ada data cache periode aktif.</td></tr>`;
+                thead.innerHTML = `
+                    <tr class="bg-[#090d16] text-slate-400 text-[10px] font-extrabold uppercase tracking-wider border-b border-[#1e294b]">
+                        <th class="p-3 sm:p-4">No</th>
+                        <th class="p-3 sm:p-4">Kecamatan</th>
+                        <th class="p-3 sm:p-4 text-center">Jumlah TPS</th>
+                        <th class="p-3 sm:p-4 text-right">Aktif (L)</th>
+                        <th class="p-3 sm:p-4 text-right">Aktif (P)</th>
+                        <th class="p-3 sm:p-4 text-right">Total Aktif</th>
+                        <th class="p-3 sm:p-4 text-right">Baru (B)</th>
+                        <th class="p-3 sm:p-4 text-right">TMS</th>
+                        <th class="p-3 sm:p-4 text-right">Ubah (U)</th>
+                    </tr>
+                `;
+                tbody.innerHTML = `<tr><td colspan="9" class="p-6 text-center text-slate-500 font-mono">Belum ada data cache periode aktif.</td></tr>`;
                 return;
             }
 
             const searchKey = document.getElementById('rekapSearch') ? document.getElementById('rekapSearch').value.trim().toUpperCase() : '';
             let summaryMap = {};
 
+            // Render Header & Logika Berdasarkan Level Rekapitulasi
             if(rekapLevel === 'KECAMATAN') {
                 titleEl.innerText = "Rekapitulasi per Kecamatan";
                 subTitleEl.innerText = "Klik pada nama kecamatan untuk melihat rincian Desa/Kelurahan.";
-                colHeaderEl.innerText = "Kecamatan";
                 backBtn.classList.add('hidden');
+
+                thead.innerHTML = `
+                    <tr class="bg-[#090d16] text-slate-400 text-[10px] font-extrabold uppercase tracking-wider border-b border-[#1e294b]">
+                        <th class="p-3 sm:p-4">No</th>
+                        <th class="p-3 sm:p-4">Kecamatan</th>
+                        <th class="p-3 sm:p-4 text-center">Jumlah TPS</th>
+                        <th class="p-3 sm:p-4 text-right">Aktif (L)</th>
+                        <th class="p-3 sm:p-4 text-right">Aktif (P)</th>
+                        <th class="p-3 sm:p-4 text-right">Total Aktif</th>
+                        <th class="p-3 sm:p-4 text-right">Baru (B)</th>
+                        <th class="p-3 sm:p-4 text-right">TMS</th>
+                        <th class="p-3 sm:p-4 text-right">Ubah (U)</th>
+                    </tr>
+                `;
 
                 rawVoterCache.forEach(r => {
                     let kec = r.kecamatan || 'LAINNYA';
+                    let ds = r.desa || 'LAINNYA';
+                    let tps = r.tps || '001';
                     if(searchKey && !kec.includes(searchKey)) return;
-                    if(!summaryMap[kec]) summaryMap[kec] = { aktifL: 0, aktifP: 0, baru: 0, tms: 0, ubah: 0 };
+                    if(!summaryMap[kec]) {
+                        summaryMap[kec] = { aktifL: 0, aktifP: 0, baru: 0, tms: 0, ubah: 0, tpsSet: new Set() };
+                    }
+                    summaryMap[kec].tpsSet.add(`${ds}|${tps}`);
                     if(r.gender === 'L') summaryMap[kec].aktifL += r.total_count;
                     if(r.gender === 'P') summaryMap[kec].aktifP += r.total_count;
                 });
                 rawMutationCache.forEach(r => {
                     let kec = r.kecamatan || 'LAINNYA';
+                    let ds = r.desa || 'LAINNYA';
+                    let tps = r.tps || '001';
                     if(searchKey && !kec.includes(searchKey)) return;
-                    if(!summaryMap[kec]) summaryMap[kec] = { aktifL: 0, aktifP: 0, baru: 0, tms: 0, ubah: 0 };
+                    if(!summaryMap[kec]) {
+                        summaryMap[kec] = { aktifL: 0, aktifP: 0, baru: 0, tms: 0, ubah: 0, tpsSet: new Set() };
+                    }
+                    summaryMap[kec].tpsSet.add(`${ds}|${tps}`);
                     if(r.mutation_type === 'BARU') summaryMap[kec].baru += r.total_count;
                     if(r.mutation_type === 'TMS') summaryMap[kec].tms += r.total_count;
                     if(r.mutation_type === 'UBAH') summaryMap[kec].ubah += r.total_count;
                 });
+
             } else if(rekapLevel === 'DESA') {
                 titleEl.innerText = `Kecamatan: ${rekapSelectedKec}`;
                 subTitleEl.innerText = "Klik pada nama desa/kelurahan untuk melihat rincian TPS.";
-                colHeaderEl.innerText = "Desa / Kelurahan";
                 backBtn.classList.remove('hidden');
                 backText.innerText = "Kembali ke Kecamatan";
+
+                thead.innerHTML = `
+                    <tr class="bg-[#090d16] text-slate-400 text-[10px] font-extrabold uppercase tracking-wider border-b border-[#1e294b]">
+                        <th class="p-3 sm:p-4">No</th>
+                        <th class="p-3 sm:p-4">Desa / Kelurahan</th>
+                        <th class="p-3 sm:p-4 text-center">Jumlah TPS</th>
+                        <th class="p-3 sm:p-4 text-right">Aktif (L)</th>
+                        <th class="p-3 sm:p-4 text-right">Aktif (P)</th>
+                        <th class="p-3 sm:p-4 text-right">Total Aktif</th>
+                        <th class="p-3 sm:p-4 text-right">Baru (B)</th>
+                        <th class="p-3 sm:p-4 text-right">TMS</th>
+                        <th class="p-3 sm:p-4 text-right">Ubah (U)</th>
+                    </tr>
+                `;
 
                 rawVoterCache.forEach(r => {
                     if(r.kecamatan === rekapSelectedKec) {
                         let ds = r.desa || 'LAINNYA';
+                        let tps = r.tps || '001';
                         if(searchKey && !ds.includes(searchKey)) return;
-                        if(!summaryMap[ds]) summaryMap[ds] = { aktifL: 0, aktifP: 0, baru: 0, tms: 0, ubah: 0 };
+                        if(!summaryMap[ds]) {
+                            summaryMap[ds] = { aktifL: 0, aktifP: 0, baru: 0, tms: 0, ubah: 0, tpsSet: new Set() };
+                        }
+                        summaryMap[ds].tpsSet.add(`${ds}|${tps}`);
                         if(r.gender === 'L') summaryMap[ds].aktifL += r.total_count;
                         if(r.gender === 'P') summaryMap[ds].aktifP += r.total_count;
                     }
@@ -1875,25 +1921,45 @@
                 rawMutationCache.forEach(r => {
                     if(r.kecamatan === rekapSelectedKec) {
                         let ds = r.desa || 'LAINNYA';
+                        let tps = r.tps || '001';
                         if(searchKey && !ds.includes(searchKey)) return;
-                        if(!summaryMap[ds]) summaryMap[ds] = { aktifL: 0, aktifP: 0, baru: 0, tms: 0, ubah: 0 };
+                        if(!summaryMap[ds]) {
+                            summaryMap[ds] = { aktifL: 0, aktifP: 0, baru: 0, tms: 0, ubah: 0, tpsSet: new Set() };
+                        }
+                        summaryMap[ds].tpsSet.add(`${ds}|${tps}`);
                         if(r.mutation_type === 'BARU') summaryMap[ds].baru += r.total_count;
                         if(r.mutation_type === 'TMS') summaryMap[ds].tms += r.total_count;
                         if(r.mutation_type === 'UBAH') summaryMap[ds].ubah += r.total_count;
                     }
                 });
+
             } else if(rekapLevel === 'TPS') {
                 titleEl.innerText = `${rekapSelectedKec} > Desa ${rekapSelectedDesa}`;
                 subTitleEl.innerText = "Rincian data pemilih berdasarkan TPS.";
-                colHeaderEl.innerText = "Nomor TPS";
                 backBtn.classList.remove('hidden');
                 backText.innerText = "Kembali ke Desa";
+
+                // Tingkat TPS: Kolom "Jumlah TPS" ditiadakan
+                thead.innerHTML = `
+                    <tr class="bg-[#090d16] text-slate-400 text-[10px] font-extrabold uppercase tracking-wider border-b border-[#1e294b]">
+                        <th class="p-3 sm:p-4">No</th>
+                        <th class="p-3 sm:p-4">Nomor TPS</th>
+                        <th class="p-3 sm:p-4 text-right">Aktif (L)</th>
+                        <th class="p-3 sm:p-4 text-right">Aktif (P)</th>
+                        <th class="p-3 sm:p-4 text-right">Total Aktif</th>
+                        <th class="p-3 sm:p-4 text-right">Baru (B)</th>
+                        <th class="p-3 sm:p-4 text-right">TMS</th>
+                        <th class="p-3 sm:p-4 text-right">Ubah (U)</th>
+                    </tr>
+                `;
 
                 rawVoterCache.forEach(r => {
                     if(r.kecamatan === rekapSelectedKec && r.desa === rekapSelectedDesa) {
                         let tps = `TPS ${r.tps || '001'}`;
                         if(searchKey && !tps.includes(searchKey)) return;
-                        if(!summaryMap[tps]) summaryMap[tps] = { aktifL: 0, aktifP: 0, baru: 0, tms: 0, ubah: 0 };
+                        if(!summaryMap[tps]) {
+                            summaryMap[tps] = { aktifL: 0, aktifP: 0, baru: 0, tms: 0, ubah: 0 };
+                        }
                         if(r.gender === 'L') summaryMap[tps].aktifL += r.total_count;
                         if(r.gender === 'P') summaryMap[tps].aktifP += r.total_count;
                     }
@@ -1902,7 +1968,9 @@
                     if(r.kecamatan === rekapSelectedKec && r.desa === rekapSelectedDesa) {
                         let tps = `TPS ${r.tps || '001'}`;
                         if(searchKey && !tps.includes(searchKey)) return;
-                        if(!summaryMap[tps]) summaryMap[tps] = { aktifL: 0, aktifP: 0, baru: 0, tms: 0, ubah: 0 };
+                        if(!summaryMap[tps]) {
+                            summaryMap[tps] = { aktifL: 0, aktifP: 0, baru: 0, tms: 0, ubah: 0 };
+                        }
                         if(r.mutation_type === 'BARU') summaryMap[tps].baru += r.total_count;
                         if(r.mutation_type === 'TMS') summaryMap[tps].tms += r.total_count;
                         if(r.mutation_type === 'UBAH') summaryMap[tps].ubah += r.total_count;
@@ -1911,13 +1979,16 @@
             }
 
             let sortedKeys = Object.keys(summaryMap).sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }));
+            let colSpanEmpty = (rekapLevel === 'TPS') ? 8 : 9;
+
             if(sortedKeys.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" class="p-6 text-center text-slate-500 font-mono">Tidak ditemukan wilayah.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="${colSpanEmpty}" class="p-6 text-center text-slate-500 font-mono">Tidak ditemukan wilayah.</td></tr>`;
                 return;
             }
 
             let html = '';
             let totalAktifL = 0, totalAktifP = 0, totalBaru = 0, totalTms = 0, totalUbah = 0;
+            let globalUniqueTpsSet = new Set();
 
             sortedKeys.forEach((keyName, idx) => {
                 let d = summaryMap[keyName];
@@ -1929,31 +2000,69 @@
                     ? `<button onclick="handleRekapClick('${keyName}')" class="font-bold text-emerald-400 hover:text-emerald-300 hover:underline text-left uppercase flex items-center gap-1.5 transition"><span>📍</span> ${keyName} <span class="text-[10px] text-slate-500">▶</span></button>`
                     : `<span class="font-bold text-white uppercase">${keyName}</span>`;
 
-                html += `
-                    <tr class="hover:bg-slate-800/40 transition">
-                        <td class="p-3 sm:p-4 text-slate-400 font-mono">${idx + 1}</td>
-                        <td class="p-3 sm:p-4">${nameCellHtml}</td>
-                        <td class="p-3 sm:p-4 text-right font-mono text-slate-300">${formatID(d.aktifL)}</td>
-                        <td class="p-3 sm:p-4 text-right font-mono text-pink-400">${formatID(d.aktifP)}</td>
-                        <td class="p-3 sm:p-4 text-right font-mono font-bold text-goldAccent">${formatID(totAktif)}</td>
-                        <td class="p-3 sm:p-4 text-right font-mono text-emerald-400">${formatID(d.baru)}</td>
-                        <td class="p-3 sm:p-4 text-right font-mono text-rose-400">${formatID(d.tms)}</td>
-                        <td class="p-3 sm:p-4 text-right font-mono text-amber-400">${formatID(d.ubah)}</td>
-                    </tr>
-                `;
+                if (rekapLevel === 'TPS') {
+                    // Baris level TPS (Tanpa Kolom Jumlah TPS)
+                    html += `
+                        <tr class="hover:bg-slate-800/40 transition">
+                            <td class="p-3 sm:p-4 text-slate-400 font-mono">${idx + 1}</td>
+                            <td class="p-3 sm:p-4">${nameCellHtml}</td>
+                            <td class="p-3 sm:p-4 text-right font-mono text-slate-300">${formatID(d.aktifL)}</td>
+                            <td class="p-3 sm:p-4 text-right font-mono text-pink-400">${formatID(d.aktifP)}</td>
+                            <td class="p-3 sm:p-4 text-right font-mono font-bold text-goldAccent">${formatID(totAktif)}</td>
+                            <td class="p-3 sm:p-4 text-right font-mono text-emerald-400">${formatID(d.baru)}</td>
+                            <td class="p-3 sm:p-4 text-right font-mono text-rose-400">${formatID(d.tms)}</td>
+                            <td class="p-3 sm:p-4 text-right font-mono text-amber-400">${formatID(d.ubah)}</td>
+                        </tr>
+                    `;
+                } else {
+                    // Baris level Kecamatan / Desa (Dengan Kolom Jumlah TPS)
+                    let jumlahTpsVal = formatID(d.tpsSet.size);
+                    d.tpsSet.forEach(t => globalUniqueTpsSet.add(t));
+
+                    html += `
+                        <tr class="hover:bg-slate-800/40 transition">
+                            <td class="p-3 sm:p-4 text-slate-400 font-mono">${idx + 1}</td>
+                            <td class="p-3 sm:p-4">${nameCellHtml}</td>
+                            <td class="p-3 sm:p-4 text-center font-mono text-slate-300 font-semibold">${jumlahTpsVal}</td>
+                            <td class="p-3 sm:p-4 text-right font-mono text-slate-300">${formatID(d.aktifL)}</td>
+                            <td class="p-3 sm:p-4 text-right font-mono text-pink-400">${formatID(d.aktifP)}</td>
+                            <td class="p-3 sm:p-4 text-right font-mono font-bold text-goldAccent">${formatID(totAktif)}</td>
+                            <td class="p-3 sm:p-4 text-right font-mono text-emerald-400">${formatID(d.baru)}</td>
+                            <td class="p-3 sm:p-4 text-right font-mono text-rose-400">${formatID(d.tms)}</td>
+                            <td class="p-3 sm:p-4 text-right font-mono text-amber-400">${formatID(d.ubah)}</td>
+                        </tr>
+                    `;
+                }
             });
 
-            html += `
-                <tr class="bg-[#151d36]/80 font-bold border-t-2 border-[#1e294b]">
-                    <td colspan="2" class="p-3 sm:p-4 text-white uppercase tracking-wider">TOTAL KESELURUHAN</td>
-                    <td class="p-3 sm:p-4 text-right font-mono text-white">${formatID(totalAktifL)}</td>
-                    <td class="p-3 sm:p-4 text-right font-mono text-pink-400">${formatID(totalAktifP)}</td>
-                    <td class="p-3 sm:p-4 text-right font-mono text-goldAccent text-sm">${formatID(totalAktifL + totalAktifP)}</td>
-                    <td class="p-3 sm:p-4 text-right font-mono text-emerald-400">${formatID(totalBaru)}</td>
-                    <td class="p-3 sm:p-4 text-right font-mono text-rose-400">${formatID(totalTms)}</td>
-                    <td class="p-3 sm:p-4 text-right font-mono text-amber-400">${formatID(totalUbah)}</td>
-                </tr>
-            `;
+            if (rekapLevel === 'TPS') {
+                html += `
+                    <tr class="bg-[#151d36]/80 font-bold border-t-2 border-[#1e294b]">
+                        <td colspan="2" class="p-3 sm:p-4 text-white uppercase tracking-wider">TOTAL KESELURUHAN</td>
+                        <td class="p-3 sm:p-4 text-right font-mono text-white">${formatID(totalAktifL)}</td>
+                        <td class="p-3 sm:p-4 text-right font-mono text-pink-400">${formatID(totalAktifP)}</td>
+                        <td class="p-3 sm:p-4 text-right font-mono text-goldAccent text-sm">${formatID(totalAktifL + totalAktifP)}</td>
+                        <td class="p-3 sm:p-4 text-right font-mono text-emerald-400">${formatID(totalBaru)}</td>
+                        <td class="p-3 sm:p-4 text-right font-mono text-rose-400">${formatID(totalTms)}</td>
+                        <td class="p-3 sm:p-4 text-right font-mono text-amber-400">${formatID(totalUbah)}</td>
+                    </tr>
+                `;
+            } else {
+                let globalTotalTpsDisplay = formatID(globalUniqueTpsSet.size);
+                html += `
+                    <tr class="bg-[#151d36]/80 font-bold border-t-2 border-[#1e294b]">
+                        <td colspan="2" class="p-3 sm:p-4 text-white uppercase tracking-wider">TOTAL KESELURUHAN</td>
+                        <td class="p-3 sm:p-4 text-center font-mono text-emerald-400">${globalTotalTpsDisplay}</td>
+                        <td class="p-3 sm:p-4 text-right font-mono text-white">${formatID(totalAktifL)}</td>
+                        <td class="p-3 sm:p-4 text-right font-mono text-pink-400">${formatID(totalAktifP)}</td>
+                        <td class="p-3 sm:p-4 text-right font-mono text-goldAccent text-sm">${formatID(totalAktifL + totalAktifP)}</td>
+                        <td class="p-3 sm:p-4 text-right font-mono text-emerald-400">${formatID(totalBaru)}</td>
+                        <td class="p-3 sm:p-4 text-right font-mono text-rose-400">${formatID(totalTms)}</td>
+                        <td class="p-3 sm:p-4 text-right font-mono text-amber-400">${formatID(totalUbah)}</td>
+                    </tr>
+                `;
+            }
+
             tbody.innerHTML = html;
         }
 
