@@ -1731,7 +1731,31 @@
 
             const genEl = document.getElementById('filterGenerasi');
             genEl.innerHTML = '<option value="ALL">SEMUA GENERASI</option>';
-            Array.from(genSet).sort().forEach(g => { genEl.innerHTML += `<option value="${g}">${g}</option>`; });
+            
+            // Peta keterangan tahun untuk masing-masing generasi
+            const genLabels = {
+                "PRE-BOOMER": "PRE-BOOMER (Lahir < 1945)",
+                "BABY BOOMER": "BABY BOOMER (Lahir 1946 – 1964)",
+                "GEN X": "GEN X (Lahir 1965 – 1980)",
+                "MILENIAL": "MILENIAL (Lahir 1981 – 1996)",
+                "GEN Z": "GEN Z (Lahir 1997 – 2012)",
+                "POST-GEN Z": "POST-GEN Z (Lahir > 2012)"
+            };
+
+            const generationOrder = ["PRE-BOOMER", "BABY BOOMER", "GEN X", "MILENIAL", "GEN Z", "POST-GEN Z"];
+            
+            const sortedGenerations = Array.from(genSet).sort((a, b) => {
+                let indexA = generationOrder.indexOf(a);
+                let indexB = generationOrder.indexOf(b);
+                if (indexA === -1) indexA = 99;
+                if (indexB === -1) indexB = 99;
+                return indexA - indexB;
+            });
+
+            sortedGenerations.forEach(g => { 
+                let labelText = genLabels[g] || g;
+                genEl.innerHTML += `<option value="${g}">${labelText}</option>`; 
+            });
 
             const disEl = document.getElementById('filterDisabilitas');
             disEl.innerHTML = '<option value="ALL">SEMUA DISABILITAS</option>';
