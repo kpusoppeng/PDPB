@@ -237,13 +237,18 @@
 
     <!-- MODAL POPUP RINCIAN KELUARGA / PEMILIH -->
     <div id="voterDetailModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm hidden p-4">
-        <div class="saas-card max-w-3xl w-full p-6 space-y-5 border border-emerald-500/40 shadow-2xl max-h-[90vh] overflow-y-auto">
+        <div class="saas-card max-w-2xl w-full p-6 space-y-5 border border-emerald-500/40 shadow-2xl max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center border-b border-[#1e294b] pb-3">
                 <div class="flex items-center gap-3">
                     <div class="w-9 h-9 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 font-bold">📋</div>
                     <div>
-                        <h3 class="text-white font-bold text-sm tracking-wide">Rincian Data Keluarga (Satu NKK)</h3>
-                        <p class="text-[11px] text-slate-400" id="modalSubNkk">NKK: -</p>
+                        <h3 class="text-white font-bold text-sm tracking-wide">Rincian Data Pemilih</h3>
+                        <div class="flex items-center gap-2 text-[11px] text-slate-400 mt-0.5" id="modalSubNkk">
+                            <span>NKK: <strong id="modalNkkText" class="text-white">-</strong></span>
+                            <button onclick="copyNkkToClipboard()" class="text-emerald-400 hover:text-emerald-300 bg-emerald-500/10 hover:bg-emerald-500/20 px-1.5 py-0.5 rounded border border-emerald-500/30 transition flex items-center gap-1 text-[10px]" title="Salin NKK">
+                                <span>📋</span> Copy
+                            </button>
+                        </div>
                     </div>
                 </div>
                 <button onclick="closeVoterModal()" class="text-slate-400 hover:text-white bg-[#090d16] px-3 py-1.5 rounded-xl border border-[#1e294b] text-xs font-bold">Tutup ✕</button>
@@ -968,6 +973,16 @@
 
         function closeModal() {
             document.getElementById('customModal').classList.add('hidden');
+        }
+
+        function copyNkkToClipboard() {
+            const nkkText = document.getElementById('modalNkkText').innerText;
+            if (!nkkText || nkkText === '-') return;
+            navigator.clipboard.writeText(nkkText).then(() => {
+                showModal("Berhasil", "Nomor NKK berhasil disalin ke clipboard.", "📋");
+            }).catch(err => {
+                showModal("Gagal", "Gagal menyalin NKK.", "❌");
+            });
         }
 
         function openMobileFilterModal() {
@@ -2429,61 +2444,70 @@
         async function openVoterModal(voter) {
             const modal = document.getElementById('voterDetailModal');
             const content = document.getElementById('voterDetailContent');
-            const subNkk = document.getElementById('modalSubNkk');
-            const activePeriodId = document.getElementById('filterPeriode').value;
+            const nkkTextEl = document.getElementById('modalNkkText');
 
-            subNkk.innerText = `NKK: ${voter.nkk} • Alamat: ${voter.alamat || '-'}`;
-            content.innerHTML = `<div class="p-6 text-center text-emerald-400 font-mono animate-pulse">Memuat anggota keluarga...</div>`;
-            modal.classList.remove('hidden');
-
-            try {
-                let familyMembers = fullVoterDetailsCache.filter(m => m.nkk === voter.nkk);
-                if (!familyMembers || familyMembers.length === 0) {
-                    const { data, error } = await dbClient
-                        .from('voter_details')
-                        .select('*')
-                        .eq('period_id', activePeriodId)
-                        .eq('nkk', voter.nkk)
-                        .order('nama', {ascending: true});
-                    if(error) throw error;
-                    familyMembers = data;
-                }
-
-                if(!familyMembers || familyMembers.length === 0) {
-                    content.innerHTML = `<div class="p-4 text-amber-400 text-center text-xs">Rincian individu tidak tersedia untuk periode ini.</div>`;
-                    return;
-                }
-
-                let famHtml = `
-                    <div class="bg-[#090d16] p-3 rounded-xl border border-[#1e294b] text-[11px] space-y-1 mb-4">
-                        <div class="text-slate-400"><b>Kecamatan:</b> ${voter.kecamatan || '-'} › Desa ${voter.desa} › TPS ${voter.tps}</div>
-                        <div class="text-emerald-400 font-bold pt-1">Ditemukan ${familyMembers.length} anggota keluarga:</div>
-                    </div>
-                    <div class="space-y-3">
-                `;
-
-                familyMembers.forEach((m, idx) => {
-                    let isSelected = m.nik === voter.nik ? 'border-emerald-500 bg-emerald-950/20' : 'border-[#1e294b] bg-[#090d16]';
-                    famHtml += `
-                        <div class="p-3 rounded-xl border ${isSelected} space-y-2">
-                            <div class="flex justify-between items-center">
-                                <span class="font-bold text-white text-xs">#${idx + 1} - ${m.nama}</span>
-                                <span class="px-2 py-0.5 rounded text-[10px] font-bold ${m.jenis_kelamin === 'L' ? 'bg-blue-950 text-blue-400' : 'bg-pink-950 text-pink-400'}">${m.jenis_kelamin}</span>
-                            </div>
-                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px] text-slate-300 font-mono pt-1 border-t border-slate-800/60">
-                                <div><span class="text-slate-500 block text-[9px] uppercase">NIK</span>${m.nik}</div>
-                                <div><span class="text-slate-500 block text-[9px] uppercase">TTL</span>${m.tempat_lahir}, ${m.tanggal_lahir || '-'}</div>
-                                <div><span class="text-slate-500 block text-[9px] uppercase">KAWIN</span>${m.status_kawin || '-'}</div>
-                                <div><span class="text-slate-500 block text-[9px] uppercase">KET</span><span class="text-amber-400 font-bold">${m.keterangan || '0'}</span></div>
-                            </div>
+            nkkTextEl.innerText = voter.nkk || '-';
+            
+            // Susun tampilan rincian data lengkap pemilih
+            let html = `
+                <div class="bg-[#090d16] p-4 rounded-xl border border-[#1e294b] space-y-4 text-xs">
+                    <div class="flex justify-between items-start border-b border-[#1e294b] pb-3">
+                        <div>
+                            <div class="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Nama Lengkap</div>
+                            <div class="text-sm font-extrabold text-white uppercase mt-0.5">${voter.nama || '-'}</div>
                         </div>
-                    `;
-                });
-                famHtml += `</div>`;
-                content.innerHTML = famHtml;
-            } catch(err) {
-                content.innerHTML = `<div class="p-4 text-rose-400 text-center text-xs">Gagal: ${err.message}</div>`;
-            }
+                        <span class="px-2.5 py-1 rounded-lg text-[10px] font-bold ${voter.jenis_kelamin === 'L' ? 'bg-blue-950 text-blue-400 border border-blue-800/50' : 'bg-pink-950 text-pink-400 border border-pink-800/50'}">
+                            ${voter.jenis_kelamin === 'L' ? 'LAKI-LAKI' : 'PEREMPUAN'}
+                        </span>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div class="bg-[#11172a] p-3 rounded-lg border border-[#1e294b]">
+                            <span class="text-[10px] uppercase font-bold text-slate-500 block">NIK</span>
+                            <span class="font-mono text-emerald-400 font-bold text-sm">${voter.nik || '-'}</span>
+                        </div>
+                        <div class="bg-[#11172a] p-3 rounded-lg border border-[#1e294b]">
+                            <span class="text-[10px] uppercase font-bold text-slate-500 block">Nomor Kartu Keluarga (NKK)</span>
+                            <span class="font-mono text-white font-bold text-sm">${voter.nkk || '-'}</span>
+                        </div>
+                        <div class="bg-[#11172a] p-3 rounded-lg border border-[#1e294b]">
+                            <span class="text-[10px] uppercase font-bold text-slate-500 block">Tempat, Tanggal Lahir</span>
+                            <span class="text-slate-200 font-medium">${voter.tempat_lahir || '-' }, ${voter.tanggal_lahir || '-'}</span>
+                        </div>
+                        <div class="bg-[#11172a] p-3 rounded-lg border border-[#1e294b]">
+                            <span class="text-[10px] uppercase font-bold text-slate-500 block">Status Perkawinan</span>
+                            <span class="text-slate-200 font-medium">${voter.status_kawin || '-'}</span>
+                        </div>
+                        <div class="bg-[#11172a] p-3 rounded-lg border border-[#1e294b]">
+                            <span class="text-[10px] uppercase font-bold text-slate-500 block">Wilayah Administratif</span>
+                            <span class="text-slate-200 font-medium uppercase">Kec. ${voter.kecamatan || '-'} › Desa ${voter.desa || '-'}</span>
+                        </div>
+                        <div class="bg-[#11172a] p-3 rounded-lg border border-[#1e294b]">
+                            <span class="text-[10px] uppercase font-bold text-slate-500 block">TPS / RT / RW</span>
+                            <span class="font-mono text-slate-200">TPS ${voter.tps || '-'} • RT ${voter.rt || '-'}/RW ${voter.rw || '-'}</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-[#11172a] p-3 rounded-lg border border-[#1e294b]">
+                        <span class="text-[10px] uppercase font-bold text-slate-500 block">Alamat</span>
+                        <span class="text-slate-200 uppercase font-medium">${voter.alamat || '-'}</span>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="bg-[#11172a] p-3 rounded-lg border border-[#1e294b]">
+                            <span class="text-[10px] uppercase font-bold text-slate-500 block">Disabilitas</span>
+                            <span class="text-slate-200 font-medium">${mapDisability(voter.disability || voter.disabilitas || '0')}</span>
+                        </div>
+                        <div class="bg-[#11172a] p-3 rounded-lg border border-[#1e294b]">
+                            <span class="text-[10px] uppercase font-bold text-slate-500 block">Keterangan / Status Data</span>
+                            <span class="font-mono text-amber-400 font-bold">${voter.keterangan || '0'}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            content.innerHTML = html;
+            modal.classList.remove('hidden');
         }
 
         function closeVoterModal() { document.getElementById('voterDetailModal').classList.add('hidden'); }
