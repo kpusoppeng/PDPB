@@ -487,8 +487,9 @@
                     <div class="flex items-center justify-center bg-[#090d16] px-5 py-1.5 rounded-2xl border border-emerald-500/40 shadow-[0_0_15px_rgba(16,185,129,0.15)]">
                         <span id="liveResultCounter" class="text-2xl sm:text-3xl font-extrabold text-goldAccent font-mono tracking-wider">0</span>
                     </div>
-                    <div class="w-full md:w-80">
-                        <input type="text" id="tabSearchInput" placeholder="Cari NKK, NIK, atau Nama..." class="w-full bg-[#090d16] border border-[#1e294b] text-white px-4 py-2.5 rounded-xl text-xs focus:outline-none focus:border-emerald-500 transition" oninput="handleTabVoterSearch()">
+                    <div class="w-full md:w-80 relative flex items-center">
+                        <input type="text" id="tabSearchInput" placeholder="Cari NKK, NIK, atau Nama..." class="w-full bg-[#090d16] border border-[#1e294b] text-white pl-4 pr-9 py-2.5 rounded-xl text-xs focus:outline-none focus:border-emerald-500 transition" oninput="handleTabVoterSearch()">
+                        <button type="button" onclick="clearVoterSearch()" class="absolute right-3 text-slate-400 hover:text-white text-xs font-bold bg-[#1e294b]/60 hover:bg-[#1e294b] w-5 h-5 rounded-full flex items-center justify-center transition" title="Hapus Pencarian">✕</button>
                     </div>
                 </div>
 
@@ -2254,6 +2255,14 @@
         function handleTabVoterSearch() {
             currentVoterPage = 1;
             executeLocalVoterFilter();
+        }
+
+        function clearVoterSearch() {
+            const searchInput = document.getElementById('tabSearchInput');
+            if(searchInput) {
+                searchInput.value = '';
+                handleTabVoterSearch();
+            }
         }
 
         function getAge(birthDateString) {
