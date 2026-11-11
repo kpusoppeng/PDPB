@@ -978,10 +978,8 @@
         function copyNkkToClipboard() {
             const nkkText = document.getElementById('modalNkkText').innerText;
             if (!nkkText || nkkText === '-') return;
-            navigator.clipboard.writeText(nkkText).then(() => {
-                showModal("Berhasil", "Nomor NKK berhasil disalin ke clipboard.", "📋");
-            }).catch(err => {
-                showModal("Gagal", "Gagal menyalin NKK.", "❌");
+            navigator.clipboard.writeText(nkkText).catch(err => {
+                console.error("Gagal menyalin NKK:", err);
             });
         }
 
